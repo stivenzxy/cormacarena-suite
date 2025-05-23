@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tailwindcss -i styles.css -o build/main.css && npm run copy",
-    "copy": "copyfiles -f build/main.css ../cormacarena-client/src/main/resources/static/css ../cormacarena-organization/src/main/resources/static/css",
+    "copy": "xcopy /Y build\\main.css ..\\cormacarena-client\\src\\main\\resources\\static\\css\\ && xcopy /Y build\\main.css ..\\cormacarena-organization\\src\\main\\resources\\static\\css\\",
     "watch": "concurrently \"tailwindcss -i styles.css -o build/main.css --watch\" \"nodemon --watch build/main.css --exec npm run copy\""
   },
   "devDependencies": {

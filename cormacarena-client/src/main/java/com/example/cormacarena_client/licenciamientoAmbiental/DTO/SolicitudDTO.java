@@ -2,6 +2,7 @@ package com.example.cormacarena_client.licenciamientoAmbiental.DTO;
 
 import com.example.cormacarena_client.licenciamientoAmbiental.enums.SectorProyecto;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,5 +24,7 @@ public class SolicitudDTO {
     private String valorProyecto;
     private String departamentoProyecto;
     private String municipioProyecto;
-    private byte[] documentoEIA;
+
+    private String nombreSoporteEIA;
+    private MultipartFile soporteEIAPdf;
 }

@@ -5,8 +5,12 @@
     <title>Formulario de Solicitud</title>
     <link th:href="@{/css/main.css}" rel="stylesheet" />
 </head>
-<body class="bg-tertiary min-h-screen flex items-center justify-center p-6">
-    <main class="w-full flex items-center justify-center h-screen">
+<body class="bg-tertiary h-screen">
+    <header class="bg-[#0d348d] h-20 w-full flex items-center justify-between p-6 fixed top-0 left-0 z-50">
+        <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo">
+
+    </header>
+    <main class="w-full pt-52 px-8 flex items-center justify-center h-full">
         <!-- Formulario de solicitud -->
         <form th:action="@{/solicitar}" method="post" th:object="${solicitudDTO}" enctype="multipart/form-data"
               class="licence-request-form bg-white flex flex-col rounded-lg shadow-lg p-8 w-full max-w-4xl">
@@ -178,11 +182,11 @@
 
                     <!-- EIA Adjunto -->
                     <div class="mb-8">
-                        <label for="eiaDocumento" class="block text-secondary font-semibold mb-1">Estudio de Impacto Ambiental (EIA) <span class="text-red-600">*</span></label>
+                        <label for="soporteEIAPdf" class="block text-secondary font-semibold mb-1">Estudio de Impacto Ambiental (EIA) <span class="text-red-600">*</span></label>
                         <input
                                 type="file"
-                                id="eiaDocumento"
-                                name="eiaDocumento"
+                                id="soporteEIAPdf"
+                                name="soporteEIAPdf"
                                 accept=".pdf,.doc,.docx"
                                 required
                                 class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"

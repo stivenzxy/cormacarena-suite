@@ -1,15 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    '../cormacarena-client/src/**/*.{html,js,ts,jsx,tsx,java}',
-    '../cormacarena-organization/src/**/*.{html,js,ts,jsx,tsx,java}'
+    '../cormacarena-client/src/main/resources/templates/**/*.{html,js}',
+    '../cormacarena-organization/src/main/resources/templates/**/*.{html,js}'
   ],
   theme: {
     extend: {
       colors: {
-        'primary': '#00A3B7',
-        'secondary': '#1b6b74',
-        'tertiary': '#DEF2F1',
+        'primary': '#004884',
+        'secondary': '#717b85',
+        'tertiary': '#E6EFFD',
 
         'button-red': '#513ea4',
       },

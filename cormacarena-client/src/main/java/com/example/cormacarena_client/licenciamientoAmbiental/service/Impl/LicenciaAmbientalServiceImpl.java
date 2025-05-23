@@ -28,7 +28,6 @@ public class LicenciaAmbientalServiceImpl implements LicenciaAmbientalService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // Variables del proceso (ajusta los tipos según BPMN)
         Map<String, Object> variables = new HashMap<>();
         variables.put("nombreSolicitante", Map.of("value", dto.getNombreSolicitante(), "type", "String"));
         variables.put("tipoIdentificacion", Map.of("value", dto.getTipoIdentificacion(), "type", "String"));
@@ -41,7 +40,7 @@ public class LicenciaAmbientalServiceImpl implements LicenciaAmbientalService {
         variables.put("valorProyecto", Map.of("value", dto.getValorProyecto(), "type", "Long"));
         variables.put("departamentoProyecto", Map.of("value", dto.getDepartamentoProyecto(), "type", "String"));
         variables.put("municipioProyecto", Map.of("value", dto.getMunicipioProyecto(), "type", "String"));
-        variables.put("estudioImpactoAmbiental", Map.of("value", dto.getDocumentoEIA(), "type", "String"));
+        variables.put("nombreSoporteEIA", Map.of("value", dto.getNombreSoporteEIA(), "type", "String"));
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("variables", variables);

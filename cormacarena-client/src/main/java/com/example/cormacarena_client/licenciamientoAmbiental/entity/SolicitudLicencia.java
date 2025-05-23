@@ -30,8 +30,5 @@ public class SolicitudLicencia {
     private String valorProyecto;
     private String departamentoProyecto;
     private String municipioProyecto;
-
-    @Lob
-    @Column(name = "documentoEIA", columnDefinition = "LONGBLOB")
-    private byte[] documentoEIA;
+    private String nombreSoporteEIA;
 }
