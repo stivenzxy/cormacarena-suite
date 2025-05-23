@@ -1,0 +1,69 @@
+{
+  "components": [
+    {
+      "text": "# Programación de Visita Técnica",
+      "type": "text",
+      "layout": {
+        "row": "Row_13ha4m2",
+        "columns": null
+      },
+      "id": "Field_19ry405"
+    },
+    {
+      "label": "Nombre o Razón Social del Solicitante",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1ay8tj2",
+        "columns": null
+      },
+      "id": "Field_0sakvtu",
+      "key": "nombreSolicitante",
+      "description": "Proporcionado por el solicitante.",
+      "disabled": true
+    },
+    {
+      "label": "Departamento donde se ejecuta el proyecto",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0e9tzhx",
+        "columns": null
+      },
+      "id": "Field_1s58dlh",
+      "key": "departamentoProyecto",
+      "disabled": true,
+      "description": "Proporcionado por el solicitante."
+    },
+    {
+      "label": "Departamento donde se ejecuta el proyecto",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0e9tzhx",
+        "columns": null
+      },
+      "id": "Field_006k26h",
+      "key": "municipioProyecto",
+      "description": "Proporcionado por el solicitante.",
+      "disabled": true
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Fecha de Realización de la Visita",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_04g3xuu",
+        "columns": null
+      },
+      "id": "Field_0q0s3su",
+      "key": "fechaEstimadaVisita"
+    }
+  ],
+  "type": "default",
+  "id": "programacionVisitaTecnica",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 18
+}

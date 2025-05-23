@@ -1,0 +1,75 @@
+{
+  "components": [
+    {
+      "text": "# Resumen - Concepto Técnico",
+      "type": "text",
+      "layout": {
+        "row": "Row_16trjab",
+        "columns": null
+      },
+      "id": "Field_08rz2q3"
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Fecha del concepto técnico:",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_1624vz2",
+        "columns": null
+      },
+      "id": "Field_0x566ni",
+      "key": "fechaConceptoTecnico"
+    },
+    {
+      "type": "separator",
+      "layout": {
+        "row": "Row_0zkc2m1",
+        "columns": null
+      },
+      "id": "Field_1qk5wev"
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Fecha de la visita técnica",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_1bvzx3n",
+        "columns": null
+      },
+      "id": "Field_1jbzl5u",
+      "key": "fechaVisitaTecnica",
+      "disabled": true
+    },
+    {
+      "label": "Nombre del encargado de la visita técnica:",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1kvle1n",
+        "columns": null
+      },
+      "id": "Field_1n4z5m6",
+      "key": "profesionalAsignado",
+      "disabled": true
+    },
+    {
+      "label": "Descripción del la visita técnica:",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_1eof6iz",
+        "columns": null
+      },
+      "id": "Field_1twuqst",
+      "key": "observacionesVisitaTecnica",
+      "disabled": true
+    }
+  ],
+  "type": "default",
+  "id": "conceptoTecnicoForm",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 18
+}

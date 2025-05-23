@@ -1,0 +1,63 @@
+{
+  "components": [
+    {
+      "text": "# Reporte de Evaluación de Requisitos Ambientales",
+      "type": "text",
+      "layout": {
+        "row": "Row_0xrfvth",
+        "columns": null
+      },
+      "id": "Field_15n23p3"
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Fecha de Reporte de Evaluación Ambiental",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_1mhsxx7",
+        "columns": null
+      },
+      "id": "Field_03xjwgp",
+      "key": "fechaEvaluacionAmbiental",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Observaciones Técnicas",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_0wnomy6",
+        "columns": null
+      },
+      "id": "Field_1bkhe8e",
+      "key": "observacionesTecnicas",
+      "disabled": true,
+      "validate": {
+        "required": false
+      },
+      "description": "Proporcionadas por el Profesional Técnico."
+    },
+    {
+      "label": "Observaciones Legales",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_05wvk8s",
+        "columns": null
+      },
+      "id": "Field_1ke3q5u",
+      "key": "observacionesLegales",
+      "disabled": true,
+      "description": "Proporcionadas Por la Oficina de Asesoria Jurídica."
+    }
+  ],
+  "type": "default",
+  "id": "reporteDeEvaluacionAmbiental",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 18
+}

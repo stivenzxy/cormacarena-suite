@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.cormacarena</groupId>
+    <artifactId>cormacarena-suite</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>Cormacarena Suite</name>
+    <description>Multi-module suite for Cormacarena process orchestration</description>
+
+    <modules>
+        <module>BPM-Engine</module>
+        <module>cormacarena-client</module>
+        <module>cormacarena-organization</module>
+    </modules>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.6</version>
+    </parent>
+
+    <properties>
+        <java.version>21</java.version>
+    </properties>
+
+</project>

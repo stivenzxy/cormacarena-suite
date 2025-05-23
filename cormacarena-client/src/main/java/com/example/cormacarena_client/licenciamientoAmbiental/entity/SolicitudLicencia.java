@@ -1,0 +1,37 @@
+package com.example.cormacarena_client.licenciamientoAmbiental.entity;
+
+import com.example.cormacarena_client.licenciamientoAmbiental.enums.SectorProyecto;
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Data
+@Entity
+@Table(name = "solicitud_licencia")
+public class SolicitudLicencia {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long codigoSolicitud;
+
+    // Datos del Solicitante
+    private String nombreSolicitante;
+    private String tipoIdentificacion;
+    private String idSolicitante;
+    private String telefono;
+    private String email;
+    private String direccionResidencia;
+
+    // Datos del Proyecto
+    private String nombreProyecto;
+
+    @Enumerated(EnumType.STRING)
+    private SectorProyecto sectorProyecto;
+
+    private String valorProyecto;
+    private String departamentoProyecto;
+    private String municipioProyecto;
+
+    @Lob
+    @Column(name = "documentoEIA", columnDefinition = "LONGBLOB")
+    private byte[] documentoEIA;
+}

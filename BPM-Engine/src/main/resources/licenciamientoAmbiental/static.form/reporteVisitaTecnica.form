@@ -1,0 +1,74 @@
+{
+  "components": [
+    {
+      "text": "# Reporte de Visita Técnica",
+      "type": "text",
+      "layout": {
+        "row": "Row_17k4htz",
+        "columns": null
+      },
+      "id": "Field_1m0u7aj"
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Fecha en que se realizó la visita",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_04g6z7p",
+        "columns": null
+      },
+      "id": "Field_0cdz26c",
+      "key": "fechaVisitaTecnica",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Nombre del encargado de la Visita",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1tmp3vq",
+        "columns": null
+      },
+      "id": "Field_1cssp23",
+      "key": "profesionalAsignado",
+      "disabled": true
+    },
+    {
+      "label": "¿El impacto real observado es coherente con el EIA presentado por el Solicitante?",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0895x3l",
+        "columns": null
+      },
+      "id": "Field_1ceauzw",
+      "key": "coherenciaImpactoEIA",
+      "validate": {
+        "required": true
+      },
+      "description": "Si el impacto real observado del proyecto no es coherente con el EIA no marque esta casilla."
+    },
+    {
+      "label": "Observaciones ",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_0uspyrv",
+        "columns": null
+      },
+      "id": "Field_0hb9bot",
+      "key": "observacionesVisitaTecnica",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "reporteVisitaTecnica",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 18
+}

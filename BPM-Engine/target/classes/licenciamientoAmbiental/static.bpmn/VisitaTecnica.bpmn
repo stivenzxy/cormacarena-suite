@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1gh2797" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.34.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:collaboration id="Collaboration_0c1qu0a">
+    <bpmn:participant id="profesionalTecnico" name="Profesional Técnico" processRef="visitaTecnica" />
+  </bpmn:collaboration>
+  <bpmn:process id="visitaTecnica" isExecutable="true" camunda:historyTimeToLive="1">
+    <bpmn:startEvent id="StartEvent_1" name="Se Visita el lugar del proyecto">
+      <bpmn:outgoing>Flow_10wcy7r</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="fueRealizadaVisita" name="¿Se realizó la visita?">
+      <bpmn:incoming>Flow_0epcv81</bpmn:incoming>
+      <bpmn:outgoing>visitaNoRealizada</bpmn:outgoing>
+      <bpmn:outgoing>visitaRealizada</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="quejaDescartada" name="Solicitud de licencia descartada">
+      <bpmn:incoming>visitaNoRealizada</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="reporteDeVisitaCreado" name="Reporte de Visita Creado">
+      <bpmn:incoming>Flow_1yc4wcc</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="validarVisita" name="Validar Visita">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="visita" label="¿La visita fue hecha?" type="boolean" defaultValue="Visita" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_10wcy7r</bpmn:incoming>
+      <bpmn:outgoing>Flow_0epcv81</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="realizarReporteVisitaTecnica" name="Realizar Reporte de Visita Técnica" camunda:formRef="reporteVisitaTecnica" camunda:formRefBinding="latest">
+      <bpmn:incoming>visitaRealizada</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yc4wcc</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_10wcy7r" sourceRef="StartEvent_1" targetRef="validarVisita" />
+    <bpmn:sequenceFlow id="Flow_0epcv81" sourceRef="validarVisita" targetRef="fueRealizadaVisita" />
+    <bpmn:sequenceFlow id="visitaNoRealizada" name="no" sourceRef="fueRealizadaVisita" targetRef="quejaDescartada">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${visita==false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1yc4wcc" sourceRef="realizarReporteVisitaTecnica" targetRef="reporteDeVisitaCreado" />
+    <bpmn:sequenceFlow id="visitaRealizada" name="si" sourceRef="fueRealizadaVisita" targetRef="realizarReporteVisitaTecnica">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${visita==true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0c1qu0a">
+      <bpmndi:BPMNShape id="Participant_1vw9ke1_di" bpmnElement="profesionalTecnico" isHorizontal="true">
+        <dc:Bounds x="180" y="80" width="840" height="310" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1iik9e3" bpmnElement="StartEvent_1">
+        <dc:Bounds x="262" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="239" y="255" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0oicsdl" bpmnElement="fueRealizadaVisita" isMarkerVisible="true">
+        <dc:Bounds x="555" y="205" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="496" y="196" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0jdt8ar" bpmnElement="quejaDescartada">
+        <dc:Bounds x="672" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="662" y="325" width="58" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_07dphw1" bpmnElement="reporteDeVisitaCreado">
+        <dc:Bounds x="912" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="888" y="175" width="85" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0p6m09u" bpmnElement="validarVisita">
+        <dc:Bounds x="350" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0n2sq56" bpmnElement="realizarReporteVisitaTecnica">
+        <dc:Bounds x="720" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_1i5maf6" bpmnElement="Flow_10wcy7r">
+        <di:waypoint x="298" y="230" />
+        <di:waypoint x="350" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_0tsrkln" bpmnElement="Flow_0epcv81">
+        <di:waypoint x="450" y="230" />
+        <di:waypoint x="555" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_1m6a5rl" bpmnElement="visitaNoRealizada">
+        <di:waypoint x="580" y="255" />
+        <di:waypoint x="580" y="300" />
+        <di:waypoint x="672" y="300" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="588" y="303" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_0quktr3" bpmnElement="Flow_1yc4wcc">
+        <di:waypoint x="820" y="150" />
+        <di:waypoint x="912" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_1yn8gjv" bpmnElement="visitaRealizada">
+        <di:waypoint x="580" y="205" />
+        <di:waypoint x="580" y="150" />
+        <di:waypoint x="720" y="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="591" y="133" width="8" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

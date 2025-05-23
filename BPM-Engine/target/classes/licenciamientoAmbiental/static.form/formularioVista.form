@@ -1,0 +1,270 @@
+{
+  "components": [
+    {
+      "text": "# Datos del Solicitante",
+      "type": "text",
+      "layout": {
+        "row": "Row_00lzzs0",
+        "columns": null
+      },
+      "id": "Field_1t4q24s",
+      "properties": {}
+    },
+    {
+      "label": "Nombre o Razón Social",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0wyqm5r",
+        "columns": null
+      },
+      "id": "Field_0znokxx",
+      "key": "nombreSolicitate",
+      "validate": {
+        "required": true
+      },
+      "readonly": "on"
+    },
+    {
+      "label": "Tipo de Identificación",
+      "values": [
+        {
+          "label": "CC",
+          "value": "cedula"
+        },
+        {
+          "label": "NIT",
+          "value": "nit"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_04lb2h1",
+        "columns": null
+      },
+      "id": "Field_0mc4luy",
+      "key": "tipoIdentificacion",
+      "readonly": "on",
+      "defaultValue": "cedula",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Número de Identificación",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_04lb2h1",
+        "columns": null
+      },
+      "id": "Field_0667oph",
+      "key": "idSolicitante",
+      "readonly": "on",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Teléfono",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_10atsxb",
+        "columns": null
+      },
+      "id": "Field_12f1jfc",
+      "key": "telefono",
+      "validate": {
+        "required": true
+      },
+      "readonly": true
+    },
+    {
+      "label": "Correo Electrónico",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_10atsxb",
+        "columns": null
+      },
+      "id": "Field_1lsk9ul",
+      "key": "email",
+      "validate": {
+        "required": true
+      },
+      "readonly": "on"
+    },
+    {
+      "label": "Dirección de Notificación",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_06oszbu",
+        "columns": null
+      },
+      "id": "Field_1hezgtg",
+      "key": "direccionResidencia",
+      "validate": {
+        "required": true
+      },
+      "readonly": true
+    },
+    {
+      "type": "separator",
+      "layout": {
+        "row": "Row_0eqh87l",
+        "columns": null
+      },
+      "id": "Field_0ou8a6e"
+    },
+    {
+      "text": "# Datos del Proyecto",
+      "type": "text",
+      "layout": {
+        "row": "Row_1rv208u",
+        "columns": null
+      },
+      "id": "Field_1w38ry3"
+    },
+    {
+      "label": "Nombre del Proyecto Obra o Actividad",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0bw83uc",
+        "columns": null
+      },
+      "id": "Field_0c4hzyd",
+      "key": "nombreProyecto",
+      "validate": {
+        "required": true
+      },
+      "readonly": "on"
+    },
+    {
+      "label": "Sector",
+      "values": [
+        {
+          "label": "Hidrocarburos",
+          "value": "hidocarburos"
+        },
+        {
+          "label": "Minería",
+          "value": "mineria"
+        },
+        {
+          "label": "Infraestructura",
+          "value": "infraestructura"
+        },
+        {
+          "label": "Energía",
+          "value": "energia"
+        },
+        {
+          "label": "Agroindustria",
+          "value": "agroquimicos"
+        },
+        {
+          "label": "Arborización",
+          "value": "arborizacion"
+        },
+        {
+          "label": "Cauce de Río",
+          "value": "cauceDeRio"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_1pfknsi",
+        "columns": null
+      },
+      "id": "Field_0qrdia4",
+      "key": "sectorProyecto",
+      "validate": {
+        "required": true
+      },
+      "readonly": true
+    },
+    {
+      "label": "Valor Estimado del Proyecto ($COP)",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1pfknsi",
+        "columns": null
+      },
+      "id": "Field_08ru7hk",
+      "key": "valorProyecto",
+      "validate": {
+        "required": true
+      },
+      "readonly": "on"
+    },
+    {
+      "label": "Impacto Sobre Áreas de Manejo Especial",
+      "values": [
+        {
+          "label": "Áreas del Sistema Nacional de Áreas Protegidas – SINAP\t\t\t\t\t\t\t",
+          "value": "areasProtegidas "
+        },
+        {
+          "label": "Humedales RAMSAR / Páramos / Manglares",
+          "value": "humedales"
+        }
+      ],
+      "type": "checklist",
+      "layout": {
+        "row": "Row_1tm9eom",
+        "columns": null
+      },
+      "id": "Field_0adzewc",
+      "key": "manejoEspecial",
+      "readonly": true
+    },
+    {
+      "label": "Departamento de Ejecución",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1p1lkha",
+        "columns": null
+      },
+      "id": "Field_0s6dvxg",
+      "key": "departamentoProyecto",
+      "validate": {
+        "required": true
+      },
+      "readonly": "on"
+    },
+    {
+      "label": "Municipio de Ejecución",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1p1lkha",
+        "columns": null
+      },
+      "id": "Field_06sms2o",
+      "key": "municipioProyecto",
+      "validate": {
+        "required": true
+      },
+      "readonly": true
+    },
+    {
+      "label": "¿EIA Adjunto?",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0j479j8",
+        "columns": null
+      },
+      "id": "Field_17ns1je",
+      "key": "estudioImpactoAmbiental",
+      "validate": {
+        "required": true
+      },
+      "readonly": "on"
+    }
+  ],
+  "type": "default",
+  "id": "vistaFormularioSolicitud",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 18
+}

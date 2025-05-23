@@ -1,0 +1,15 @@
+<process-application
+        xmlns="http://www.camunda.org/schema/1.0/ProcessApplication"> <!--Define una aplicación de procesos para camunda-->
+    <process-archive>
+        <properties>
+            <!--Evita que se borren los procesos desplegados al cerrar la app-->
+            <property name="isDeleteUponUndeploy">false</property>
+            <!--Indica que el programa busque automaticamente los archivos con definiciones de procesos *bpmn-->
+            <property name="isScanForProcessDefinitions">true</property>
+            <!--Indica los sufijos que deben ser escaneados para el despliegue (form, dmn, bpmn),
+            especifíca los archivos necesarios a incluir en un modelo de procesos de negocio
+            -->
+            <property name="additionalResourceSuffixes">form, dmn, bpmn</property>
+        </properties>
+    </process-archive>
+</process-application>

@@ -1,0 +1,20 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "This Package sets the frontend dependencies from node (like tailwind, Swal, etc)",
+  "license": "ISC",
+  "author": "Stiven",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "build": "tailwindcss -i styles.css -o build/main.css && npm run copy",
+    "copy": "copyfiles -f build/main.css ../cormacarena-client/src/main/resources/static/css ../cormacarena-organization/src/main/resources/static/css",
+    "watch": "concurrently \"tailwindcss -i styles.css -o build/main.css --watch\" \"nodemon --watch build/main.css --exec npm run copy\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "copyfiles": "^2.4.1",
+    "nodemon": "^3.1.10",
+    "tailwindcss": "^3.4.17"
+  }
+}
