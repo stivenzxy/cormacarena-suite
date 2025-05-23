@@ -103,7 +103,7 @@
       "validate": {
         "required": true
       },
-      "readonly": false
+      "readonly": "on"
     },
     {
       "type": "separator",

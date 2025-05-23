@@ -6,11 +6,11 @@ import com.example.cormacarena_client.licenciamientoAmbiental.service.LicenciaAm
 import com.example.cormacarena_client.licenciamientoAmbiental.service.SolicitudLicenciaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
-
-import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -19,6 +19,29 @@ public class SolicitudRestController {
 
     private final LicenciaAmbientalService licenciaAmbientalService;
     private final SolicitudLicenciaService solicitudLicenciaService;
+
+    @GetMapping("solicitudes/{idSolicitante}")
+    public SolicitudDTO buscarPorId(@PathVariable String idSolicitante) {
+        SolicitudLicencia solicitud = solicitudLicenciaService.obtenerPorIdSolicitante(idSolicitante);
+        if (solicitud == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Solicitante no encontrado");
+        }
+
+        SolicitudDTO solicitudDTO = new SolicitudDTO();
+        solicitudDTO.setNombreSolicitante(solicitud.getNombreSolicitante());
+        solicitudDTO.setTipoIdentificacion(solicitud.getTipoIdentificacion());
+        solicitudDTO.setIdSolicitante(solicitud.getIdSolicitante());
+        solicitudDTO.setTelefono(solicitud.getTelefono());
+        solicitudDTO.setEmail(solicitud.getEmail());
+        solicitudDTO.setDireccionResidencia(solicitud.getDireccionResidencia());
+        solicitudDTO.setNombreProyecto(solicitud.getNombreProyecto());
+        solicitudDTO.setSectorProyecto(solicitud.getSectorProyecto());
+        solicitudDTO.setValorProyecto(solicitud.getValorProyecto());
+        solicitudDTO.setDepartamentoProyecto(solicitud.getDepartamentoProyecto());
+        solicitudDTO.setMunicipioProyecto(solicitud.getMunicipioProyecto());
+        return solicitudDTO;
+    }
+
 
     @PostMapping("/solicitar")
     public RedirectView procesarFormulario(@ModelAttribute SolicitudDTO solicitudDTO,

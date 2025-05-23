@@ -7,4 +7,5 @@ import java.util.List;
 public interface SolicitudLicenciaService {
     List<SolicitudLicencia> obtenerTodasLasSolicitudes();
     void crearNuevaSolicitud(SolicitudLicencia solicitudLicencia);
+    SolicitudLicencia obtenerPorIdSolicitante(String idSolicitante);
 }

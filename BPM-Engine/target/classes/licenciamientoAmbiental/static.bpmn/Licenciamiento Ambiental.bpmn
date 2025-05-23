@@ -211,7 +211,7 @@
       <bpmn:incoming>Flow_1knhkhd</bpmn:incoming>
       <bpmn:outgoing>Flow_1usfpp3</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_1q4poeb" name="Recibir Formulario Nuevamente" camunda:formRef="formularioSolicitud" camunda:formRefBinding="latest">
+    <bpmn:userTask id="Activity_1q4poeb" name="Diligenciar Formulario Nuevamente" camunda:formRef="formularioSolicitud" camunda:formRefBinding="latest">
       <bpmn:incoming>informacionInvalida</bpmn:incoming>
       <bpmn:outgoing>Flow_1pglsx0</bpmn:outgoing>
     </bpmn:userTask>
@@ -352,7 +352,23 @@
       <bpmn:outgoing>Flow_10x30z6</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0ax73bd" sourceRef="Activity_03jkqxy" targetRef="Gateway_03hpkhn" />
-    <bpmn:userTask id="Activity_03jkqxy" name="Diligenciar Formulario de solicitud" camunda:formRef="formularioSolicitud" camunda:formRefBinding="latest">
+    <bpmn:userTask id="Activity_03jkqxy" name="Diligenciar Formulario de solicitud">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="nombreSolicitante" label="Nombre del solicitante" type="string" />
+          <camunda:formField id="tipoIdentificacion" label="Tipo de Identificación" type="string" />
+          <camunda:formField id="idSolicitante" label="Número Identificación" type="string" />
+          <camunda:formField id="telefono" label="Teléfono" type="string" />
+          <camunda:formField id="email" label="Correo Electrónico" type="string" />
+          <camunda:formField id="direccionResidencia" label="Dirección Solicitante" type="string" />
+          <camunda:formField id="nombreProyecto" label="Nombre del Proyecto" type="string" />
+          <camunda:formField id="sectorProyecto" label="Sector del Proyecto" type="string" />
+          <camunda:formField id="valorProyecto" label="Valor del Proyecto ($COP)" type="long" />
+          <camunda:formField id="departamentoProyecto" label="Departamento del Proyecto" type="string" />
+          <camunda:formField id="municipioProyecto" label="Municipio del Proyecto" type="string" />
+          <camunda:formField id="nombreSoporteEIA" label="Nombre del Soporte de EIA" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_10x30z6</bpmn:incoming>
       <bpmn:outgoing>Flow_0ax73bd</bpmn:outgoing>
     </bpmn:userTask>
@@ -735,14 +751,6 @@
         <di:waypoint x="400" y="180" />
         <di:waypoint x="455" y="180" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1ti0t6u_di" bpmnElement="Association_1ti0t6u">
-        <di:waypoint x="3008" y="741" />
-        <di:waypoint x="3050" y="772" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1lak2qd_di" bpmnElement="Association_1lak2qd">
-        <di:waypoint x="4140" y="1130" />
-        <di:waypoint x="4157" y="1100" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_1kx22nk_di" bpmnElement="TextAnnotation_1kx22nk">
         <dc:Bounds x="3050" y="770" width="200" height="84" />
         <bpmndi:BPMNLabel />
@@ -754,6 +762,14 @@
       <bpmndi:BPMNEdge id="DataOutputAssociation_1rzuqvl_di" bpmnElement="DataOutputAssociation_1rzuqvl">
         <di:waypoint x="4660" y="1130" />
         <di:waypoint x="4660" y="1085" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1ti0t6u_di" bpmnElement="Association_1ti0t6u">
+        <di:waypoint x="3008" y="741" />
+        <di:waypoint x="3050" y="772" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1lak2qd_di" bpmnElement="Association_1lak2qd">
+        <di:waypoint x="4140" y="1130" />
+        <di:waypoint x="4157" y="1100" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -4,13 +4,17 @@
     <meta charset="UTF-8" />
     <title>Formulario de Solicitud</title>
     <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <script th:src="@{/js/fillSolicitudForm.js}"></script>
+    <link rel="stylesheet" th:href="@{/vendor/fontawesome/css/all.css}">
+    <script th:src="@{/vendor/sweetalert2/sweetalert2.all.min.js}"></script>
 </head>
-<body class="bg-tertiary h-screen">
+<body class="bg-tertiary">
     <header class="bg-[#0d348d] h-20 w-full flex items-center justify-between p-6 fixed top-0 left-0 z-50">
-        <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo">
-
+        <a th:href="@{/}">
+            <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo" />
+        </a>
     </header>
-    <main class="w-full pt-52 px-8 flex items-center justify-center h-full">
+    <main class="w-full pt-32 px-8 pb-8 flex flex-col items-center justify-center gap-6">
         <!-- Formulario de solicitud -->
         <form th:action="@{/solicitar}" method="post" th:object="${solicitudDTO}" enctype="multipart/form-data"
               class="licence-request-form bg-white flex flex-col rounded-lg shadow-lg p-8 w-full max-w-4xl">
@@ -50,14 +54,23 @@
                     <!-- Número de Identificación -->
                     <div class="mb-5">
                         <label for="idSolicitante" class="block text-secondary font-semibold mb-1">Número de Identificación <span class="text-red-600">*</span></label>
-                        <input
-                                type="text"
-                                id="idSolicitante"
-                                name="idSolicitante"
-                                th:value="*{idSolicitante}"
-                                required
-                                class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                        />
+                        <div class="flex flex-row gap-2">
+                            <input
+                                    type="text"
+                                    id="idSolicitante"
+                                    name="idSolicitante"
+                                    th:value="*{idSolicitante}"
+                                    required
+                                    class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            <button
+                                    id="btnBuscarSolicitante"
+                                    type="button"
+                                    class="px-6 py-2 rounded bg-primary text-white font-semibold hover:bg-[#0b2e7a] transition"
+                            >
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Teléfono -->
@@ -212,6 +225,17 @@
                 </button>
             </div>
         </form>
+
+        <!-- Después del formulario -->
+        <div class="w-full max-w-4xl mt-6 bg-white rounded-lg shadow-lg p-6 flex justify-between items-center">
+            <span class="text-secondary text-lg font-semibold">Consultar factura de pago</span>
+            <button
+                    type="button"
+                    class="px-6 py-2 rounded bg-primary text-white font-semibold hover:bg-[#0b2e7a] transition"
+            >
+                Consultar
+            </button>
+        </div>
     </main>
 </body>
 </html>

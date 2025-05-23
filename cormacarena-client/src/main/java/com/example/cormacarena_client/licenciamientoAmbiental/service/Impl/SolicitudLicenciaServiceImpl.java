@@ -24,4 +24,10 @@ public class SolicitudLicenciaServiceImpl implements SolicitudLicenciaService {
     public void crearNuevaSolicitud (SolicitudLicencia solicitudLicencia) {
         solicitudRepository.save(solicitudLicencia);
     }
+
+    @Override
+    public SolicitudLicencia obtenerPorIdSolicitante(String idSolicitante) {
+        return solicitudRepository.findByIdSolicitante(idSolicitante)
+                .orElse(null);
+    }
 }
