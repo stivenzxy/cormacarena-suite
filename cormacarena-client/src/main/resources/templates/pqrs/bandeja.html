@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Bandeja de Entrada</title>
+</head>
+<body>
+<h2>Mensajes Recibidos</h2>
+<ul>
+    <li th:each="mensaje : ${mensajes}">
+        <span th:text="${mensaje.mensaje}">Mensaje</span>
+    </li>
+</ul>
+<a href="/pqrs">Volver al inicio</a>
+</body>
+</html>

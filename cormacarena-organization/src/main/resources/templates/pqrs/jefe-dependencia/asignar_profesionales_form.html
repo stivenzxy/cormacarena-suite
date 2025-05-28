@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Asignar Profesional</title>
+  <meta charset="UTF-8"/>
+</head>
+<body>
+<h1>Asignar Profesional</h1>
+
+<form th:action="@{/jefe-dependencia/asignar-profesionales}" method="post">
+  <input type="hidden" name="taskId" th:value="${taskId}"/>
+
+  <label for="profesional">Profesional:</label>
+  <select name="profesional" id="profesional" required>
+    <option th:each="prof : ${profesionales}"
+            th:value="${prof}"
+            th:text="${prof}"></option>
+  </select>
+  <br/><br/>
+
+  <label for="limiteTiempo">Límite de Tiempo:</label>
+  <select name="limiteTiempo" id="limiteTiempo" required>
+    <option th:each="entry : ${limitesTiempo.entrySet()}"
+            th:value="${entry.value}"
+            th:text="${entry.key}"></option>
+  </select>
+  <br/><br/>
+
+  <button type="submit">Asignar</button>
+</form>
+
+</body>
+</html>

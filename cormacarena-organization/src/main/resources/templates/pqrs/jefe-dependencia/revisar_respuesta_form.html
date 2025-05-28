@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Revisar Respuesta PQRS</title>
+</head>
+<body>
+<h1>Revisar Respuesta a la PQRS</h1>
+<form method="post" th:action="@{/jefe-dependencia/revisar-respuesta}">
+  <input type="hidden" name="taskId" th:value="${taskId}" />
+
+  <p><strong>Profesional:</strong> <span th:text="${profesional}"></span></p>
+  <p><strong>Descripción:</strong> <span th:text="${descripcion}"></span></p>
+  <p><strong>Respuesta del Profesional:</strong> <span th:text="${respuestaSolicitud}"></span></p>
+
+  <p><strong>¿La respuesta es válida?</strong><br>
+    <label><input type="radio" name="validezRespuesta" value="true" required> Sí</label>
+    <label><input type="radio" name="validezRespuesta" value="false"> No</label>
+  </p>
+
+  <button type="submit">Enviar</button>
+</form>
+<!-- Botón Cancelar -->
+<div style="margin-top: 20px;">
+  <a th:href="@{/jefe-dependencia}">
+    <button type="button">Cancelar</button>
+  </a>
+</div>
+</body>
+</html>

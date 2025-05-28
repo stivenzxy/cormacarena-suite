@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formulario PQRS</title>
+</head>
+<body>
+<h2>Formulario de Solicitud</h2>
+<form th:action="@{/enviar}" th:object="${formulario}" method="post" enctype="multipart/form-data">
+
+    <label>Tipo de solicitud:</label>
+    <select th:field="*{tipoSolicitud}" required>
+        <option value="peticion">Petición</option>
+        <option value="queja">Queja</option>
+        <option value="reclamo">Reclamo</option>
+        <option value="sugerencia">Sugerencia</option>
+    </select><br/><br/>
+
+    <label>Descripción:</label><br/>
+    <textarea th:field="*{descripcion}" rows="4" cols="50" required></textarea><br/><br/>
+
+    <label>Nombre:</label>
+    <input type="text" th:field="*{nombre}" required/><br/><br/>
+
+    <label>Correo electrónico:</label>
+    <input type="email" th:field="*{email}" required/><br/><br/>
+
+    <label>Documento anexado (PDF):</label>
+    <input type="file" name="archivo" accept="application/pdf"/><br/><br/>
+
+
+    <button type="submit">Enviar</button>
+</form>
+<div style="margin-top: 20px;">
+    <a th:href="@{/pqrs}">
+        <button type="button">Cancelar</button>
+    </a>
+</div>
+</body>
+</html>

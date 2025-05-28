@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Informar No Competencia</title>
+</head>
+<body>
+<h2>Informe de No Competencia</h2>
+
+
+
+<form th:action="@{/jefe-dependencia/no-competencia}" method="post">
+    <input type="hidden" name="taskId" th:value="${taskId}" />
+
+    <div>
+        <label>Nombre del jefe de dependencia asignado:</label>
+        <input type="text" name="jefeDependencia" th:value="${jefeDependencia}" readonly />
+    </div>
+
+    <div>
+        <label>Explique por qué no le compete resolver la solicitud:</label>
+        <textarea name="explicacionNoCompetencia" required></textarea>
+    </div>
+
+    <button type="submit">Enviar Informe</button>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+{
+  "components": [
+    {
+      "label": "Numero radicado",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_12y2uzn",
+        "columns": null
+      },
+      "id": "Field_1hgtaix",
+      "key": "nroRadicado",
+      "defaultValue": "1",
+      "disabled": false
+    },
+    {
+      "label": "Tipo de solicitud",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1lp2xx4",
+        "columns": null
+      },
+      "id": "Field_0l50y5l",
+      "key": "tipoSolicitud",
+      "disabled": true
+    },
+    {
+      "label": "Descripcion de la solicitud",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_1tr78af",
+        "columns": null
+      },
+      "id": "Field_0izysw5",
+      "key": "descripcion",
+      "disabled": true
+    },
+    {
+      "label": "Nombre del solicitante",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0fhgm1p",
+        "columns": null
+      },
+      "id": "Field_1ydk4ub",
+      "key": "nombre",
+      "disabled": true
+    },
+    {
+      "label": "Correo electronico",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_06zq22k",
+        "columns": null
+      },
+      "id": "Field_0upaxb0",
+      "key": "email",
+      "disabled": true
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Fecha de la solicitud",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_012dqr6",
+        "columns": null
+      },
+      "id": "Field_0dhu9fk",
+      "key": "fechaSolicitud",
+      "disabled": true
+    },
+    {
+      "label": "¿Adjunta documentos?",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1t910xl",
+        "columns": null
+      },
+      "id": "Field_1cwwpt1",
+      "key": "adjDocumentos",
+      "disabled": true
+    },
+    {
+      "label": "Documento anexado",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1rqqy2z",
+        "columns": null
+      },
+      "id": "Field_0x6ge4x",
+      "key": "nombreArchivo",
+      "disabled": true
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Fecha de radicacion",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_055mm34",
+        "columns": null
+      },
+      "id": "Field_06al75s",
+      "key": "fechaRadicado"
+    }
+  ],
+  "type": "default",
+  "id": "radicado",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 18
+}

@@ -1,0 +1,46 @@
+{
+  "components": [
+    {
+      "label": "Nombre",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0dra189",
+        "columns": null
+      },
+      "id": "Field_1awp4uw",
+      "key": "nombre",
+      "disabled": true
+    },
+    {
+      "label": "Correo electronico",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_19gmb7x",
+        "columns": null
+      },
+      "id": "Field_12uc3ma",
+      "key": "email",
+      "disabled": true
+    },
+    {
+      "label": "¿Adjunto documentos?",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_13agehv",
+        "columns": null
+      },
+      "id": "Field_0l2abuz",
+      "key": "adjDocumentos",
+      "disabled": true
+    }
+  ],
+  "type": "default",
+  "id": "soporte",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.7.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "schemaVersion": 18
+}

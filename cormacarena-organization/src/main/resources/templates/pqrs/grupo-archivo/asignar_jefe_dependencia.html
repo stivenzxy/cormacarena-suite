@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Asignar Jefe</title>
+</head>
+<body>
+<h2>Asignar Jefe de Dependencia</h2>
+
+<form th:action="@{/grupo-archivo/asignar}" method="post">
+    <input type="hidden" name="taskId" th:value="${taskId}" />
+
+    <label for="jefeAsignado">Seleccione el Jefe:</label>
+    <select name="jefeAsignado" required>
+        <option th:each="jefe : ${jefes}" th:value="${jefe}" th:text="${jefe}"></option>
+    </select>
+
+    <br><br>
+    <button type="submit">Asignar</button>
+</form>
+<!-- Botón Cancelar -->
+<div style="margin-top: 20px;">
+    <a th:href="@{/grupo-archivo}">
+        <button type="button">Cancelar</button>
+    </a>
+</div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "components": [
+    {
+      "label": "Numero de radicado del proceso",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_08amgyn",
+        "columns": null
+      },
+      "id": "Field_0mn0u6w",
+      "key": "nroRadicado",
+      "disabled": true
+    }
+  ],
+  "type": "default",
+  "id": "NumeroRadicado",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "versionTag": "1",
+  "schemaVersion": 18
+}

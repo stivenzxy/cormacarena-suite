@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Solicitudes a Responder</title>
+</head>
+<body>
+<h2>Solicitudes para Responder</h2>
+
+<p th:if="${mensaje}" th:text="${mensaje}"></p>
+<div style="margin-top: 20px;">
+  <a href="/pqrs" style="text-decoration: none;">
+    <button type="button">Volver</button>
+  </a>
+</div>
+<table th:if="${tareas}" border="1">
+  <tr>
+    <th>Tipo de solicitud</th>
+    <th>Profesional</th>
+    <th>Descripción de la solicitud</th>
+    <th>limite de Tiempo</th>
+    <th>Acción</th>
+  </tr>
+  <tr th:each="tarea : ${tareas}">
+    <td th:text="${tarea.tipoSolicitud}"></td>
+    <td th:text="${tarea.profesional}"></td>
+    <td th:text="${tarea.descripcion}"></td>
+    <td th:text="${tarea.limiteTiempo}"></td>
+    <td>
+      <a th:href="@{'/profesional-area/responder/' + ${tarea.taskId}}">Responder</a>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
