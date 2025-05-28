@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta Denuncia</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
+</head>
+<body class="bg-tertiary min-h-screen flex flex-col">
+
+<!-- Header y barra lateral -->
+<div th:replace="views/header :: contenido"></div>
+
+<!-- Contenido principal -->
+<main class="pt-28 md:pl-60 px-6 min-h-screen bg-[#eaf2fe] transition-all duration-300">
+
+    <!-- Título -->
+
+    <div class="licence-request-form bg-white flex flex-col rounded-lg shadow-lg p-8 w-full max-w-4xl mx-auto">
+    <!-- Formulario de búsqueda -->
+    <form method="get" action="/consultar"
+          >
+        <h1 class="text-3xl font-bold text-[#0d348d] border-b-4 border-[#0d348d] pb-2 w-fit">
+            Consultar Denuncia
+        </h1>
+
+    <input type="number" name="idDenuncia" placeholder="Ingrese el ID de la denuncia"
+               th:value="${idDenuncia}" required
+               class="w-full sm:w-80 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#0d348d]" />
+        <button type="submit"
+                class="bg-[#0d348d] text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition">
+            Buscar
+        </button>
+    </form>
+
+    <!-- Tabla de resultados (solo si hay denuncias) -->
+        <!-- Tabla de resultados (solo si hay denuncia) -->
+        <div th:if="${denuncia != null}" class="mt-6">
+            <table class="w-full bg-white rounded-lg shadow-md table-auto">
+                <thead class="bg-[#0d348d] text-white">
+                <tr>
+                    <th class="py-3 px-6 text-left w-1/4">ID Denuncia</th>
+                    <th class="py-3 px-6 text-left w-1/4">Radicado</th>
+                    <th class="py-3 px-6 text-left w-1/4">Estado</th>
+                    <th class="py-3 px-6 text-left w-1/4">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="border-b hover:bg-gray-100 transition">
+                    <td class="py-3 px-6" th:text="${denuncia.id}"></td>
+                    <td class="py-3 px-6"
+                        th:text="${denuncia.numeroradicado != null ? 'Sí — ' + denuncia.numeroradicado : 'No'}"></td>
+                    <td class="py-3 px-6" th:text="${denuncia.estado}"></td>
+                    <td class="py-3 px-6">
+                        <a th:href="@{'/denuncia/' + ${denuncia.id}}"
+                           class="text-blue-600 hover:underline">Ver más</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    <!-- Mensaje si no se encontraron resultados -->
+    <div th:if="${denuncia == null}" class="mt-6 text-center text-gray-600">
+        No se encontraron denuncias con ese número.
+    </div>
+    </div>
+</main>
+
+</body>
+</html>

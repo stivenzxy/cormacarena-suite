@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class SolicitudController {
+
+
     @GetMapping("/solicitudLicenciaForm")
     public String mostrarFormulario(Model model) {
         model.addAttribute("solicitudDTO", new SolicitudDTO());

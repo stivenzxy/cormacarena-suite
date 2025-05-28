@@ -4,8 +4,6 @@
     <meta charset="UTF-8" />
     <title>Bienvenido - Sistema Cliente</title>
     <link th:href="@{/css/main.css}" rel="stylesheet" />
-    <link rel="stylesheet" th:href="@{/vendor/fontawesome/css/all.css}">
-    <script th:src="@{/vendor/sweetalert2/sweetalert2.all.min.js}"></script>
 </head>
 <body class="bg-tertiary h-screen">
 <header class="bg-[#0d348d] h-20 w-full flex items-center justify-between p-6 fixed top-0 left-0 z-50">
@@ -24,7 +22,7 @@
             <p class="text-secondary font-semibold text-lg text-center">¿Qué desea realizar?</p>
             <div class="flex flex-col gap-4 w-full">
                 <a th:href="@{/solicitudLicenciaForm}" class="px-6 py-3 text-white font-semibold rounded bg-red-600 hover:bg-red-800 text-center">Solicitar Licencia Ambiental</a>
-                <a href="#" class="px-6 py-3 text-white font-semibold rounded bg-red-600 hover:bg-red-800 text-center">Reportar Daño Ambiental</a>
+                <a th:href="@{/realizarDenuncia}" class="px-6 py-3 text-white font-semibold rounded bg-red-600 hover:bg-red-800 text-center">Reportar Sanción Ambiental</a>
                 <a href="#" class="px-6 py-3 text-white font-semibold rounded bg-red-600 hover:bg-red-800 text-center">Iniciar PQRS</a>
             </div>
         </div>

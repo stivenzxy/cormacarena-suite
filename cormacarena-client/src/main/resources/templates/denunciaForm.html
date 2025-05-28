@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Digenciar la denuncia</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
+</head>
+<body class="bg-tertiary min-h-screen flex flex-col">
+
+<!-- Header con barra lateral -->
+<div th:replace="views/header :: contenido"></div>
+
+<main class="flex flex-1 pt-24 p-6 bg-[#eaf2fe] min-h-screen transition-all duration-300">
+    <form th:object="${denunciaDTO}" id="formDenuncia" enctype="multipart/form-data"
+          class="licence-request-form bg-white flex flex-col rounded-lg shadow-lg p-8 w-full max-w-4xl mx-auto">
+        <input type="hidden" id="processId" name="processId" th:value="${processId}" />
+        <div class="applicant-data">
+            <h2 class="text-primary text-2xl font-bold mb-6 border-b-4 border-primary pb-2">Datos de para la denuncia</h2>
+
+            <div class="mb-4">
+                <label class="block text-secondary font-semibold mb-1">Nombres del denunciante:*</label>
+                <input type="text" id="nombresDenunciante" name="nombresDenunciante" th:value="*{nombresDenunciante}"
+                       required class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"/>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-secondary font-semibold mb-1">Apellidos del denunciante:*</label>
+                <input type="text" id="apellidosDenunciante" name="apellidosDenunciante" th:value="*{apellidosDenunciante}"
+                       required class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"/>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-secondary font-semibold mb-1">Tipo de identificación:</label>
+                <select id="tipoIdentificacionDenunciante" name="tipoIdentificacionDenunciante"
+                        th:value="*{tipoIdentificacionDenunciante}" required
+                        class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="">Seleccione</option>
+                    <option value="CC">Cédula de Ciudadanía</option>
+                    <option value="TI">Tarjeta de Identidad</option>
+                    <option value="CE">Cédula de Extranjería</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-secondary font-semibold mb-1">Número del documento:</label>
+                <input type="number" id="numeroIdentificacionDenunciante" name="numeroIdentificacionDenunciante"
+                       th:value="*{numeroIdentificacionDenunciante}" required
+                       class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"/>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-secondary font-semibold mb-1">Correo para recibir la respuesta:*</label>
+                <input type="email" id="correoDenunciante" name="correoDenunciante" th:value="*{correoDenunciante}"
+                       required class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"/>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-secondary font-semibold mb-1">Descripción de la denuncia:*</label>
+                <textarea rows="4" id="descripcionDenuncia" name="descripcionDenuncia" th:value="*{descripcionDenuncia}"
+                          required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-1">Anexar soporte:</label>
+                <input type="file" id="soporteDenuncia" name="soporteDenuncia" accept=".pdf,.doc,.docx" required
+                       class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"/>
+            </div>
+
+            <div class="flex justify-end gap-4 mt-6">
+                <button type="button" class="px-6 py-2 rounded bg-button-red text-white font-semibold hover:bg-purple-700 transition"
+                        onclick="enviarGet()">Enviar</button>
+                <button type="button" class="px-6 py-2 rounded bg-button-red text-white font-semibold hover:bg-purple-700 transition"
+                        onclick="guardar()">Guardar</button>
+            </div>
+        </div>
+    </form>
+
+</main>
+
+<script  th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        const formulario = document.querySelector("form");
+        formulario.addEventListener("submit", function (event) {
+            const camposRequeridos = formulario.querySelectorAll("[required]");
+            let formularioValido = true;
+            let primerCampoInvalido = null;
+
+            camposRequeridos.forEach(function (campo) {
+                if (!campo.value || (campo.type === "file" && campo.files.length === 0)) {
+                    formularioValido = false;
+                    if (!primerCampoInvalido) {
+                        primerCampoInvalido = campo;
+                    }
+                    campo.classList.add("border-red-500", "ring-2", "ring-red-400");
+                } else {
+                    campo.classList.remove("border-red-500", "ring-2", "ring-red-400");
+                }
+            });
+
+            if (!formularioValido) {
+                event.preventDefault();
+                alert("Por favor, completa todos los campos obligatorios marcados con *.");
+                primerCampoInvalido.scrollIntoView({ behavior: "smooth", block: "center" });
+                primerCampoInvalido.focus();
+            }
+        });
+    });
+
+    function guardar() {
+        const formulario = document.getElementById("formDenuncia");
+        formulario.method = "post";
+        formulario.action = "/denuncia/crear";
+        formulario.submit();
+    }
+
+    function enviarGet() {
+        const form = document.getElementById("formDenuncia");
+        form.method = "post";
+        form.action = "/complete";
+        form.submit();
+    }
+</script>
+
+</body>
+</html>

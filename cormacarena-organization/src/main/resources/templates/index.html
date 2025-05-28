@@ -1,26 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Inicio con Tailwind y Thymeleaf</title>
-  <link href="/css/main.css" rel="stylesheet" />
-  <link rel="stylesheet" th:href="@{/vendor/fontawesome/css/all.css}">
-  <script th:src="@{/vendor/sweetalert2/sweetalert2.all.min.js}"></script>
+    <meta charset="UTF-8" />
+    <title>Bienvenido - Sistema Cliente</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
-
-<header class="mb-8">
-  <h1 class="text-4xl font-bold text-red-500">¡Bienvenido a mi aplicación!</h1>
+<body class="bg-tertiary h-screen">
+<header class="bg-[#0d348d] h-20 w-full flex items-center justify-between p-6 fixed top-0 left-0 z-50">
+    <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo">
 </header>
+<main class="pt-20 px-8 flex items-center justify-center h-full">
+    <div class="flex flex-row bg-white rounded-lg shadow-lg p-8 w-full max-w-5xl items-center gap-8">
+        <div class="w-1/2 flex justify-center">
+            <img th:src="@{/img/index-image-jaguar.jpeg}"
+                 alt="Jaguar-index"
+                 class="rounded-lg shadow-md max-h-[350px] object-cover w-full">
+        </div>
 
-<main class="bg-white p-8 rounded shadow-md w-full max-w-md text-center">
-  <p class="mb-4 text-gray-700">Esta es una vista sencilla usando Thymeleaf y Tailwind CSS.</p>
+        <div class="w-1/2 flex flex-col justify-center items-start gap-4">
+            <h1 class="text-3xl font-bold text-primary text-justify">Bienvenido al Sistema de Información del Cliente</h1>
+            <p class="text-secondary font-semibold text-lg text-center">¿Qué desea realizar?</p>
+            <div class="flex flex-col gap-4 w-full">
+                <a th:href="@{/solicitudLicenciaForm}" class="px-6 py-3 text-white font-semibold rounded bg-red-600 hover:bg-red-800 text-center">Solicitar Licencia Ambiental</a>
+                <a th:href="@{/denunciasInicio}" class="px-6 py-3 text-white font-semibold rounded bg-red-600 hover:bg-red-800 text-center">Segumientos a Denuncias</a>
+                <a href="#" class="px-6 py-3 text-white font-semibold rounded bg-red-600 hover:bg-red-800 text-center">Iniciar PQRS</a>
+            </div>
+        </div>
+    </div>
 </main>
-
-<footer class="mt-12 text-gray-500 text-sm">
-  © 2025 Mi Aplicación - Todos los derechos reservados
-</footer>
-
 </body>
 </html>

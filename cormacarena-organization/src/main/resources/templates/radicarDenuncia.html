@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Denuncias</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <script>
+        // Función modal
+        function mostrarModal(id, descripcion, nombres, apellidos, correo) {
+            document.getElementById("inputId").textContent = id;
+            document.getElementById("inputDescripcion").textContent = descripcion;
+            document.getElementById("inputApellido").textContent = apellidos;
+            document.getElementById("inputCorreo").textContent = correo;
+            document.getElementById("inputNombre").textContent = nombres;
+            document.getElementById("modal").style.display='';
+            console.log(id,descripcion)
+        }
+
+        function cerrarModal() {
+            document.getElementById("modal").style.display='none';
+        }
+    </script>
+</head>
+<body class="bg-tertiary h-screen">
+<div th:replace="views/header :: contenido"></div>
+
+<main class="pt-28 md:pl-60 px-6 min-h-screen bg-[#eaf2fe] transition-all duration-300">
+    <div class="overflow-auto licence-request-form bg-white flex flex-col rounded-lg shadow-lg p-8 w-full max-w-4xl mx-auto">
+
+        <h1 class="text-3xl font-bold mb-6 text-center">Lista de Denuncias</h1>
+
+        <!-- Tabla de denuncias -->
+        <div>
+            <table th:if="${denuncias != null and !denuncias.isEmpty()}"
+                   class="min-w-full bg-white shadow-md rounded-lg overflow-hidden mb-4">
+                <thead class="bg-blue-700 text-white">
+                <tr>
+                    <th class="px-6 py-3 text-center text-gray-700">ID Denuncia</th>
+                    <th class="px-6 py-3 text-center text-gray-700">Descripción</th>
+                    <th class="px-6 py-3 text-left text-gray-700">Acción</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="denuncia : ${denuncias}" class="border-b hover:bg-gray-50">
+                    <td class="px-6 py-4" th:text="${denuncia.idDenuncia}"></td>
+                    <td class="px-6 py-4" th:text="${denuncia.descripcionDenuncia}"></td>
+                    <td class="px-6 py-4">
+                        <button type="button"
+                                class="bg-blue-500 text-gray-700 px-3 py-1 rounded hover:bg-blue-600"
+                                th:attr="data-id-denuncia=${denuncia.idDenuncia}, data-descripcion-denuncia=${denuncia.descripcionDenuncia},
+                                data-nombre-denuncia=${denuncia.nombresDenunciante}, data-apellidos-denuncia=${denuncia.apellidosDenunciante},
+                                data-correo-denuncia=${denuncia.correoDenunciante}"
+                                onclick="mostrarModal(this.getAttribute('data-id-denuncia'),this.getAttribute('data-descripcion-denuncia'),
+                                                    this.getAttribute('data-nombre-denuncia'),this.getAttribute('data-apellidos-denuncia'),
+                                                    this.getAttribute('data-correo-denuncia'))">
+                            Ver más
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mensaje si no hay denuncias -->
+        <div th:if="${denuncias == null or denuncias.isEmpty()}"
+             class="text-center text-gray-600 text-lg mt-8">
+            No hay denuncias por el momento.
+        </div>
+    </div>
+</main>
+
+<!-- Modal: SIEMPRE visible en el DOM, pero oculto con hidden -->
+<!-- Modal como formulario -->
+<div id="modal" style="display: none" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-40 flex justify-center items-center z-50 backdrop-blur">
+    <form th:action="@{/denuncias/radicar}" th:method="post"
+          class="bg-white rounded-lg shadow-xl p-6 w-96 text-black">
+        <h2 class="text-xl font-bold mb-4 text-blue-700">Radicar denuncia</h2>
+
+        <!-- Campo oculto para el ID de la denuncia -->
+        <input type="hidden" id="inputId" name="idDenuncia">
+
+        <!-- Campo de descripción (sólo lectura o editable si deseas modificar) -->
+        <div class="mb-4">
+            <label for="inputNombre" class="block font-semibold">Nombres del denunciante: </label>
+            <text id="inputNombre" name="nombreDenunciante" rows="3" class="w-full border rounded px-3 py-2" readonly></text>
+        </div>
+        <div class="mb-4">
+            <label for="inputApellido" class="block font-semibold">Apellidos del denunciante: </label>
+            <text id="inputApellido" name="nombreApellido" rows="3" class="w-full border rounded px-3 py-2" readonly></text>
+        </div>
+        <div class="mb-4">
+            <label for="inputCorreo" class="block font-semibold">Correo del denunciante </label>
+            <text id="inputCorreo" name="nombreDenunciante" rows="3" class="w-full border rounded px-3 py-2" readonly></text>
+        </div>
+        <div class="mb-4">
+            <label for="inputDescripcion" class="block font-semibold">Descripción</label>
+            <textarea id="inputDescripcion" name="descripcionDenuncia" rows="3" class="w-full border rounded px-3 py-2" readonly></textarea>
+        </div>
+        <!-- Botones -->
+        <div class="flex justify-between">
+            <button type="button"
+                    class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    onclick="cerrarModal()">Cerrar</button>
+            <button type="submit"
+                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Radicar</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
