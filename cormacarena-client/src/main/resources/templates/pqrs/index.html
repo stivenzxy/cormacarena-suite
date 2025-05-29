@@ -1,68 +1,173 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PQRS - Inicio</title>
+    <!-- Tailwind CSS CDN (en producción deberías compilarlo) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0d348d',
+                        'primary-hover': '#0941a8',
+                        secondary: '#4a5568',
+                        tertiary: '#eaf2fe',
+                        'button-red': '#e53e3e'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-        }
-        .sidebar {
-            width: 200px;
-            background-color: #2c3e50;
-            height: 100vh;
-            color: white;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
-        .sidebar a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            margin: 15px 0;
-        }
-        .logout-form {
-            margin-top: 20px;
-        }
-        .logout-form button {
-            width: 100%;
-            padding: 10px;
-            background-color: #c0392b;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .logout-form button:hover {
-            background-color: #e74c3c;
-        }
-        .content {
-            padding: 20px;
-            flex-grow: 1;
+        /* Estilos adicionales */
+        .transition-all {
+            transition: all 0.3s ease;
         }
     </style>
 </head>
-<body>
+<body class="bg-tertiary h-screen overflow-hidden">
 
-<div class="sidebar">
-    <div>
-        <h2>PQRS</h2>
-        <a href="/">INICIO</a>
-        <a href="/formulario">Nueva Solicitud</a>
-        <!--<a href="/solicitudes">Solicitudes Registradas</a>-->
-        <a href="/bandeja">Bandeja de Entrada</a>
-    </div>
-    <!--<form th:action="@{/logout}" method="post" class="logout-form">
-        <button type="submit">Cerrar Sesión</button>
-    </form>-->
+<!-- Header fijo -->
+<header class="bg-primary h-20 w-full fixed top-0 left-0 z-50 flex items-center justify-between px-6 shadow-lg">
+    <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena Logo" />
+</header>
+
+<!-- Contenedor principal: flex para sidebar + main -->
+<div class="flex pt-20 h-full">
+
+    <!-- Sidebar fijo con altura completa -->
+    <aside class="w-64 bg-primary text-white flex flex-col p-6 h-full shadow-xl">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-white">PQRS</h2>
+            <p class="text-blue-200 text-sm mt-1">Sistema de Gestión</p>
+        </div>
+
+        <nav class="flex flex-col gap-2">
+            <!-- Inicio (activo) -->
+            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-primary-hover text-white shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span class="font-medium">Inicio</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-auto text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+
+            <!-- Nueva Solicitud -->
+            <a href="/formulario" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span class="font-medium">Nueva Solicitud</span>
+            </a>
+
+            <!-- Bandeja de Entrada -->
+            <a href="/bandeja" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+                <span class="font-medium">Bandeja de Entrada</span>
+            </a>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-blue-600">
+            <div class="text-xs text-blue-200">
+                <p>Corporación para el Desarrollo</p>
+                <p>Sostenible del Área de Manejo</p>
+                <p>Especial La Macarena</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Área principal de contenido -->
+    <main class="flex-1 bg-tertiary min-h-screen flex items-center justify-center p-8 transition-all duration-300 overflow-y-auto">
+        <div class="w-full max-w-4xl text-center">
+            <!-- Tarjeta de bienvenida -->
+            <div class="bg-white rounded-lg shadow-xl border-0 p-12 mb-8">
+                <!-- Icono principal -->
+                <div class="mb-8">
+                    <div class="w-24 h-24 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <h1 class="text-4xl font-bold text-primary mb-4">Bienvenido al Sistema PQRS</h1>
+                    <p class="text-lg text-gray-600 mb-8">
+                        Sistema de gestión de Peticiones, Quejas, Reclamos y Sugerencias de Cormacarena
+                    </p>
+                </div>
+
+                <!-- Tarjetas de acciones rápidas -->
+                <div class="grid md:grid-cols-2 gap-6 mt-8">
+                    <!-- Nueva Solicitud -->
+                    <a href="/formulario" class="group">
+                        <div class="bg-gradient-to-br from-primary to-primary-hover rounded-lg p-6 text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Nueva Solicitud</h3>
+                            <p class="text-blue-100">Crear una nueva petición, queja, reclamo o sugerencia</p>
+                        </div>
+                    </a>
+
+                    <!-- Bandeja de Entrada -->
+                    <a href="/bandeja" class="group">
+                        <div class="bg-gradient-to-br from-gray-600 to-gray-700 rounded-lg p-6 text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Bandeja de Entrada</h3>
+                            <p class="text-gray-100">Ver y gestionar todas las solicitudes recibidas</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="mt-12 p-6 bg-blue-50 rounded-lg border-l-4 border-primary">
+                    <div class="flex items-start">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div class="text-left">
+                            <h4 class="text-lg font-semibold text-primary mb-2">¿Qué es PQRS?</h4>
+                            <p class="text-gray-700 text-sm leading-relaxed">
+                                El sistema PQRS permite a los ciudadanos presentar Peticiones, Quejas, Reclamos y Sugerencias
+                                relacionadas con los servicios y funciones de Cormacarena. Su participación es fundamental
+                                para mejorar continuamente nuestros servicios.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </div>
 
-<div class="content">
-    <h1>Bienvenido al sistema PQRS</h1>
-    <p>Seleccione una opción del menú lateral.</p>
-</div>
+<!-- Script para interactividad -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Agregar efectos de hover adicionales si es necesario
+        const cards = document.querySelectorAll('.group');
+
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    });
+</script>
 
 </body>
 </html>
