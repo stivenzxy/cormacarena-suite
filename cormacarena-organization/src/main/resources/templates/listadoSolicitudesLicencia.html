@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Solicitudes Registradas</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/vendor/fontawesome/css/all.css}" />
+    <script th:src="@{/js/detalleSolicitud.js}"></script>
+</head>
+
+<body class="bg-tertiary">
+<header class="bg-[#0d348d] h-20 w-full flex items-center justify-between p-6 fixed top-0 left-0 z-50">
+    <a th:href="@{/}">
+        <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo" />
+    </a>
+</header>
+
+<main class="w-full pt-32 px-8 pb-8 flex flex-col items-center gap-6">
+    <h1 class="text-primary text-3xl font-bold mb-6">Solicitudes Registradas</h1>
+
+    <div class="overflow-x-auto w-full max-w-4xl bg-white shadow-lg rounded-lg">
+        <table class="w-full text-sm text-left text-gray-500">
+            <thead class="text-xs uppercase bg-primary text-white">
+            <tr>
+                <th class="px-6 py-4">#</th>
+                <th class="px-6 py-4">Solicitante</th>
+                <th class="px-6 py-4">Proyecto</th>
+                <th class="px-6 py-4">Estado</th>
+                <th class="px-6 py-4 text-center">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="solicitud, iterStat : ${solicitudes}" class="bg-white border-b hover:bg-gray-50">
+                <td class="px-6 py-4" th:text="${iterStat.count}"></td>
+                <td class="px-6 py-4" th:text="${solicitud.nombreSolicitante}"></td>
+                <td class="px-6 py-4" th:text="${solicitud.nombreProyecto}"></td>
+                <td class="px-6 py-4" th:text="${solicitud.estado != null ? solicitud.estado : 'Pendiente'}"></td>
+                <td class="px-6 py-4 text-center">
+                    <a href="javascript:void(0)"
+                       th:data-codigo="${solicitud.codigoSolicitud}"
+                       onclick="cargarDetalle(this.dataset.codigo)"
+                       class="text-blue-600 hover:underline">
+                        <i class="fa-solid fa-eye"></i> Ver
+                    </a>
+
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(solicitudes)}">
+                <td colspan="5" class="text-center px-6 py-4 text-secondary">No hay solicitudes pendientes de revisión</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<div id="detalleModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
+
+                <button onclick="cerrarModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </button>
+
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Detalle de la Solicitud</h3>
+                    <div id="modalContent" class="mt-2 text-sm text-gray-500">
+                        Cargando...
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
+                    <button type="button" id="btnRechazar" class="inline-flex w-full sm:w-auto justify-center rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-400">
+                        Rechazar
+                    </button>
+                    <button type="button" id="btnAceptar" class="inline-flex w-full sm:w-auto justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500">
+                        Aceptar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

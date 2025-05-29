@@ -20,14 +20,29 @@ public class SolicitudLicenciaServiceImpl implements SolicitudLicenciaService {
         return solicitudRepository.findAll();
     }
 
+
+    @Override
+    public List<SolicitudLicencia> obtenerPorIdSolicitante(String idSolicitante) {
+        return solicitudRepository.findByIdSolicitante(idSolicitante);
+    }
+
     @Override
     public void crearNuevaSolicitud (SolicitudLicencia solicitudLicencia) {
         solicitudRepository.save(solicitudLicencia);
     }
 
     @Override
-    public SolicitudLicencia obtenerPorIdSolicitante(String idSolicitante) {
-        return solicitudRepository.findByIdSolicitante(idSolicitante)
+    public void actualizarSolicitudExistente(String codigoSolicitud, SolicitudLicencia solicitudLicencia) {
+        if(solicitudRepository.existsByCodigoSolicitud(codigoSolicitud)){
+            solicitudLicencia.setCodigoSolicitud(codigoSolicitud);
+            System.out.println(solicitudLicencia);
+            solicitudRepository.save(solicitudLicencia);
+        }
+    }
+
+    @Override
+    public SolicitudLicencia obtenerPorEstadoYSolicitante(String idSolicitante, String estado) {
+        return solicitudRepository.findByEstadoAndIdSolicitante(estado, idSolicitante)
                 .orElse(null);
     }
 }

@@ -10,8 +10,7 @@ import lombok.Data;
 public class SolicitudLicencia {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codigoSolicitud;
+    private String codigoSolicitud;
 
     // Datos del Solicitante
     private String nombreSolicitante;
@@ -27,8 +26,10 @@ public class SolicitudLicencia {
     @Enumerated(EnumType.STRING)
     private SectorProyecto sectorProyecto;
 
-    private String valorProyecto;
+    private Long valorProyecto;
     private String departamentoProyecto;
     private String municipioProyecto;
     private String nombreSoporteEIA;
+
+    private String estado;
 }
