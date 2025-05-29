@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ventanilla Única</title>
+</head>
+<body>
+<h2>Información del Solicitante</h2>
+<ul>
+    <li><strong>Nombre:</strong> <span th:text="${nombre}"></span></li>
+    <li><strong>Email:</strong> <span th:text="${email}"></span></li>
+    <li><strong>Tipo de Solicitud:</strong> <span th:text="${tipoSolicitud}"></span></li>
+    <li><strong>Descripción:</strong> <span th:text="${descripcion}"></span></li>
+    <li><strong>Fecha de solicitud:</strong> <span th:text="${fechaSolicitud}"></span></li>
+
+    <li th:if="${adjDocumentos != false}">
+        <strong>Archivo Adjunto:</strong> <span th:text="${nombreArchivo}"></span>
+    </li>
+</ul>
+
+<hr/>
+
+<h3>Verificación de competencia</h3>
+<form th:action="@{/ventanilla/enviar}" th:object="${verificarDTO}" method="post">
+    <input type="hidden" name="taskId" th:value="${taskId}"/>
+
+    <label>¿Tiene competencia la entidad?</label><br/>
+    <input type="radio" th:field="*{competencia}" value="true"/> Sí
+    <input type="radio" th:field="*{competencia}" value="false"/> No<br/><br/>
+
+    <button type="submit">Confirmar</button>
+</form>
+
+<!-- Botón Cancelar -->
+<div style="margin-top: 20px;">
+    <a th:href="@{/ventanilla}">
+        <button type="button">Cancelar</button>
+    </a>
+</div>
+
+</body>
+</html>

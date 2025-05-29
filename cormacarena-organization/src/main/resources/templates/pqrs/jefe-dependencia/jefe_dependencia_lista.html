@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tareas Jefe de Dependencia</title>
+</head>
+<body>
+<h1>Tareas del Jefe de Dependencia</h1>
+<p th:if="${mensaje}" th:text="${mensaje}"></p>
+<div style="margin-top: 20px;">
+    <a href="/pqrs" style="text-decoration: none;">
+        <button type="button">Volver</button>
+    </a>
+</div>
+<table th:if="${tareas}">
+    <tr>
+        <th>Actividad</th>
+        <th>Jefe de dependencia</th>
+        <th>Radicado</th>
+        <th>Fecha Radicación</th>
+        <th>Tipo de Solicitud</th>
+        <th>Acciones</th>
+    </tr>
+    <tr th:each="tarea : ${tareas}">
+        <td th:text="${tarea.nombreActividad}"></td>
+        <td th:text="${tarea.jefeDependencia}"></td>
+        <td th:text="${tarea.numeroRadicado}"></td>
+        <td th:text="${tarea.fecha}"></td>
+        <td th:text="${tarea.tipoSolicitud}"></td>
+        <td>
+            <a th:if="${tarea.taskDefinitionKey == 'Activity_03m82hr'}"
+               th:href="@{'/jefe-dependencia/verificar/' + ${tarea.taskId}}">Verificar</a>
+            <a th:if="${tarea.taskDefinitionKey == 'Activity_1tml0tf'}"
+               th:href="@{'/jefe-dependencia/revisar-respuesta/' + ${tarea.taskId}}">Revisar Respuesta</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

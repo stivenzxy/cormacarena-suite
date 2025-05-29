@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Solicitudes pendientes</title>
+</head>
+<body>
+
+<h2>Solicitudes pendientes para Ventanilla Única</h2>
+
+<ul>
+    <li th:each="tarea : ${tareas}">
+        <p><strong>Tipo de Solicitud:</strong> <span th:text="${tarea.tipoSolicitud}"></span></p>
+        <p><strong>Fecha de Solicitud:</strong> <span th:text="${tarea.fechaSolicitud}"></span></p>
+        <a th:href="@{'/ventanilla/resolver/' + ${tarea.id}}">Revisar solicitud</a>
+        <hr>
+    </li>
+</ul>
+
+<!-- Botón para volver al index -->
+<div style="margin-top: 20px;">
+    <a href="/pqrs" style="text-decoration: none;">
+        <button type="button">Volver</button>
+    </a>
+</div>
+
+</body>
+</html>

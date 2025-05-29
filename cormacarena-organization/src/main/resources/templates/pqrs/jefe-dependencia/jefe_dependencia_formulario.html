@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Verificar Asignación</title>
+</head>
+<body>
+<h2>Verificar Asignación</h2>
+
+<div>
+    <p><strong>Tipo de Solicitud:</strong> <span th:text="${tipoSolicitud}"></span></p>
+    <p><strong>Descripción:</strong> <span th:text="${descripcion}"></span></p>
+</div>
+
+<form th:action="@{/jefe-dependencia/verificar}" method="post">
+    <input type="hidden" name="taskId" th:value="${taskId}" />
+
+    <button type="submit" name="competenciaPersona" value="true">Confirmar Asignación</button>
+    <button type="submit" name="competenciaPersona" value="false">Rechazar Asignación</button>
+</form>
+
+<div style="margin-top: 20px;">
+    <a th:href="@{/jefe-dependencia}">
+        <button type="button">Cancelar</button>
+    </a>
+</div>
+</body>
+</html>

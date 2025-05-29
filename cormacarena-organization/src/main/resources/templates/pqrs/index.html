@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Gestor PQRS - Cormacarena</title>
+  <style>
+    body {
+      display: flex;
+      font-family: sans-serif;
+    }
+    nav {
+      width: 220px;
+      background-color: #f1f1f1;
+      padding: 20px;
+      height: 100vh;
+    }
+    nav a {
+      display: block;
+      margin: 10px 0;
+      text-decoration: none;
+      color: #333;
+    }
+    main {
+      padding: 40px;
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <h3>Roles</h3>
+  <a href="/">INICIO</a>
+  <a th:href="@{/ventanilla}">Ventanilla Única</a>
+  <a th:href="@{/grupo-archivo}">Grupo de Archivo</a>
+  <a th:href="@{/jefe-dependencia}">Jefe de Dependencia</a>
+  <a th:href="@{/profesional-area}">Profesional del Área</a>
+
+</nav>
+<main>
+
+
+  <h1>Bienvenido al Gestor de Solicitudes PQRS</h1>
+  <p>Seleccione un rol en la barra lateral izquierda para gestionar las solicitudes asignadas.</p>
+  <div th:if="${mensaje}" style="color: red; margin-top: 20px;">
+    <p th:text="${mensaje}"></p>
+  </div>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Grupo de Archivo</title>
+</head>
+<body>
+<h2>Asignar Jefe de Dependencia</h2>
+
+<div th:if="${mensaje}">
+    <p th:text="${mensaje}"></p>
+</div>
+
+<ul th:if="${tareas}">
+    <li th:each="tarea : ${tareas}">
+        <p><strong>Nombre:</strong> <span th:text="${tarea.nombre}"></span></p>
+        <p><strong>Tipo Solicitud:</strong> <span th:text="${tarea.tipoSolicitud}"></span></p>
+        <p><strong>Descripción:</strong> <span th:text="${tarea.descripcion}"></span></p>
+        <p><strong>Fecha:</strong> <span th:text="${tarea.fecha}"></span></p>
+        <a th:href="@{'/grupo-archivo/asignar/' + ${tarea.id}}">Asignar Jefe</a>
+        <hr/>
+    </li>
+</ul>
+
+<!-- Botón para volver al index -->
+<div style="margin-top: 20px;">
+    <a href="/pqrs" style="text-decoration: none;">
+        <button type="button">Volver</button>
+    </a>
+</div>
+
+</body>
+</html>

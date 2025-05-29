@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("-translate-x-full");
+        }
+        function closeSidebarOnClickOutside(e) {
+            const sidebar = document.getElementById("sidebar");
+            if (!sidebar.contains(e.target) && !e.target.closest("#sidebarToggle")) {
+                sidebar.classList.add("-translate-x-full");
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            document.addEventListener("click", closeSidebarOnClickOutside);
+        });
+    </script>
+</head>
+<body>
+<header id="mainHeader" th:fragment="contenido" class="fixed w-full z-50 transition-transform duration-300">
+    <div class="bg-[#0d348d] h-20 flex items-center justify-between px-6 shadow-lg">
+        <button id="sidebarToggle" onclick="toggleSidebar()" class="text-white text-2xl focus:outline-none">
+            ☰
+        </button>
+        <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo">
+    </div>
+
+    <div id="sidebar" class="fixed top-20 left-0 w-60 h-full bg-[#0d348d] transform -translate-x-full transition-transform duration-300 ease-in-out z-50 shadow-lg">
+        <nav class="flex flex-col justify-center items-stretch h-full p-4 space-y-2">
+            <a href="/listaDenunciaSinRadicar" class="text-white text-lg px-4 py-3 rounded hover:bg-[#1a4fb4] transition flex items-center gap-3">
+                <span class="font-semibold">Subdirección de autoridad ambiental</span>
+            </a>
+            <a href="/consultar" class="text-white text-lg px-4 py-3 rounded hover:bg-[#1a4fb4] transition flex items-center gap-3">
+
+                <span class="font-semibold">Grupo GEMA</span>
+            </a>
+            <a href="/consultar" class="text-white text-lg px-4 py-3 rounded hover:bg-[#1a4fb4] transition flex items-center gap-3">
+
+                <span class="font-semibold">Grupo GEMA</span>
+            </a>
+            <a href="/consultar" class="text-white text-lg px-4 py-3 rounded hover:bg-[#1a4fb4] transition flex items-center gap-3">
+
+            <span class="font-semibold">Grupo GIEMA</span>
+        </a>
+            <a href="/consultar" class="text-white text-lg px-4 py-3 rounded hover:bg-[#1a4fb4] transition flex items-center gap-3">
+
+                <span class="font-semibold">Oficina de asesoria juridica</span>
+            </a>
+        </nav>
+    </div>
+</header>
+<script>
+    let prevScroll = window.scrollY;
+    const header = document.getElementById("mainHeader");
+
+    window.addEventListener("scroll", () => {
+        const currentScroll = window.scrollY;
+        if (currentScroll > prevScroll && currentScroll > 100) {
+            // Scroll hacia abajo
+            header.classList.add("-translate-y-full");
+        } else {
+            // Scroll hacia arriba
+            header.classList.remove("-translate-y-full");
+        }
+        prevScroll = currentScroll;
+    });
+</script>
+
+</body>
+</html>

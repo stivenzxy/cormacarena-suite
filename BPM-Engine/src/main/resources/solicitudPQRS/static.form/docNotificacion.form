@@ -1,0 +1,25 @@
+{
+  "components": [
+    {
+      "label": "",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1yq1zp2",
+        "columns": null
+      },
+      "id": "Field_014as0y",
+      "key": "notificacion",
+      "defaultValue": "Documentos agregados a la notificacion",
+      "disabled": true
+    }
+  ],
+  "type": "default",
+  "id": "docNotificacion",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 18
+}

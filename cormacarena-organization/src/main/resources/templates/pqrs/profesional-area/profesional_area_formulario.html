@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Responder Solicitud</title>
+</head>
+<body>
+<h2>Responder Solicitud</h2>
+
+<form th:action="@{/profesional-area/responder}" method="post">
+  <input type="hidden" name="taskId" th:value="${taskId}"/>
+
+  <label>Tipo de Solicitud:</label>
+  <input type="text" th:value="${tipoSolicitud}" disabled/><br/><br/>
+
+  <label>Descripción:</label>
+  <textarea rows="4" cols="50" disabled th:text="${descripcion}"></textarea><br/><br/>
+
+  <label>Respuesta:</label>
+  <textarea name="respuestaSolicitud" rows="6" cols="50" required></textarea><br/><br/>
+
+  <button type="submit">Enviar Respuesta</button>
+</form>
+<!-- Botón Cancelar -->
+<div style="margin-top: 20px;">
+  <a th:href="@{/profesional-area}">
+    <button type="button">Cancelar</button>
+  </a>
+</div>
+</body>
+</html>
