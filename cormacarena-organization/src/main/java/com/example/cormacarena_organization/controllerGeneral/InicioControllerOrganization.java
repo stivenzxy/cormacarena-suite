@@ -5,10 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class InicioControllerOrganization {
-    @GetMapping("/organizacion")
+    @GetMapping("/")
     public String mostrarInicio() {
         return "index";
     }
-
-
 }
