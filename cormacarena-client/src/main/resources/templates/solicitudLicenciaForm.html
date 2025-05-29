@@ -4,16 +4,31 @@
     <meta charset="UTF-8" />
     <title>Formulario de Solicitud</title>
     <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <script th:src="@{/js/fillSolicitudForm.js}"></script>
+    <link rel="stylesheet" th:href="@{/vendor/fontawesome/css/all.css}">
+    <script th:src="@{/vendor/sweetalert2/sweetalert2.all.min.js}"></script>
 </head>
-<body class="bg-tertiary h-screen">
+<body class="bg-tertiary">
+    <header class="bg-[#0d348d] h-20 w-full flex items-center justify-between p-6 fixed top-0 left-0 z-50">
+        <a th:href="@{/}">
+            <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo" />
+        </a>
+    </header>
+    <main class="w-full pt-32 px-8 pb-8 flex flex-col items-center justify-center gap-6">
+        <div id="divSolicitudes" class="hidden w-full max-w-4xl bg-white rounded-lg shadow-lg p-6">
+            <h3 class="text-primary text-2xl font-bold mb-6 border-b-4 border-primary pb-2">
+                Solicitudes asociadas al cliente con Identificación:
+                <span id="textoIdSolicitante"></span>
+            </h3>
 
-<header class="bg-[#0d348d] h-20 w-full flex items-center justify-between p-6 fixed top-0 left-0 z-50">
-    <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo">
-</header>
-    <main class="w-full pt-52 px-8 flex items-center justify-center h-full">
+            <div id="tablaSolicitudesContainer"></div>
+        </div>
+
         <!-- Formulario de solicitud -->
-        <form th:action="@{/solicitar}" method="post" th:object="${solicitudDTO}" enctype="multipart/form-data"
+        <form th:action="@{/crear-solicitud-licencia}" id="request-licence-form" method="post" th:object="${solicitudDTO}" enctype="multipart/form-data"
               class="licence-request-form bg-white flex flex-col rounded-lg shadow-lg p-8 w-full max-w-4xl">
+
+            <input type="hidden" id="accion" name="accion" value="guardar" />
             <div class="form-data flex flex-row justify-center gap-16 w-full">
                 <!-- Datos del Solicitante -->
                 <div class="applicant-data w-1/2 pl-6">
@@ -50,14 +65,23 @@
                     <!-- Número de Identificación -->
                     <div class="mb-5">
                         <label for="idSolicitante" class="block text-secondary font-semibold mb-1">Número de Identificación <span class="text-red-600">*</span></label>
-                        <input
-                                type="text"
-                                id="idSolicitante"
-                                name="idSolicitante"
-                                th:value="*{idSolicitante}"
-                                required
-                                class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                        />
+                        <div class="flex flex-row gap-2">
+                            <input
+                                    type="text"
+                                    id="idSolicitante"
+                                    name="idSolicitante"
+                                    th:value="*{idSolicitante}"
+                                    required
+                                    class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            <button
+                                    id="btnBuscarSolicitante"
+                                    type="button"
+                                    class="px-6 py-2 rounded bg-primary text-white font-semibold hover:bg-[#0b2e7a] transition"
+                            >
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Teléfono -->
@@ -183,12 +207,15 @@
                     <!-- EIA Adjunto -->
                     <div class="mb-8">
                         <label for="soporteEIAPdf" class="block text-secondary font-semibold mb-1">Estudio de Impacto Ambiental (EIA) <span class="text-red-600">*</span></label>
+                        <div id="nombreDocumentoActual" class="mb-2 text-secondary font-medium hidden">
+                            <span class="font-semibold">Nombre del documento cargado actualmente: </span>
+                            <span id="nombreSoporteEIA" name="nombreSoporteEIA"></span>
+                        </div>
                         <input
                                 type="file"
                                 id="soporteEIAPdf"
                                 name="soporteEIAPdf"
                                 accept=".pdf,.doc,.docx"
-                                required
                                 class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                     </div>
@@ -199,19 +226,61 @@
             <!-- Opciones -->
             <div class="flex justify-end gap-4 mt-6">
                 <button
-                        type="reset"
+                        type="button"
+                        id="btnEnviar"
                         class="px-6 py-2 rounded bg-secondary text-white font-semibold hover:bg-primary transition"
-                >
-                    Limpiar
-                </button>
-                <button
-                        type="submit"
-                        class="px-6 py-2 rounded bg-button-red text-white font-semibold hover:bg-purple-700 transition"
                 >
                     Enviar
                 </button>
+                <button
+                        type="submit"
+                        id="btnGuardar"
+                        class="px-6 py-2 rounded bg-button-red text-white font-semibold hover:bg-purple-700 transition"
+                >
+                    Guardar
+                </button>
             </div>
         </form>
+
+        <!-- Validación de mensajes flash -->
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            let mensajeError = /*[[${error}]]*/ null;
+            let mensajeExito = /*[[${success}]]*/ null;
+            /*]]>*/
+        </script>
+        <script th:src="@{/js/mostrarMensajes.js}"></script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('request-licence-form');
+                const btnEnviar = document.getElementById('btnEnviar');
+                const btnGuardar = document.getElementById('btnGuardar');
+                const accionInput = document.getElementById('accion');
+
+                btnGuardar.addEventListener('click', function() {
+                    accionInput.value = 'guardar';
+                    form.action = '/crear-solicitud-licencia';
+                });
+
+                btnEnviar.addEventListener('click', function() {
+                    accionInput.value = 'enviar';
+                    form.action = '/enviar-formulario-solicitud';
+                    form.submit();
+                });
+            });
+        </script>
+
+
+        <div class="w-full max-w-4xl mt-6 bg-white rounded-lg shadow-lg p-6 flex justify-between items-center">
+            <span class="text-secondary text-lg font-semibold">Consultar factura de pago</span>
+            <button
+                    type="button"
+                    class="px-6 py-2 rounded bg-primary text-white font-semibold hover:bg-[#0b2e7a] transition"
+            >
+                Consultar
+            </button>
+        </div>
     </main>
 </body>
 </html>

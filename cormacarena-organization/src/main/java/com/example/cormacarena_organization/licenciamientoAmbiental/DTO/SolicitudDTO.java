@@ -1,17 +1,14 @@
-package com.example.cormacarena_client.licenciamientoAmbiental.entity;
+package com.example.cormacarena_organization.licenciamientoAmbiental.DTO;
 
-import com.example.cormacarena_client.licenciamientoAmbiental.enums.SectorProyecto;
-import jakarta.persistence.*;
+import com.example.cormacarena_organization.licenciamientoAmbiental.enums.SectorProyecto;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
-@Entity
-@Table(name = "solicitud_licencia")
-public class SolicitudLicencia {
+public class SolicitudDTO {
 
-    @Id
+    // Id del proceso
     private String codigoSolicitud;
-
     // Datos del Solicitante
     private String nombreSolicitante;
     private String tipoIdentificacion;
@@ -22,14 +19,13 @@ public class SolicitudLicencia {
 
     // Datos del Proyecto
     private String nombreProyecto;
-
-    @Enumerated(EnumType.STRING)
     private SectorProyecto sectorProyecto;
-
     private Long valorProyecto;
     private String departamentoProyecto;
     private String municipioProyecto;
+
     private String nombreSoporteEIA;
+    private MultipartFile soporteEIAPdf;
 
     private String estado;
 }
