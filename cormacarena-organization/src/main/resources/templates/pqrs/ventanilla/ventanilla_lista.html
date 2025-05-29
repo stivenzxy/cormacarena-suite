@@ -1,27 +1,301 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <title>Solicitudes pendientes</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solicitudes Pendientes - Ventanilla Única</title>
+    <!-- Tailwind CSS CDN (en producción deberías compilarlo) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0d348d',
+                        'primary-hover': '#0941a8',
+                        secondary: '#4a5568',
+                        tertiary: '#eaf2fe',
+                        'button-red': '#e53e3e'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos adicionales */
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+
+        /* Animación para las tarjetas de solicitudes */
+        .request-card {
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Efecto de pulso para solicitudes urgentes */
+        .urgent-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
 </head>
-<body>
+<body class="bg-tertiary h-screen overflow-hidden">
 
-<h2>Solicitudes pendientes para Ventanilla Única</h2>
+<!-- Header fijo -->
+<header class="bg-primary h-20 w-full fixed top-0 left-0 z-50 flex items-center justify-between px-6 shadow-lg">
+    <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena Logo" />
 
-<ul>
-    <li th:each="tarea : ${tareas}">
-        <p><strong>Tipo de Solicitud:</strong> <span th:text="${tarea.tipoSolicitud}"></span></p>
-        <p><strong>Fecha de Solicitud:</strong> <span th:text="${tarea.fechaSolicitud}"></span></p>
-        <a th:href="@{'/ventanilla/resolver/' + ${tarea.id}}">Revisar solicitud</a>
-        <hr>
-    </li>
-</ul>
+    <div class="flex items-center space-x-4">
+        <div class="text-white text-right">
+            <span class="text-sm font-medium">Ventanilla Única</span>
+            <p class="text-xs text-blue-200">Gestión de Solicitudes</p>
+        </div>
+        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+        </div>
+    </div>
+</header>
 
-<!-- Botón para volver al index -->
-<div style="margin-top: 20px;">
-    <a href="/pqrs" style="text-decoration: none;">
-        <button type="button">Volver</button>
-    </a>
+<!-- Contenedor principal: flex para sidebar + main -->
+<div class="flex pt-20 h-full">
+
+    <!-- Sidebar fijo con altura completa -->
+    <aside class="w-64 bg-primary text-white flex flex-col p-6 h-full shadow-xl">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-white">Gestor PQRS</h2>
+            <p class="text-blue-200 text-sm mt-1">Panel Administrativo</p>
+        </div>
+
+        <nav class="flex flex-col gap-2">
+            <!-- Inicio -->
+            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span class="font-medium">Inicio</span>
+            </a>
+
+            <!-- Separador -->
+            <div class="my-2">
+                <div class="border-t border-blue-600"></div>
+                <p class="text-xs text-blue-200 mt-2 px-2 font-medium">ROLES DEL SISTEMA</p>
+            </div>
+
+            <!-- Ventanilla Única (activo) -->
+            <a th:href="@{/ventanilla}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-primary-hover text-white shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <span class="font-medium">Ventanilla Única</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-auto text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+
+            <!-- Otros roles -->
+            <a th:href="@{/grupo-archivo}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+                </svg>
+                <span class="font-medium">Grupo de Archivo</span>
+            </a>
+
+            <a th:href="@{/jefe-dependencia}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span class="font-medium">Jefe de Dependencia</span>
+            </a>
+
+            <a th:href="@{/profesional-area}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2V6" />
+                </svg>
+                <span class="font-medium">Profesional del Área</span>
+            </a>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-blue-600">
+            <div class="text-xs text-blue-200">
+                <p>Corporación para el Desarrollo</p>
+                <p>Sostenible del Área de Manejo</p>
+                <p>Especial La Macarena</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Área principal de contenido -->
+    <main class="flex-1 bg-tertiary min-h-screen flex items-start justify-center p-8 transition-all duration-300 overflow-y-auto">
+        <div class="w-full max-w-6xl pb-8">
+
+            <!-- Encabezado de solicitudes pendientes -->
+            <div class="bg-white rounded-lg shadow-xl border-0 mt-8 mb-6">
+                <div class="border-b-4 border-blue-500 pb-4 px-8 pt-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-blue-600 text-2xl font-bold flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                </svg>
+                                Solicitudes Pendientes
+                            </h2>
+                            <p class="text-gray-600 text-sm mt-2">Ventanilla Única - Gestión de solicitudes PQRS</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg">
+                                <span class="text-sm font-medium">Pendientes:</span>
+                                <span class="text-lg font-bold ml-1" th:text="${#lists.size(tareas)}">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de solicitudes -->
+            <div class="space-y-4">
+                <!-- Mensaje cuando no hay solicitudes -->
+                <div th:if="${#lists.isEmpty(tareas)}" class="bg-white rounded-lg shadow-lg p-8 text-center">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay solicitudes pendientes</h3>
+                    <p class="text-gray-500 mb-6">Todas las solicitudes han sido procesadas</p>
+                    <a href="/pqrs" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Volver al Inicio
+                    </a>
+                </div>
+
+                <!-- Tarjetas de solicitudes -->
+                <div th:each="tarea, iterStat : ${tareas}" class="request-card bg-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-blue-500">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                                    <span class="text-blue-600 font-bold text-lg" th:text="${iterStat.count}">1</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Solicitud PQRS</h3>
+                                    <p class="text-sm text-gray-500">ID: <span th:text="${tarea.id}">001</span></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">
+                                    Pendiente
+                                </span>
+                                <div class="w-2 h-2 bg-yellow-400 rounded-full urgent-pulse"></div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="flex items-center mb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                    </svg>
+                                    <span class="text-sm font-medium text-gray-700">Tipo de Solicitud</span>
+                                </div>
+                                <p class="text-gray-800 font-semibold capitalize" th:text="${tarea.tipoSolicitud}">Petición</p>
+                            </div>
+
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="flex items-center mb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h2a2 2 0 012 2v1m-6 0h6m-6 0v1a2 2 0 002 2v1a2 2 0 002 2h2a2 2 0 002-2v-1a2 2 0 002-2v-1m-6 0V7" />
+                                    </svg>
+                                    <span class="text-sm font-medium text-gray-700">Fecha de Solicitud</span>
+                                </div>
+                                <p class="text-gray-800 font-semibold" th:text="${tarea.fechaSolicitud}">2024-01-15</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center text-sm text-gray-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Tiempo de espera: 2 días</span>
+                            </div>
+                            <div class="flex space-x-3">
+                                <a th:href="@{'/ventanilla/resolver/' + ${tarea.id}}"
+                                   class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    Revisar Solicitud
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón de volver -->
+            <div class="mt-8 text-center">
+                <a href="/pqrs" class="inline-flex items-center px-6 py-3 border border-primary text-primary hover:bg-primary hover:text-white rounded-lg transition-colors font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Volver al Panel Principal
+                </a>
+            </div>
+        </div>
+    </main>
 </div>
+
+<!-- Script para interactividad -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Animación escalonada para las tarjetas de solicitudes
+        const requestCards = document.querySelectorAll('.request-card');
+        requestCards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+
+        // Efectos hover adicionales
+        requestCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Actualizar tiempo de espera cada minuto (simulado)
+        setInterval(() => {
+            const timeElements = document.querySelectorAll('[data-time]');
+            timeElements.forEach(element => {
+                // Aquí podrías actualizar el tiempo real
+                console.log('Actualizando tiempos...');
+            });
+        }, 60000);
+    });
+</script>
 
 </body>
 </html>
