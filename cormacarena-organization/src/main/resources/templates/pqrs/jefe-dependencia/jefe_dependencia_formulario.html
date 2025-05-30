@@ -117,7 +117,7 @@
 
         <nav class="flex flex-col gap-2">
             <!-- Inicio -->
-            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+            <a href="/organizacion" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
@@ -213,12 +213,12 @@
                             </div>
 
                             <div class="bg-white rounded-lg p-4 shadow-sm">
-                                <label class="text-sm font-medium text-gray-600 block mb-2">ID de Tarea</label>
+                                <label class="text-sm font-medium text-gray-600 block mb-2">Numero de radicado</label>
                                 <div class="flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
                                     </svg>
-                                    <span class="text-gray-800 font-semibold" th:text="${taskId}">TASK-001</span>
+                                    <span class="text-gray-800 font-semibold" th:text="${numeroRadicado}">TASK-001</span>
                                 </div>
                             </div>
                         </div>
@@ -328,27 +328,194 @@
     </main>
 </div>
 
+<!-- Modal de confirmación moderna -->
+<div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-all duration-300">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95" id="modalContent">
+        <div class="p-6">
+            <!-- Header del modal -->
+            <div class="flex items-center mb-4">
+                <div id="modalIcon" class="w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                    <!-- El icono se cambiará dinámicamente -->
+                </div>
+                <div>
+                    <h3 id="modalTitle" class="text-lg font-semibold text-gray-800">Confirmar Acción</h3>
+                    <p class="text-sm text-gray-500">Esta acción no se puede deshacer</p>
+                </div>
+            </div>
+
+            <!-- Mensaje del modal -->
+            <div class="mb-6">
+                <p id="modalMessage" class="text-gray-700 leading-relaxed">
+                    ¿Está seguro de que desea realizar esta acción?
+                </p>
+            </div>
+
+            <!-- Botones del modal -->
+            <div class="flex gap-3 justify-end">
+                <button id="cancelButton"
+                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                    Cancelar
+                </button>
+                <button id="confirmButton"
+                        class="px-4 py-2 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Script para interactividad -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Confirmación antes de enviar
         const form = document.querySelector('form');
         const buttons = form.querySelectorAll('button[type="submit"]');
+        const modal = document.getElementById('confirmModal');
+        const modalContent = document.getElementById('modalContent');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const confirmButton = document.getElementById('confirmButton');
+        const cancelButton = document.getElementById('cancelButton');
 
+        let currentAction = null;
+        let currentButton = null;
+
+        // Función para mostrar el modal
+        function showModal(action, button) {
+            currentAction = action;
+            currentButton = button;
+
+            // Configurar el modal según la acción
+            if (action === 'confirmar') {
+                modalIcon.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                `;
+                modalIcon.className = 'w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4';
+                modalTitle.textContent = 'Confirmar Asignación';
+                modalMessage.innerHTML = `
+                    <strong>¿Está seguro de que desea confirmar esta asignación?</strong><br><br>
+                    Al confirmar, la solicitud será asignada a su dependencia y deberá proceder con la asignación de profesionales para su procesamiento.
+                `;
+                confirmButton.className = 'px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105';
+                confirmButton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Sí, Confirmar
+                `;
+            } else {
+                modalIcon.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                `;
+                modalIcon.className = 'w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4';
+                modalTitle.textContent = 'Rechazar Asignación';
+                modalMessage.innerHTML = `
+                    <strong>¿Está seguro de que desea rechazar esta asignación?</strong><br><br>
+                    Al rechazar, deberá proporcionar una justificación de por qué su dependencia no tiene competencia para manejar esta solicitud.
+                `;
+                confirmButton.className = 'px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105';
+                confirmButton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Sí, Rechazar
+                `;
+            }
+
+            // Mostrar el modal con animación
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('opacity-100');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        // Función para ocultar el modal
+        function hideModal() {
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            modal.classList.remove('opacity-100');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                currentAction = null;
+                currentButton = null;
+            }, 300);
+        }
+
+        // Event listeners para los botones del formulario
         buttons.forEach(button => {
             button.addEventListener('click', function(e) {
+                e.preventDefault();
                 const action = this.value === 'true' ? 'confirmar' : 'rechazar';
-                const message = action === 'confirmar'
-                    ? '¿Está seguro de que desea confirmar esta asignación?'
-                    : '¿Está seguro de que desea rechazar esta asignación?';
-
-                if (!confirm(message)) {
-                    e.preventDefault();
-                }
+                showModal(action, this);
             });
         });
 
-        // Efectos visuales adicionales
+        // Event listener para el botón de confirmar del modal
+        confirmButton.addEventListener('click', function() {
+            if (currentButton) {
+                // Mostrar indicador de carga
+                this.innerHTML = `
+                    <svg class="animate-spin h-4 w-4 mr-2 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Procesando...
+                `;
+                this.disabled = true;
+
+                // Crear un formulario temporal para enviar los datos
+                const tempForm = document.createElement('form');
+                tempForm.method = 'POST';
+                tempForm.action = form.action;
+
+                // Copiar todos los inputs del formulario original
+                const formData = new FormData(form);
+                for (let [key, value] of formData.entries()) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = value;
+                    tempForm.appendChild(input);
+                }
+
+                // Agregar el valor del botón clickeado
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'competenciaPersona';
+                actionInput.value = currentButton.value;
+                tempForm.appendChild(actionInput);
+
+                document.body.appendChild(tempForm);
+                tempForm.submit();
+            }
+        });
+
+        // Event listener para el botón de cancelar del modal
+        cancelButton.addEventListener('click', hideModal);
+
+        // Event listener para cerrar el modal al hacer click fuera
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
+
+        // Event listener para cerrar con la tecla Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                hideModal();
+            }
+        });
+
+        // Efectos visuales adicionales para los botones del formulario
         buttons.forEach(button => {
             button.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-2px) scale(1.02)';
