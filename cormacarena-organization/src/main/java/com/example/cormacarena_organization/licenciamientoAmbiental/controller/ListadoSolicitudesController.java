@@ -19,7 +19,7 @@ public class ListadoSolicitudesController {
 
     private final CoordinadorRevSolService coordinadorRevSolService;
 
-    @GetMapping("/")
+    @GetMapping("/solicitudesInicio")
     public String mostrarListadoSolicitudesLicencia(Model model) {
         List<SolicitudPreviewDTO> solicitudes = coordinadorRevSolService.obtenerSolicitudesVistaPrevia();
         model.addAttribute("solicitudes", solicitudes);

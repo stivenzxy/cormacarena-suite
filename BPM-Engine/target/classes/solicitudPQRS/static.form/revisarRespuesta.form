@@ -1,0 +1,59 @@
+{
+  "components": [
+    {
+      "label": "Profesional del area responsable",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1ye57ig",
+        "columns": null
+      },
+      "id": "Field_084929c",
+      "key": "profesional",
+      "disabled": true
+    },
+    {
+      "label": "Descripcion de la solicitud",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_0qmpemg",
+        "columns": null
+      },
+      "id": "Field_1iw0qst",
+      "key": "descripcion",
+      "disabled": true
+    },
+    {
+      "label": "Respuesta de la solicitud",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_1uau5kr",
+        "columns": null
+      },
+      "id": "Field_1mihphj",
+      "key": "respuestaSolicitud",
+      "disabled": true
+    },
+    {
+      "label": "¿Respuesta Valida?",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0w2w5wy",
+        "columns": null
+      },
+      "id": "Field_04p1uqb",
+      "key": "validezRespuesta",
+      "validate": {
+        "required": false
+      }
+    }
+  ],
+  "type": "default",
+  "id": "revisarRespuesta",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 18
+}

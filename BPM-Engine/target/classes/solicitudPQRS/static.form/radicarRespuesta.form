@@ -1,0 +1,96 @@
+{
+  "components": [
+    {
+      "label": "Numero radicado de la respuesta",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0kiypko",
+        "columns": null
+      },
+      "id": "Field_0z4pvab",
+      "key": "nroRadicadoRespuesta",
+      "defaultValue": "99",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Tpo de solicitud",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_115a0vr",
+        "columns": null
+      },
+      "id": "Field_037d25x",
+      "key": "tipoSolicitud",
+      "disabled": true
+    },
+    {
+      "label": "Descripcion de la solicitud",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_1qtk8qw",
+        "columns": null
+      },
+      "id": "Field_0myr072",
+      "key": "descripcion",
+      "disabled": true
+    },
+    {
+      "label": "Jefe de dependencia",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_04121y4",
+        "columns": null
+      },
+      "id": "Field_1n2qkgo",
+      "key": "jefeDependencia",
+      "disabled": true
+    },
+    {
+      "label": "Responsable de la respuesta",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_119sa0f",
+        "columns": null
+      },
+      "id": "Field_0whe1rt",
+      "key": "profesional",
+      "disabled": true
+    },
+    {
+      "label": "Respuesta",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_1nleksv",
+        "columns": null
+      },
+      "id": "Field_1ns9rvf",
+      "key": "respuestaSolicitud",
+      "disabled": true
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Fecha de radicacion",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_0tnw5z7",
+        "columns": null
+      },
+      "id": "Field_1l45nph",
+      "key": "datetime_vnoitzd",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "radicarRespuesta",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 18
+}
