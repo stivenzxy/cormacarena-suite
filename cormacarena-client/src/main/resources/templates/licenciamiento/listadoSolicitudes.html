@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Listado de Solicitudes</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/vendor/fontawesome/css/all.css}">
+    <script th:src="@{/vendor/sweetalert2/sweetalert2.all.min.js}"></script>
+    <style>
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-hover-effect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-en-proceso {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-aprobada {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-rechazada {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-pendiente {
+            background-color: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .solicitud-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+
+        .solicitud-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-tertiary h-screen overflow-hidden">
+
+<!-- Header fijo -->
+<header class="bg-primary h-20 w-full fixed top-0 left-0 z-50 flex items-center justify-between px-6 shadow-lg">
+    <a th:href="@{/}">
+        <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo" />
+    </a>
+</header>
+
+
+<div class="flex pt-20 h-full">
+    <aside class="w-64 bg-primary text-white flex flex-col p-6 h-full shadow-xl">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-white">Licencias</h2>
+            <p class="text-blue-200 text-sm mt-1">Sistema de Gestión</p>
+        </div>
+
+        <nav class="flex flex-col gap-2">
+            <!-- Inicio -->
+            <a th:href="@{/}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span class="font-medium">Inicio</span>
+            </a>
+
+            <!-- Solicitar Licencia Ambiental -->
+            <a th:href="@{/solicitud-licencia-form}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span class="font-medium">Solicitar Licencia Ambiental</span>
+            </a>
+
+            <!-- Listado de solicitudes (activo) -->
+            <a th:href="@{/listado-solicitudes}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-primary-hover text-white shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+                <span class="font-medium">Listado de solicitudes</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-auto text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+
+            <!-- Gestión de pagos -->
+            <a th:href="@{/pagos-licenciamiento}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span class="font-medium">Gestión de pagos</span>
+            </a>
+
+            <!-- Bandeja de Entrada -->
+            <a th:href="@{/bandeja-licenciamiento}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+                <span class="font-medium">Bandeja de Entrada</span>
+            </a>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-blue-600">
+            <div class="text-xs text-blue-200">
+                <p>Corporación para el Desarrollo</p>
+                <p>Sostenible del Área de Manejo</p>
+                <p>Especial La Macarena</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Área principal de contenido -->
+    <main class="flex-1 bg-tertiary min-h-screen p-8 pb-16 transition-all duration-300 overflow-y-auto">
+        <div class="w-full max-w-6xl mx-auto mb-8">
+
+            <!-- Encabezado de la página -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-primary mb-2 flex items-center">
+                    <i class="fa-solid fa-list-check mr-3"></i>
+                    Listado de Solicitudes
+                </h1>
+                <p class="text-gray-600">Consulte y gestione las solicitudes de licencia ambiental</p>
+            </div>
+
+            <!-- Formulario de búsqueda -->
+            <div class="bg-white rounded-lg shadow-xl border-0 p-6 mb-8">
+                <div class="border-b-4 border-primary pb-4 mb-6">
+                    <h2 class="text-primary text-xl font-bold flex items-center">
+                        <i class="fa-solid fa-magnifying-glass mr-3"></i>
+                        Buscar Solicitudes
+                    </h2>
+                </div>
+
+                <form th:action="@{/listado-solicitudes}" method="get" class="flex gap-4 items-end">
+                    <div class="flex-1">
+                        <label for="idSolicitante" class="block text-gray-700 font-semibold mb-2">
+                            Número de Identificación del Solicitante
+                        </label>
+                        <input
+                                type="text"
+                                id="idSolicitante"
+                                name="idSolicitante"
+                                th:value="${idSolicitante}"
+                                placeholder="Ingrese número de identificación"
+                                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                    </div>
+                    <button
+                            type="submit"
+                            class="px-6 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg transition-colors flex items-center btn-hover-effect"
+                    >
+                        <i class="fa-solid fa-search mr-2"></i>
+                        Buscar
+                    </button>
+                    <a
+                            th:href="@{/listado-solicitudes}"
+                            class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors flex items-center btn-hover-effect"
+                    >
+                        <i class="fa-solid fa-times mr-2"></i>
+                        Limpiar
+                    </a>
+                </form>
+            </div>
+
+            <!-- Resultados de búsqueda -->
+            <div th:if="${idSolicitante != null and !idSolicitante.isBlank()}">
+                <!-- Información del solicitante -->
+                <div class="bg-blue-50 border-l-4 border-primary p-4 mb-6 rounded-r-lg">
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-info-circle text-primary mr-3"></i>
+                        <div>
+                            <h3 class="text-lg font-semibold text-primary">Resultados de búsqueda</h3>
+                            <p class="text-gray-700">
+                                Mostrando solicitudes para el solicitante con ID:
+                                <span class="font-bold" th:text="${idSolicitante}"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de solicitudes -->
+                <div th:if="${solicitudes != null and !solicitudes.isEmpty()}">
+                    <div class="grid gap-6">
+                        <div th:each="solicitud : ${solicitudes}" class="solicitud-card bg-white rounded-lg shadow-lg p-6 fade-in-up">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <h3 class="text-xl font-bold text-gray-900" th:text="${solicitud.nombreProyecto}">
+                                            Nombre del Proyecto
+                                        </h3>
+                                        <span class="text-sm bg-gray-100 text-gray-600 px-2 py-1 rounded-full font-mono">
+                                            <i class="fa-solid fa-hashtag mr-1"></i>
+                                            <span th:text="${solicitud.codigoSolicitud}">COD-001</span>
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                                        <span class="flex items-center">
+                                            <i class="fa-solid fa-user mr-2"></i>
+                                            <span th:text="${solicitud.nombreSolicitante}">Nombre Solicitante</span>
+                                        </span>
+                                        <span class="flex items-center">
+                                            <i class="fa-solid fa-id-card mr-2"></i>
+                                            <span th:text="${solicitud.idSolicitante}">ID Solicitante</span>
+                                        </span>
+                                        <span class="flex items-center">
+                                            <i class="fa-solid fa-envelope mr-2"></i>
+                                            <span th:text="${solicitud.email}">email@ejemplo.com</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="text-right flex flex-row justify-center items-center">
+                                    <p class="text-xs text-gray-500">Estado:</p>
+                                    <span th:class="'status-badge status-' + ${solicitud.estado?.toLowerCase()?.replace(' ', '-')}"
+                                          th:text="${solicitud.estado}">
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Acciones -->
+                            <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 mt-4">
+                                <button class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors text-sm btn-hover-effect">
+                                    <i class="fa-solid fa-eye mr-2"></i>
+                                    Ver Detalles
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensaje cuando no hay solicitudes -->
+                <div th:if="${solicitudes == null or solicitudes.isEmpty()}" class="bg-white rounded-lg shadow-xl p-12 mb-10 text-center">
+                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-inbox text-4xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">No se encontraron solicitudes</h3>
+                    <p class="text-gray-500 mb-6">
+                        No hay solicitudes registradas para el solicitante con ID:
+                        <span class="font-semibold" th:text="${idSolicitante}"></span>
+                    </p>
+                    <a th:href="@{/solicitud-licencia-form}"
+                       class="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary-hover text-white rounded-lg transition-colors btn-hover-effect">
+                        <i class="fa-solid fa-plus mr-2"></i>
+                        Crear Nueva Solicitud
+                    </a>
+                </div>
+            </div>
+
+            <!-- Mensaje inicial cuando no se ha buscado -->
+            <div th:if="${idSolicitante == null or idSolicitante.isBlank()}" class="bg-white rounded-lg shadow-xl p-12 text-center">
+                <div class="w-24 h-24 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-search text-4xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2">Buscar Solicitudes</h3>
+                <p class="text-gray-500 mb-6">
+                    Ingrese el número de identificación del solicitante para ver sus solicitudes de licencia ambiental.
+                </p>
+                <div class="flex justify-center gap-4">
+                    <a th:href="@{/solicitud-licencia-form}"
+                       class="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary-hover text-white rounded-lg transition-colors btn-hover-effect">
+                        <i class="fa-solid fa-plus mr-2"></i>
+                        Nueva Solicitud
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- Validación de mensajes flash -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let mensajeError = /*[[${error}]]*/ null;
+    let mensajeExito = /*[[${success}]]*/ null;
+    /*]]>*/
+</script>
+<script th:src="@{/js/mostrarMensajes.js}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Función para activar un enlace específico
+        function activarEnlace(enlaceActivo) {
+            const todosLosEnlaces = document.querySelectorAll('aside nav a');
+
+            todosLosEnlaces.forEach(enlace => {
+                enlace.className = 'flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group';
+
+                const icono = enlace.querySelector('svg');
+                if (icono) {
+                    icono.className = 'h-5 w-5 text-blue-200 group-hover:text-white';
+                }
+
+                const flecha = enlace.querySelector('svg:last-child');
+                if (flecha && flecha.classList.contains('ml-auto')) {
+                    flecha.remove();
+                }
+            });
+
+            enlaceActivo.className = 'flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-primary-hover text-white shadow-md';
+
+            const iconoActivo = enlaceActivo.querySelector('svg');
+            if (iconoActivo) {
+                iconoActivo.className = 'h-5 w-5 text-white';
+            }
+
+            const flecha = document.createElement('svg');
+            flecha.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+            flecha.className = 'h-4 w-4 ml-auto text-white';
+            flecha.setAttribute('fill', 'none');
+            flecha.setAttribute('viewBox', '0 0 24 24');
+            flecha.setAttribute('stroke', 'currentColor');
+            flecha.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />';
+            enlaceActivo.appendChild(flecha);
+        }
+
+        const enlacesSidebar = document.querySelectorAll('aside nav a');
+        enlacesSidebar.forEach(enlace => {
+            enlace.addEventListener('click', function() {
+                activarEnlace(this);
+            });
+        });
+
+        const rutaActual = window.location.pathname;
+        enlacesSidebar.forEach(enlace => {
+            if (enlace.getAttribute('href') === rutaActual) {
+                activarEnlace(enlace);
+            }
+        });
+
+        // Animaciones para las tarjetas
+        const cards = document.querySelectorAll('.solicitud-card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+
+        // Focus en el campo de búsqueda si está vacío
+        const searchInput = document.getElementById('idSolicitante');
+        if (searchInput && !searchInput.value) {
+            searchInput.focus();
+        }
+    });
+</script>
+
+</body>
+</html>

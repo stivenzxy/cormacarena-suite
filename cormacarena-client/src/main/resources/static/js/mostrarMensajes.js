@@ -1,10 +1,16 @@
 class MensajeAlerta {
     static mostrar(tipo, titulo, mensaje) {
         Swal.fire({
+            toast: true,
             icon: tipo,
             title: titulo,
             text: mensaje,
-            confirmButtonColor: tipo === 'error' ? '#d33' : '#3085d6'
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: '#fff',
+            color: '#000',
         });
     }
 

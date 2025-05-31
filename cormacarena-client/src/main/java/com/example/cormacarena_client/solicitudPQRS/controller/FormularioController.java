@@ -33,7 +33,6 @@ public class FormularioController {
                                    @RequestParam("archivo") MultipartFile archivo,
                                    Model model) {
 
-        // Asigna la fecha actual como texto en formato YYYY-MM-DD
         String fechaHoy = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
         formularioDTO.setFechaSolicitud(fechaHoy);
 
@@ -45,7 +44,7 @@ public class FormularioController {
         variables.put("descripcion", Map.of("value", formularioDTO.getDescripcion()));
         variables.put("nombre", Map.of("value", formularioDTO.getNombre()));
         variables.put("email", Map.of("value", formularioDTO.getEmail()));
-        variables.put("fechaSolicitud", Map.of("value", fechaHoy)); // asegúrate de enviar como String
+        variables.put("fechaSolicitud", Map.of("value", fechaHoy));
         variables.put("adjDocumentos", Map.of("value", adjuntaDocumento));
         variables.put("nombreArchivo", Map.of("value", nombreArchivo != null ? nombreArchivo : ""));
 
@@ -56,7 +55,4 @@ public class FormularioController {
         model.addAttribute("mensaje", "Formulario enviado correctamente.");
         return "pqrs/index";
     }
-
-
-
 }

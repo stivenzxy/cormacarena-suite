@@ -13,7 +13,7 @@ public interface CoordinadorRevSolService {
     TaskInfo getTaskInfoByProcessId(String idProceso);
     String getTaskIdByProcessIdWithApi(String idProceso);
     List<SolicitudPreviewDTO> obtenerSolicitudesVistaPrevia();
-    String approveTask(String processId);
-    String rejectTask(String processId);
+    String aprobarSolicitud(String processId);
+    String rechazarSolicitud(String processId);
     void actualizarEstadoProceso(String processId, String estado);
 }

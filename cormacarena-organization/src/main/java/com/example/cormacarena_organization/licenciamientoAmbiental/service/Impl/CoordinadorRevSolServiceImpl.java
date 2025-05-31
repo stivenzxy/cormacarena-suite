@@ -232,7 +232,7 @@ public class CoordinadorRevSolServiceImpl implements CoordinadorRevSolService {
     }
 
     @Override
-    public String approveTask(String processId) {
+    public String aprobarSolicitud(String processId) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {
@@ -275,7 +275,7 @@ public class CoordinadorRevSolServiceImpl implements CoordinadorRevSolService {
     }
 
     @Override
-    public String rejectTask(String processId) {
+    public String rechazarSolicitud(String processId) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulario de Solicitud</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <script th:src="@{/js/fillSolicitudForm.js}"></script>
+    <link rel="stylesheet" th:href="@{/vendor/fontawesome/css/all.css}">
+    <script th:src="@{/vendor/sweetalert2/sweetalert2.all.min.js}"></script>
+    <style>
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-tertiary h-screen overflow-hidden">
+
+<!-- Header fijo -->
+<header class="bg-primary h-20 w-full fixed top-0 left-0 z-50 flex items-center justify-between px-6 shadow-lg">
+    <a th:href="@{/}">
+        <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo" />
+    </a>
+</header>
+
+<!-- Contenedor principal: flex para sidebar + main -->
+<div class="flex pt-20 h-full">
+
+    <!-- Sidebar fijo con altura completa -->
+    <aside class="w-64 bg-primary text-white flex flex-col p-6 h-full shadow-xl">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-white">Licencias</h2>
+            <p class="text-blue-200 text-sm mt-1">Sistema de Gestión</p>
+        </div>
+
+        <nav class="flex flex-col gap-2">
+            <!-- Inicio -->
+            <a th:href="@{/}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span class="font-medium">Inicio</span>
+            </a>
+
+            <!-- Solicitar Licencia Ambiental (activo) -->
+            <a th:href="@{/solicitud-licencia-form}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-primary-hover text-white shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span class="font-medium">Solicitar Licencia Ambiental</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-auto text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+
+            <!-- Listado de solicitudes -->
+            <a th:href="@{/listado-solicitudes}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+                <span class="font-medium">Listado de solicitudes</span>
+            </a>
+
+            <!-- Gestión de pagos -->
+            <a th:href="@{/pagos-licenciamiento}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span class="font-medium">Gestión de pagos</span>
+            </a>
+
+            <!-- Bandeja de Entrada -->
+            <a th:href="@{/bandeja-licenciamiento}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+                <span class="font-medium">Bandeja de Entrada</span>
+            </a>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-blue-600">
+            <div class="text-xs text-blue-200">
+                <p>Corporación para el Desarrollo</p>
+                <p>Sostenible del Área de Manejo</p>
+                <p>Especial La Macarena</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Área principal de contenido -->
+    <main class="flex-1 bg-tertiary min-h-screen flex items-start justify-center p-8 transition-all duration-300 overflow-y-auto">
+        <div class="w-full max-w-4xl pb-8">
+
+            <!-- Formulario de solicitud -->
+            <form th:action="@{/crear-solicitud-licencia}" id="request-licence-form" method="post" th:object="${solicitudDTO}" enctype="multipart/form-data"
+                  class="licence-request-form bg-white rounded-lg shadow-xl border-0 mt-8 mb-8">
+
+                <input type="hidden" id="accion" name="accion" value="guardar" />
+
+                <!-- Encabezado del formulario -->
+                <div class="border-b-4 border-primary pb-4 px-8 pt-6">
+                    <h2 class="text-primary text-2xl font-bold flex items-center">
+                        <i class="fa-solid fa-file-signature mr-3"></i>
+                        Formulario de Solicitud de Licencia Ambiental
+                    </h2>
+                    <p class="text-gray-600 text-sm mt-2">Complete todos los campos marcados con (*) para enviar su solicitud</p>
+                </div>
+
+                <!-- Contenido del formulario -->
+                <div class="p-8">
+                    <div class="grid md:grid-cols-2 gap-8">
+
+                        <!-- Datos del Solicitante -->
+                        <div class="space-y-6">
+                            <h3 class="text-primary text-xl font-bold border-b-2 border-primary pb-2 flex items-center">
+                                <i class="fa-solid fa-user mr-2"></i>
+                                Datos del Solicitante
+                            </h3>
+
+                            <!-- Nombre o Razón Social -->
+                            <div class="space-y-2">
+                                <label for="nombreSolicitante" class="block text-gray-700 font-semibold">
+                                    Nombre o Razón Social <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                        type="text"
+                                        id="nombreSolicitante"
+                                        name="nombreSolicitante"
+                                        th:value="*{nombreSolicitante}"
+                                        required
+                                        placeholder="Ingrese nombre completo o razón social"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                />
+                            </div>
+
+                            <!-- Tipo de Identificación -->
+                            <div class="space-y-2">
+                                <label for="tipoIdentificacion" class="block text-gray-700 font-semibold">
+                                    Tipo de Identificación <span class="text-red-500">*</span>
+                                </label>
+                                <select
+                                        id="tipoIdentificacion"
+                                        name="tipoIdentificacion"
+                                        th:value="*{tipoIdentificacion}"
+                                        required
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                >
+                                    <option value="cedula" th:selected="${tipoIdentificacion == 'cedula'}">CC</option>
+                                    <option value="nit" th:selected="${tipoIdentificacion == 'nit'}">NIT</option>
+                                </select>
+                            </div>
+
+                            <!-- Número de Identificación -->
+                            <div class="space-y-2">
+                                <label for="idSolicitante" class="block text-gray-700 font-semibold">
+                                    Número de Identificación <span class="text-red-500">*</span>
+                                </label>
+                                <div class="flex gap-2">
+                                    <input
+                                            type="text"
+                                            id="idSolicitante"
+                                            name="idSolicitante"
+                                            th:value="*{idSolicitante}"
+                                            required
+                                            placeholder="Ingrese número de identificación"
+                                            class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                    />
+                                    <button
+                                            id="btnBuscarSolicitante"
+                                            type="button"
+                                            class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors flex items-center"
+                                    >
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Teléfono -->
+                            <div class="space-y-2">
+                                <label for="telefono" class="block text-gray-700 font-semibold">
+                                    Teléfono <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                        type="text"
+                                        id="telefono"
+                                        name="telefono"
+                                        th:value="*{telefono}"
+                                        required
+                                        placeholder="Ingrese número telefónico"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                />
+                            </div>
+
+                            <!-- Correo Electrónico -->
+                            <div class="space-y-2">
+                                <label for="email" class="block text-gray-700 font-semibold">
+                                    Correo Electrónico <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        th:value="*{email}"
+                                        required
+                                        placeholder="ejemplo@correo.com"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                />
+                            </div>
+
+                            <!-- Dirección de Notificación -->
+                            <div class="space-y-2">
+                                <label for="direccionResidencia" class="block text-gray-700 font-semibold">
+                                    Dirección de Notificación <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                        type="text"
+                                        id="direccionResidencia"
+                                        name="direccionResidencia"
+                                        th:value="*{direccionResidencia}"
+                                        required
+                                        placeholder="Ingrese dirección completa"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Datos del Proyecto -->
+                        <div class="space-y-6">
+                            <h3 class="text-primary text-xl font-bold border-b-2 border-primary pb-2 flex items-center">
+                                <i class="fa-solid fa-building mr-2"></i>
+                                Datos del Proyecto
+                            </h3>
+
+                            <!-- Nombre del Proyecto -->
+                            <div class="space-y-2">
+                                <label for="nombreProyecto" class="block text-gray-700 font-semibold">
+                                    Nombre del Proyecto Obra o Actividad <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                        type="text"
+                                        id="nombreProyecto"
+                                        name="nombreProyecto"
+                                        th:value="*{nombreProyecto}"
+                                        required
+                                        placeholder="Ingrese nombre del proyecto"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                />
+                            </div>
+
+                            <!-- Sector -->
+                            <div class="space-y-2">
+                                <label for="sectorProyecto" class="block text-gray-700 font-semibold">
+                                    Sector <span class="text-red-500">*</span>
+                                </label>
+                                <select
+                                        id="sectorProyecto"
+                                        name="sectorProyecto"
+                                        th:field="*{sectorProyecto}"
+                                        required
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                >
+                                    <option value="" disabled>Seleccione un sector</option>
+                                    <option th:each="sector : ${sectores}"
+                                            th:value="${sector}"
+                                            th:text="${#strings.capitalize(#strings.replace(sector.name(), '_', ' ').toLowerCase())}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Valor Estimado -->
+                            <div class="space-y-2">
+                                <label for="valorProyecto" class="block text-gray-700 font-semibold">
+                                    Valor Estimado del Proyecto ($COP) <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                        type="number"
+                                        id="valorProyecto"
+                                        name="valorProyecto"
+                                        th:value="*{valorProyecto}"
+                                        required
+                                        min="0"
+                                        step="1000"
+                                        placeholder="0"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                />
+                            </div>
+
+                            <!-- Departamento de Ejecución -->
+                            <div class="space-y-2">
+                                <label for="departamentoProyecto" class="block text-gray-700 font-semibold">
+                                    Departamento de Ejecución <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                        type="text"
+                                        id="departamentoProyecto"
+                                        name="departamentoProyecto"
+                                        th:value="*{departamentoProyecto}"
+                                        required
+                                        placeholder="Ingrese departamento"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                />
+                            </div>
+
+                            <!-- Municipio de Ejecución -->
+                            <div class="space-y-2">
+                                <label for="municipioProyecto" class="block text-gray-700 font-semibold">
+                                    Municipio de Ejecución <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                        type="text"
+                                        id="municipioProyecto"
+                                        name="municipioProyecto"
+                                        th:value="*{municipioProyecto}"
+                                        required
+                                        placeholder="Ingrese municipio"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                />
+                            </div>
+
+                            <!-- EIA Adjunto -->
+                            <div class="space-y-2">
+                                <label for="soporteEIAPdf" class="block text-gray-700 font-semibold">
+                                    Estudio de Impacto Ambiental (EIA) <span class="text-red-500">*</span>
+                                </label>
+                                <div id="nombreDocumentoActual" class="mb-2 text-gray-600 font-medium hidden">
+                                    <span class="font-semibold">Nombre del documento cargado actualmente: </span>
+                                    <span id="nombreSoporteEIA" name="nombreSoporteEIA"></span>
+                                </div>
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                    </svg>
+                                    <p class="text-sm text-gray-600 mb-2">Seleccione el archivo EIA (PDF, DOC, DOCX)</p>
+                                    <input
+                                            type="file"
+                                            id="soporteEIAPdf"
+                                            name="soporteEIAPdf"
+                                            accept=".pdf,.doc,.docx"
+                                            class="w-full"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="flex justify-end gap-4 pt-6 border-t border-gray-200 mt-8">
+                        <button
+                                type="button"
+                                id="btnEnviar"
+                                class="px-6 py-2 bg-primary hover:bg-primary-hover text-white rounded-md transition-colors flex items-center"
+                        >
+                            <i class="fa-solid fa-paper-plane mr-2"></i>
+                            Enviar
+                        </button>
+                        <button
+                                type="submit"
+                                id="btnGuardar"
+                                class="px-6 py-2 bg-button-red hover:bg-red-600 text-white rounded-md transition-colors flex items-center"
+                        >
+                            <i class="fa-solid fa-floppy-disk mr-2"></i>
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Consulta de factura -->
+            <div class="w-full bg-white rounded-lg shadow-xl border-0 mb-8">
+                <div class="border-b-4 border-green-500 pb-4 px-8 pt-6">
+                    <h3 class="text-green-600 text-xl font-bold flex items-center">
+                        <i class="fa-solid fa-receipt mr-3"></i>
+                        Consultar factura de pago
+                    </h3>
+                </div>
+                <div class="p-8 flex justify-between items-center">
+                    <span class="text-gray-700 text-lg">Consulte el estado de su factura de pago</span>
+                    <button
+                            type="button"
+                            class="px-6 py-2 bg-primary hover:bg-primary-hover text-white rounded-md transition-colors flex items-center"
+                    >
+                        <i class="fa-solid fa-search mr-2"></i>
+                        Consultar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Validación de mensajes flash -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let mensajeError = /*[[${error}]]*/ null;
+    let mensajeExito = /*[[${success}]]*/ null;
+    /*]]>*/
+</script>
+<script th:src="@{/js/mostrarMensajes.js}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('request-licence-form');
+        const btnEnviar = document.getElementById('btnEnviar');
+        const btnGuardar = document.getElementById('btnGuardar');
+        const accionInput = document.getElementById('accion');
+
+        btnGuardar.addEventListener('click', function() {
+            accionInput.value = 'guardar';
+            form.action = '/crear-solicitud-licencia';
+        });
+
+        btnEnviar.addEventListener('click', function() {
+            accionInput.value = 'enviar';
+            form.action = '/enviar-formulario-solicitud';
+            form.submit();
+        });
+
+        // Función para activar un enlace específico
+        function activarEnlace(enlaceActivo) {
+            const todosLosEnlaces = document.querySelectorAll('aside nav a');
+
+            todosLosEnlaces.forEach(enlace => {
+                enlace.className = 'flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group';
+
+                const icono = enlace.querySelector('svg');
+                if (icono) {
+                    icono.className = 'h-5 w-5 text-blue-200 group-hover:text-white';
+                }
+
+                const flecha = enlace.querySelector('svg:last-child');
+                if (flecha && flecha.classList.contains('ml-auto')) {
+                    flecha.remove();
+                }
+            });
+
+            enlaceActivo.className = 'flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-primary-hover text-white shadow-md';
+
+            const iconoActivo = enlaceActivo.querySelector('svg');
+            if (iconoActivo) {
+                iconoActivo.className = 'h-5 w-5 text-white';
+            }
+
+            const flecha = document.createElement('svg');
+            flecha.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+            flecha.className = 'h-4 w-4 ml-auto text-white';
+            flecha.setAttribute('fill', 'none');
+            flecha.setAttribute('viewBox', '0 0 24 24');
+            flecha.setAttribute('stroke', 'currentColor');
+            flecha.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />';
+            enlaceActivo.appendChild(flecha);
+        }
+
+        const enlacesSidebar = document.querySelectorAll('aside nav a');
+        enlacesSidebar.forEach(enlace => {
+            enlace.addEventListener('click', function() {
+                activarEnlace(this);
+            });
+        });
+
+        const rutaActual = window.location.pathname;
+        enlacesSidebar.forEach(enlace => {
+            if (enlace.getAttribute('href') === rutaActual) {
+                activarEnlace(enlace);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

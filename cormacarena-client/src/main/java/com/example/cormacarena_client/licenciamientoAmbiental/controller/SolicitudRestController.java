@@ -1,7 +1,6 @@
 package com.example.cormacarena_client.licenciamientoAmbiental.controller;
 
 import com.example.cormacarena_client.licenciamientoAmbiental.DTO.SolicitudDTO;
-import com.example.cormacarena_client.licenciamientoAmbiental.DTO.TaskInfo;
 import com.example.cormacarena_client.licenciamientoAmbiental.entity.SolicitudLicencia;
 import com.example.cormacarena_client.licenciamientoAmbiental.enums.EstadoProceso;
 import com.example.cormacarena_client.licenciamientoAmbiental.service.LicenciaAmbientalService;
@@ -93,7 +92,7 @@ public class SolicitudRestController {
             if (esActualizacion) {
                 solicitudLicenciaService.actualizarSolicitudExistente(idProceso, solicitudLicencia);
                 redirectAttributes.addFlashAttribute("success", "Solicitud actualizada correctamente.");
-                return new RedirectView("/solicitudLicenciaForm");
+                return new RedirectView("/solicitud-licencia-form");
             } else {
                 solicitudLicenciaService.crearNuevaSolicitud(solicitudLicencia);
             }
@@ -101,11 +100,11 @@ public class SolicitudRestController {
         } catch (Exception e) {
             log.error("Error al procesar la solicitud: ", e);
             redirectAttributes.addFlashAttribute("error", "Ha ocurrido un error al procesar la solicitud.");
-            return new RedirectView("/solicitudLicenciaForm");
+            return new RedirectView("/solicitud-licencia-form");
         }
 
         redirectAttributes.addFlashAttribute("success", "Solicitud guardada correctamente.");
-        return new RedirectView("/solicitudLicenciaForm");
+        return new RedirectView("/solicitud-licencia-form");
     }
 
     @PostMapping("enviar-formulario-solicitud")
@@ -118,7 +117,7 @@ public class SolicitudRestController {
 
         if (solicitudGuardada == null) {
             redirectAttributes.addFlashAttribute("error", "Debe guardar primero la información");
-            return new RedirectView("/solicitudLicenciaForm");
+            return new RedirectView("/solicitud-licencia-form");
         }
 
         solicitudLicencia.setNombreSolicitante(solicitudDTO.getNombreSolicitante());
@@ -145,6 +144,6 @@ public class SolicitudRestController {
         licenciaAmbientalService.completeTask(solicitudLicencia.getCodigoSolicitud());
 
         redirectAttributes.addFlashAttribute("success", "Solicitud enviada exitosamente!, su información será evaluada.");
-        return new RedirectView("/solicitudLicenciaForm");
+        return new RedirectView("/listado-solicitudes?idSolicitante=" + solicitudDTO.getIdSolicitante());
     }
 }

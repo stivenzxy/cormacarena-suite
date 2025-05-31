@@ -15,16 +15,17 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-public class ListadoSolicitudesController {
+@RequestMapping("/coordinador-grupo")
+public class CoordinadorGrupoController {
 
     private final CoordinadorRevSolService coordinadorRevSolService;
 
-    @GetMapping("/solicitudesInicio")
+    @GetMapping
     public String mostrarListadoSolicitudesLicencia(Model model) {
         List<SolicitudPreviewDTO> solicitudes = coordinadorRevSolService.obtenerSolicitudesVistaPrevia();
         model.addAttribute("solicitudes", solicitudes);
 
-        return "listadoSolicitudesLicencia";
+        return "licenciamiento/coordinador-grupo/listadoSolicitudesLicencia";
     }
 
     @GetMapping("/evaluacion-solicitud/{codigoSolicitud}")
@@ -34,11 +35,11 @@ public class ListadoSolicitudesController {
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping("/aprobar-formulario")
+    @PostMapping("/aprobacion-formulario")
     @ResponseBody
     public ResponseEntity<String> aprobarTarea(@RequestParam("processId") String processId) {
         try {
-            coordinadorRevSolService.approveTask(processId);
+            coordinadorRevSolService.aprobarSolicitud(processId);
             return ResponseEntity.ok("Tarea aprobada correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -46,11 +47,11 @@ public class ListadoSolicitudesController {
         }
     }
 
-    @PostMapping("/rechazar-formulario")
+    @PostMapping("/rechazo-formulario")
     @ResponseBody
     public ResponseEntity<String> rechazarTarea(@RequestParam("processId") String processId) {
         try {
-            coordinadorRevSolService.rejectTask(processId);
+            coordinadorRevSolService.rechazarSolicitud(processId);
             return ResponseEntity.ok("Tarea rechazada correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

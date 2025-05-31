@@ -26,73 +26,29 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("nombreSoporteEIA").textContent = data.nombreSoporteEIA || "";
             document.getElementById("nombreDocumentoActual").classList.remove("hidden");
 
-            Swal.fire ({
+            Swal.fire({
+                toast: true,
                 icon: 'info',
                 title: 'Borrador Encontrado',
                 text: 'Se ha encontrado un borrador pendiente de envío asociado a su número de documento.',
-                confirmButtonColor: '#3085d6'
-            }).then(async () => {
-                await cargarSolicitudes(idSolicitante);
-            })
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 5000,
+                timerProgressBar: true
+            });
 
         } catch (error) {
-                const formulario = document.getElementById("request-licence-form");
-                if (formulario) formulario.reset();
-
-                const soporteEIA = document.getElementById("nombreSoporteEIA");
-                const nombreDocumento = document.getElementById("nombreDocumentoActual");
-
-                if (soporteEIA) soporteEIA.textContent = "";
-                if (nombreDocumento) nombreDocumento.classList.add("hidden");
-
-                await cargarSolicitudes(idSolicitante);
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: 'No hay borradores guardados',
+                text: 'Llene el formulario para solicitar una licencia.',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 5000,
+                timerProgressBar: true
+            });
             console.error(error);
         }
     });
 });
-
-
-const cargarSolicitudes = async (idSolicitante) => {
-    try {
-        const resp = await fetch(`/solicitudes/${idSolicitante}`);
-        if (!resp.ok) throw new Error("Error al obtener solicitudes");
-
-        const solicitudes = await resp.json();
-        const contenedor = document.getElementById("tablaSolicitudesContainer");
-        const divSolicitudes = document.getElementById("divSolicitudes");
-        const textoId = document.getElementById("textoIdSolicitante");
-
-        textoId.textContent = idSolicitante;
-
-        divSolicitudes.classList.remove("hidden");
-
-        if (solicitudes.length === 0) {
-            contenedor.innerHTML = `<div class="text-center text-gray-500 mt-4">No hay solicitudes registradas.</div>`;
-        } else {
-            const filas = solicitudes.map(s => `
-                <tr class="even:bg-gray-100 hover:bg-primary/20 transition-colors duration-300 cursor-pointer">
-                    <td class="py-2 px-4 border border-gray-300">${s.codigoSolicitud}</td>
-                    <td class="py-2 px-4 border border-gray-300">${s.nombreProyecto}</td>
-                    <td class="py-2 px-4 border border-gray-300">${s.estado}</td>
-                </tr>
-            `).join("");
-
-            contenedor.innerHTML = `
-                <table class="w-full text-center border-collapse">
-                    <thead>
-                        <tr class="bg-primary text-white">
-                            <th class="py-3 px-4 border border-primary">ID</th>
-                            <th class="py-3 px-4 border border-primary">Nombre del Proyecto</th>
-                            <th class="py-3 px-4 border border-primary">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>${filas}</tbody>
-                </table>
-            `;
-        }
-
-    } catch (e) {
-        console.error("Error cargando solicitudes:", e);
-    }
-};
-
