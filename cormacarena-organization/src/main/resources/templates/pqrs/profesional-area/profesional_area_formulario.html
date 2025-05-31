@@ -128,7 +128,7 @@
 
     <nav class="flex flex-col gap-2">
       <!-- Inicio -->
-      <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+      <a href="/organizacion" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
         </svg>
@@ -223,8 +223,6 @@
                          class="bg-gray-100 border-0 text-gray-800 font-semibold capitalize flex-1 p-2 rounded" />
                 </div>
               </div>
-
-
             </div>
 
             <div>
@@ -269,8 +267,6 @@
               </div>
             </div>
 
-
-
             <!-- Botones de acción -->
             <div class="flex justify-end gap-4 pt-6 border-t border-gray-200">
               <a th:href="@{/profesional-area}" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center">
@@ -314,9 +310,167 @@
   </main>
 </div>
 
+<!-- Modal de validación moderna -->
+<div id="validationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-all duration-300">
+  <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95" id="validationModalContent">
+    <div class="p-6">
+      <!-- Header del modal -->
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800">Error de Validación</h3>
+          <p class="text-sm text-gray-500">Por favor, corrija el siguiente error</p>
+        </div>
+      </div>
+
+      <!-- Mensaje del modal -->
+      <div class="mb-6">
+        <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
+          <p id="validationMessage" class="text-sm text-red-700">
+            <!-- Se llenará dinámicamente -->
+          </p>
+        </div>
+      </div>
+
+      <!-- Botón del modal -->
+      <div class="flex justify-end">
+        <button id="validationOkButton"
+                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación moderna -->
+<div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-all duration-300">
+  <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4 transform transition-all duration-300 scale-95" id="modalContent">
+    <div class="p-6">
+      <!-- Header del modal -->
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800">Confirmar Envío de Respuesta</h3>
+          <p class="text-sm text-gray-500">Esta acción no se puede deshacer</p>
+        </div>
+      </div>
+
+      <!-- Mensaje del modal -->
+      <div class="mb-6">
+        <p class="text-gray-700 leading-relaxed mb-4">
+          <strong>¿Está seguro de que desea enviar esta respuesta?</strong>
+        </p>
+
+        <div class="bg-teal-50 p-4 rounded-lg border-l-4 border-teal-500 mb-4">
+          <p class="text-sm font-medium text-teal-800 mb-2">Vista previa de la respuesta:</p>
+          <p id="modalResponsePreview" class="text-sm text-teal-700 italic max-h-20 overflow-y-auto">
+            <!-- Se llenará dinámicamente -->
+          </p>
+        </div>
+
+        <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+          <p class="text-sm font-medium text-yellow-800 mb-2">Importante:</p>
+          <ul class="text-sm text-yellow-700 space-y-1">
+            <li>• Una vez enviada, la respuesta no podrá ser modificada</li>
+            <li>• El ciudadano recibirá una notificación automática</li>
+            <li>• La solicitud se marcará como completada</li>
+            <li>• Se generará un registro permanente de la respuesta</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Botones del modal -->
+      <div class="flex gap-3 justify-end">
+        <button id="cancelButton"
+                class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+          Revisar Respuesta
+        </button>
+        <button id="confirmButton"
+                class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+          Sí, Enviar Respuesta
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Script para interactividad -->
 <script>
   document.addEventListener("DOMContentLoaded", function() {
+    // Referencias de los modales
+    const validationModal = document.getElementById('validationModal');
+    const validationModalContent = document.getElementById('validationModalContent');
+    const validationMessage = document.getElementById('validationMessage');
+    const validationOkButton = document.getElementById('validationOkButton');
+
+    const confirmModal = document.getElementById('confirmModal');
+    const modalContent = document.getElementById('modalContent');
+    const modalResponsePreview = document.getElementById('modalResponsePreview');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.getElementById('cancelButton');
+
+    // Función para mostrar modal de validación
+    function showValidationModal(message) {
+      validationMessage.textContent = message;
+
+      validationModal.classList.remove('hidden');
+      setTimeout(() => {
+        validationModal.classList.add('opacity-100');
+        validationModalContent.classList.remove('scale-95');
+        validationModalContent.classList.add('scale-100');
+      }, 10);
+    }
+
+    // Función para ocultar modal de validación
+    function hideValidationModal() {
+      validationModalContent.classList.remove('scale-100');
+      validationModalContent.classList.add('scale-95');
+      validationModal.classList.remove('opacity-100');
+
+      setTimeout(() => {
+        validationModal.classList.add('hidden');
+      }, 300);
+    }
+
+    // Función para mostrar modal de confirmación
+    function showConfirmModal(respuesta) {
+      const truncatedResponse = respuesta.length > 200
+              ? respuesta.substring(0, 200) + '...'
+              : respuesta;
+
+      modalResponsePreview.textContent = `"${truncatedResponse}"`;
+
+      confirmModal.classList.remove('hidden');
+      setTimeout(() => {
+        confirmModal.classList.add('opacity-100');
+        modalContent.classList.remove('scale-95');
+        modalContent.classList.add('scale-100');
+      }, 10);
+    }
+
+    // Función para ocultar modal de confirmación
+    function hideConfirmModal() {
+      modalContent.classList.remove('scale-100');
+      modalContent.classList.add('scale-95');
+      confirmModal.classList.remove('opacity-100');
+
+      setTimeout(() => {
+        confirmModal.classList.add('hidden');
+      }, 300);
+    }
+
     // Contador de caracteres
     const textarea = document.getElementById('respuestaSolicitud');
     const charCount = document.getElementById('charCount');
@@ -341,22 +495,59 @@
       this.style.height = Math.max(150, this.scrollHeight) + 'px';
     });
 
-    // Validación del formulario
+    // Validación del formulario con modales modernos
     const form = document.querySelector('form');
     form.addEventListener('submit', function(e) {
+      e.preventDefault(); // Prevenir envío automático
+
       const respuesta = textarea.value.trim();
 
-      if (respuesta.length < 50) {
-        e.preventDefault();
-        alert('La respuesta debe tener al menos 50 caracteres para ser considerada completa.');
+      if (respuesta.length < 20) {
+        showValidationModal('La respuesta debe tener al menos 20 caracteres para ser considerada completa.');
         textarea.focus();
         return false;
       }
 
-      // Confirmación final
-      if (!confirm('¿Está seguro de que desea enviar esta respuesta? Una vez enviada no podrá ser modificada.')) {
-        e.preventDefault();
-        return false;
+      // Mostrar modal de confirmación
+      showConfirmModal(respuesta);
+    });
+
+    // Event listeners para modales
+    validationOkButton.addEventListener('click', hideValidationModal);
+
+    confirmButton.addEventListener('click', function() {
+      // Mostrar indicador de carga
+      this.innerHTML = `
+        <svg class="animate-spin h-4 w-4 mr-2 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Enviando Respuesta...
+      `;
+      this.disabled = true;
+
+      // Enviar el formulario
+      setTimeout(() => {
+        form.submit();
+      }, 500);
+    });
+
+    cancelButton.addEventListener('click', hideConfirmModal);
+
+    // Cerrar modales con click fuera o Escape
+    [validationModal, confirmModal].forEach(modal => {
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          if (modal === validationModal) hideValidationModal();
+          if (modal === confirmModal) hideConfirmModal();
+        }
+      });
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        if (!validationModal.classList.contains('hidden')) hideValidationModal();
+        if (!confirmModal.classList.contains('hidden')) hideConfirmModal();
       }
     });
 

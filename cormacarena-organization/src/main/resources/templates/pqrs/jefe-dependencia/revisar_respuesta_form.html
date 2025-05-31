@@ -147,7 +147,7 @@
 
     <nav class="flex flex-col gap-2">
       <!-- Inicio -->
-      <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+      <a href="/organizacion" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
         </svg>
@@ -246,8 +246,6 @@
                   <span class="text-gray-800 font-semibold" th:text="${profesional}">Nombre del Profesional</span>
                 </div>
               </div>
-
-
             </div>
           </div>
 
@@ -384,9 +382,231 @@
   </main>
 </div>
 
+<!-- Modal de validación moderna -->
+<div id="validationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-all duration-300">
+  <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95" id="validationModalContent">
+    <div class="p-6">
+      <!-- Header del modal -->
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800">Error de Validación</h3>
+          <p class="text-sm text-gray-500">Por favor, corrija el siguiente error</p>
+        </div>
+      </div>
+
+      <!-- Mensaje del modal -->
+      <div class="mb-6">
+        <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
+          <p id="validationMessage" class="text-sm text-red-700">
+            <!-- Se llenará dinámicamente -->
+          </p>
+        </div>
+      </div>
+
+      <!-- Botón del modal -->
+      <div class="flex justify-end">
+        <button id="validationOkButton"
+                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación moderna -->
+<div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-all duration-300">
+  <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4 transform transition-all duration-300 scale-95" id="modalContent">
+    <div class="p-6">
+      <!-- Header del modal -->
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 rounded-full flex items-center justify-center mr-4" id="modalIcon">
+          <!-- Se llenará dinámicamente según la acción -->
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800" id="modalTitle">Confirmar Evaluación</h3>
+          <p class="text-sm text-gray-500">Esta acción no se puede deshacer</p>
+        </div>
+      </div>
+
+      <!-- Mensaje del modal -->
+      <div class="mb-6">
+        <p class="text-gray-700 leading-relaxed mb-4" id="modalQuestion">
+          <strong>¿Está seguro de que desea proceder con esta evaluación?</strong>
+        </p>
+
+        <div class="p-4 rounded-lg border-l-4 mb-4" id="modalDetails">
+          <p class="text-sm font-medium mb-2" id="modalDetailsTitle">Detalles de la evaluación:</p>
+          <div class="text-sm space-y-1" id="modalDetailsContent">
+            <!-- Se llenará dinámicamente -->
+          </div>
+        </div>
+
+        <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+          <p class="text-sm font-medium text-yellow-800 mb-2">Consecuencias de esta acción:</p>
+          <ul class="text-sm text-yellow-700 space-y-1" id="modalConsequences">
+            <!-- Se llenará dinámicamente -->
+          </ul>
+        </div>
+      </div>
+
+      <!-- Botones del modal -->
+      <div class="flex gap-3 justify-end">
+        <button id="cancelButton"
+                class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+          Cancelar
+        </button>
+        <button id="confirmButton"
+                class="px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105">
+          <!-- Se llenará dinámicamente -->
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Script para interactividad -->
 <script>
   document.addEventListener("DOMContentLoaded", function() {
+    // Referencias de los modales
+    const validationModal = document.getElementById('validationModal');
+    const validationModalContent = document.getElementById('validationModalContent');
+    const validationMessage = document.getElementById('validationMessage');
+    const validationOkButton = document.getElementById('validationOkButton');
+
+    const confirmModal = document.getElementById('confirmModal');
+    const modalContent = document.getElementById('modalContent');
+    const modalIcon = document.getElementById('modalIcon');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalQuestion = document.getElementById('modalQuestion');
+    const modalDetails = document.getElementById('modalDetails');
+    const modalDetailsTitle = document.getElementById('modalDetailsTitle');
+    const modalDetailsContent = document.getElementById('modalDetailsContent');
+    const modalConsequences = document.getElementById('modalConsequences');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.getElementById('cancelButton');
+
+    // Función para mostrar modal de validación
+    function showValidationModal(message) {
+      validationMessage.textContent = message;
+
+      validationModal.classList.remove('hidden');
+      setTimeout(() => {
+        validationModal.classList.add('opacity-100');
+        validationModalContent.classList.remove('scale-95');
+        validationModalContent.classList.add('scale-100');
+      }, 10);
+    }
+
+    // Función para ocultar modal de validación
+    function hideValidationModal() {
+      validationModalContent.classList.remove('scale-100');
+      validationModalContent.classList.add('scale-95');
+      validationModal.classList.remove('opacity-100');
+
+      setTimeout(() => {
+        validationModal.classList.add('hidden');
+      }, 300);
+    }
+
+    // Función para mostrar modal de confirmación
+    function showConfirmModal(isValid, observaciones) {
+      // Configurar el modal según la decisión
+      if (isValid) {
+        // Configuración para aprobación
+        modalIcon.className = 'w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4';
+        modalIcon.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        `;
+        modalTitle.textContent = 'Confirmar Aprobación';
+        modalQuestion.innerHTML = '<strong>¿Está seguro de que desea aprobar esta respuesta?</strong>';
+
+        modalDetails.className = 'bg-green-50 p-4 rounded-lg border-l-4 border-green-500 mb-4';
+        modalDetailsTitle.className = 'text-sm font-medium text-green-800 mb-2';
+        modalDetailsTitle.textContent = 'Detalles de la aprobación:';
+        modalDetailsContent.className = 'text-sm text-green-700 space-y-1';
+        modalDetailsContent.innerHTML = `
+          <p><strong>Decisión:</strong> Respuesta aprobada</p>
+          <p><strong>Observaciones:</strong> ${observaciones || 'Sin observaciones adicionales'}</p>
+        `;
+
+        modalConsequences.innerHTML = `
+          <li>• La respuesta será enviada al ciudadano inmediatamente</li>
+          <li>• La solicitud se marcará como completada</li>
+          <li>• Se generará un registro de aprobación</li>
+          <li>• No se podrá modificar la respuesta después del envío</li>
+        `;
+
+        confirmButton.className = 'px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105';
+        confirmButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          Sí, Aprobar Respuesta
+        `;
+      } else {
+        // Configuración para rechazo
+        modalIcon.className = 'w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4';
+        modalIcon.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        `;
+        modalTitle.textContent = 'Confirmar Rechazo';
+        modalQuestion.innerHTML = '<strong>¿Está seguro de que desea rechazar esta respuesta?</strong>';
+
+        modalDetails.className = 'bg-red-50 p-4 rounded-lg border-l-4 border-red-500 mb-4';
+        modalDetailsTitle.className = 'text-sm font-medium text-red-800 mb-2';
+        modalDetailsTitle.textContent = 'Detalles del rechazo:';
+        modalDetailsContent.className = 'text-sm text-red-700 space-y-1';
+        modalDetailsContent.innerHTML = `
+          <p><strong>Decisión:</strong> Respuesta rechazada</p>
+          <p><strong>Observaciones:</strong> ${observaciones || 'Sin observaciones específicas'}</p>
+        `;
+
+        modalConsequences.innerHTML = `
+          <li>• La respuesta será devuelta al profesional para corrección</li>
+          <li>• Se notificará al profesional sobre las observaciones</li>
+          <li>• La solicitud permanecerá pendiente hasta nueva respuesta</li>
+          <li>• Se generará un registro del rechazo</li>
+        `;
+
+        confirmButton.className = 'px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105';
+        confirmButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          Sí, Rechazar Respuesta
+        `;
+      }
+
+      // Mostrar el modal con animación
+      confirmModal.classList.remove('hidden');
+      setTimeout(() => {
+        confirmModal.classList.add('opacity-100');
+        modalContent.classList.remove('scale-95');
+        modalContent.classList.add('scale-100');
+      }, 10);
+    }
+
+    // Función para ocultar modal de confirmación
+    function hideConfirmModal() {
+      modalContent.classList.remove('scale-100');
+      modalContent.classList.add('scale-95');
+      confirmModal.classList.remove('opacity-100');
+
+      setTimeout(() => {
+        confirmModal.classList.add('hidden');
+      }, 300);
+    }
+
     // Mejorar la experiencia de los radio buttons
     const radioButtons = document.querySelectorAll('input[type="radio"]');
     const optionCards = document.querySelectorAll('.option-card');
@@ -415,26 +635,62 @@
       });
     });
 
-    // Validación del formulario
+    // Validación del formulario con modales modernos
     const form = document.querySelector('form');
     form.addEventListener('submit', function(e) {
+      e.preventDefault(); // Prevenir envío automático
+
       const validezSelected = document.querySelector('input[name="validezRespuesta"]:checked');
 
       if (!validezSelected) {
-        e.preventDefault();
-        alert('Por favor, seleccione si la respuesta es válida o no antes de continuar.');
+        showValidationModal('Por favor, seleccione si la respuesta es válida o no antes de continuar.');
         return false;
       }
 
-      // Confirmación final
+      // Obtener observaciones
+      const observaciones = document.getElementById('observaciones').value.trim();
       const isValid = validezSelected.value === 'true';
-      const confirmMessage = isValid
-              ? '¿Está seguro de que desea aprobar esta respuesta? La solicitud será enviada al ciudadano.'
-              : '¿Está seguro de que desea rechazar esta respuesta? Será devuelta al profesional para su corrección.';
 
-      if (!confirm(confirmMessage)) {
-        e.preventDefault();
-        return false;
+      // Mostrar modal de confirmación
+      showConfirmModal(isValid, observaciones);
+    });
+
+    // Event listeners para modales
+    validationOkButton.addEventListener('click', hideValidationModal);
+
+    confirmButton.addEventListener('click', function() {
+      // Mostrar indicador de carga
+      this.innerHTML = `
+        <svg class="animate-spin h-4 w-4 mr-2 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Procesando Evaluación...
+      `;
+      this.disabled = true;
+
+      // Enviar el formulario
+      setTimeout(() => {
+        form.submit();
+      }, 500);
+    });
+
+    cancelButton.addEventListener('click', hideConfirmModal);
+
+    // Cerrar modales con click fuera o Escape
+    [validationModal, confirmModal].forEach(modal => {
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          if (modal === validationModal) hideValidationModal();
+          if (modal === confirmModal) hideConfirmModal();
+        }
+      });
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        if (!validationModal.classList.contains('hidden')) hideValidationModal();
+        if (!confirmModal.classList.contains('hidden')) hideConfirmModal();
       }
     });
   });

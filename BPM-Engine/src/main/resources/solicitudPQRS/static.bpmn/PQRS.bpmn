@@ -22,14 +22,14 @@
       </bpmn:lane>
       <bpmn:lane id="Lane_1t9w3bt" name="Jefe de dependencia">
         <bpmn:flowNodeRef>Gateway_1gt2hb1</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_08r1uxh</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_12ljugq</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_03m82hr</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_1v96s1f</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1wq7ur6</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1tml0tf</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0607mqq</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1gert1o</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_08r1uxh</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1v96s1f</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_1wx4o2h" name="Grupo de archivo">
         <bpmn:flowNodeRef>Gateway_0vla9dr</bpmn:flowNodeRef>
@@ -72,13 +72,11 @@
     <bpmn:sequenceFlow id="Flow_1ka3dqn" sourceRef="Activity_1wq7ur6" targetRef="Gateway_0vla9dr" />
     <bpmn:sequenceFlow id="Flow_11tbzwg" sourceRef="Gateway_0vla9dr" targetRef="Activity_0yjqid2" />
     <bpmn:sequenceFlow id="Flow_0qsqv03" name="¿Es su competencia?" sourceRef="Activity_03m82hr" targetRef="Gateway_1gt2hb1" />
-    <bpmn:sequenceFlow id="Flow_1m2nx4q" name="Si" sourceRef="Gateway_1gt2hb1" targetRef="Activity_1v96s1f">
+    <bpmn:sequenceFlow id="Flow_1m2nx4q" name="Si" sourceRef="Gateway_1gt2hb1" targetRef="Gateway_08r1uxh">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${competenciaPersona==true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1hrtfug" name="No" sourceRef="Gateway_1gt2hb1" targetRef="Activity_1wq7ur6" />
-    <bpmn:sequenceFlow id="Flow_11jscfl" sourceRef="Activity_1v96s1f" targetRef="Gateway_08r1uxh" />
     <bpmn:sequenceFlow id="Flow_0ooj5do" sourceRef="Event_1gert1o" targetRef="Gateway_08r1uxh" />
-    <bpmn:sequenceFlow id="Flow_0na6cvg" sourceRef="Gateway_08r1uxh" targetRef="Gateway_1j2vlnt" />
     <bpmn:sequenceFlow id="Flow_1cro1hg" sourceRef="Activity_1tml0tf" targetRef="Gateway_12ljugq" />
     <bpmn:sequenceFlow id="Flow_1jtb6u8" name="Si" sourceRef="Gateway_12ljugq" targetRef="Activity_0607mqq">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${validezRespuesta==true}</bpmn:conditionExpression>
@@ -114,11 +112,6 @@
       <bpmn:incoming>Flow_0qsqv03</bpmn:incoming>
       <bpmn:outgoing>Flow_1m2nx4q</bpmn:outgoing>
       <bpmn:outgoing>Flow_1hrtfug</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="Gateway_08r1uxh">
-      <bpmn:incoming>Flow_11jscfl</bpmn:incoming>
-      <bpmn:incoming>Flow_0ooj5do</bpmn:incoming>
-      <bpmn:outgoing>Flow_0na6cvg</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:exclusiveGateway id="Gateway_12ljugq" name="¿Respuesta valida?" default="Flow_18w5io6">
       <bpmn:incoming>Flow_1cro1hg</bpmn:incoming>
@@ -158,27 +151,6 @@
       <bpmn:incoming>Flow_0kte3tz</bpmn:incoming>
       <bpmn:outgoing>Flow_0qsqv03</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_1v96s1f" name="Asignar profesionales">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="profesional" label="Seleccionar profesional" type="enum">
-            <camunda:value id="Ingeniero Ambiental" name="Ingeniero Ambiental" />
-            <camunda:value id="Profesional Juridico" name="Profesional Juridico" />
-            <camunda:value id="Ingeniero Forestal" name="Ingeniero Forestal" />
-            <camunda:value id="Profesional en Gestion Documental" name="Profesional en Gestion Documental" />
-            <camunda:value id="Biologo" name="Biologo" />
-          </camunda:formField>
-          <camunda:formField id="limiteTiempo" label="Limite de tiempo" type="enum">
-            <camunda:value id="PT24H" name="Un dia" />
-            <camunda:value id="PT48H" name="Dos dias" />
-            <camunda:value id="PT72H" name="Tres dias" />
-            <camunda:value id="PT86H" name="Cuatro dias" />
-          </camunda:formField>
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1m2nx4q</bpmn:incoming>
-      <bpmn:outgoing>Flow_11jscfl</bpmn:outgoing>
-    </bpmn:userTask>
     <bpmn:userTask id="Activity_1wq7ur6" name="Informar no competencia" camunda:formRef="jefeNoCompetencia" camunda:formRefBinding="latest">
       <bpmn:incoming>Flow_1hrtfug</bpmn:incoming>
       <bpmn:outgoing>Flow_1ka3dqn</bpmn:outgoing>
@@ -197,7 +169,7 @@
     </bpmn:userTask>
     <bpmn:exclusiveGateway id="Gateway_1j2vlnt">
       <bpmn:incoming>Flow_18w5io6</bpmn:incoming>
-      <bpmn:incoming>Flow_0na6cvg</bpmn:incoming>
+      <bpmn:incoming>Flow_033bicw</bpmn:incoming>
       <bpmn:outgoing>Flow_1kgz7xj</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Activity_0607mqq" name="Firmar aprobacion de la respuesta a la PQRS" camunda:formRef="firmar" camunda:formRefBinding="latest">
@@ -208,13 +180,13 @@
     <bpmn:boundaryEvent id="Event_1gert1o" name="2dias" attachedToRef="Activity_1wq7ur6">
       <bpmn:outgoing>Flow_0ooj5do</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1iemibq">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT48H</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_0z0hd0d" name="plazo limite" cancelActivity="false" attachedToRef="Activity_1uzqpdw">
       <bpmn:outgoing>Flow_0df9tzi</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1gcmtjd">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT48H</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">${limiteTiempo}</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:serviceTask id="Activity_1e3rn1a" name="Radicar PQRS" camunda:class="com.example.cormacarena.RadicacionSolicitud">
@@ -241,6 +213,34 @@
       <bpmn:incoming>Flow_14qtk5e</bpmn:incoming>
       <bpmn:outgoing>Flow_0txzxcf</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_08r1uxh">
+      <bpmn:incoming>Flow_0ooj5do</bpmn:incoming>
+      <bpmn:incoming>Flow_1m2nx4q</bpmn:incoming>
+      <bpmn:outgoing>Flow_1aa2w0k</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Activity_1v96s1f" name="Asignar profesionales">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="profesional" label="Seleccionar profesional" type="enum">
+            <camunda:value id="Ingeniero Ambiental" name="Ingeniero Ambiental" />
+            <camunda:value id="Profesional Juridico" name="Profesional Juridico" />
+            <camunda:value id="Ingeniero Forestal" name="Ingeniero Forestal" />
+            <camunda:value id="Profesional en Gestion Documental" name="Profesional en Gestion Documental" />
+            <camunda:value id="Biologo" name="Biologo" />
+          </camunda:formField>
+          <camunda:formField id="limiteTiempo" label="Limite de tiempo" type="enum">
+            <camunda:value id="PT24H" name="Un dia" />
+            <camunda:value id="PT48H" name="Dos dias" />
+            <camunda:value id="PT72H" name="Tres dias" />
+            <camunda:value id="PT86H" name="Cuatro dias" />
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1aa2w0k</bpmn:incoming>
+      <bpmn:outgoing>Flow_033bicw</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1aa2w0k" sourceRef="Gateway_08r1uxh" targetRef="Activity_1v96s1f" />
+    <bpmn:sequenceFlow id="Flow_033bicw" sourceRef="Activity_1v96s1f" targetRef="Gateway_1j2vlnt" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_03w4gb1">
@@ -302,9 +302,6 @@
       <bpmndi:BPMNShape id="Gateway_1gt2hb1_di" bpmnElement="Gateway_1gt2hb1" isMarkerVisible="true">
         <dc:Bounds x="1805" y="895" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_08r1uxh_di" bpmnElement="Gateway_08r1uxh" isMarkerVisible="true">
-        <dc:Bounds x="2105" y="895" width="50" height="50" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_12ljugq_di" bpmnElement="Gateway_12ljugq" isMarkerVisible="true">
         <dc:Bounds x="3245" y="895" width="50" height="50" />
         <bpmndi:BPMNLabel>
@@ -328,9 +325,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0mtnpyb_di" bpmnElement="Activity_03m82hr">
         <dc:Bounds x="1600" y="880" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0l6zi1x_di" bpmnElement="Activity_1v96s1f">
-        <dc:Bounds x="1930" y="790" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_01budee_di" bpmnElement="Activity_1wq7ur6">
         <dc:Bounds x="1930" y="970" width="100" height="80" />
@@ -370,6 +364,12 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1juk0eh_di" bpmnElement="Activity_0dt0hfg">
         <dc:Bounds x="4460" y="1610" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_08r1uxh_di" bpmnElement="Gateway_08r1uxh" isMarkerVisible="true">
+        <dc:Bounds x="2105" y="805" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0l6zi1x_di" bpmnElement="Activity_1v96s1f">
+        <dc:Bounds x="2240" y="790" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0mq9nr4_di" bpmnElement="Event_0z0hd0d">
         <dc:Bounds x="2752" y="1342" width="36" height="36" />
@@ -438,9 +438,9 @@
       <bpmndi:BPMNEdge id="Flow_1m2nx4q_di" bpmnElement="Flow_1m2nx4q">
         <di:waypoint x="1830" y="895" />
         <di:waypoint x="1830" y="830" />
-        <di:waypoint x="1930" y="830" />
+        <di:waypoint x="2105" y="830" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1874" y="812" width="11" height="14" />
+          <dc:Bounds x="1962" y="812" width="11" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1hrtfug_di" bpmnElement="Flow_1hrtfug">
@@ -451,21 +451,10 @@
           <dc:Bounds x="1872" y="1013" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_11jscfl_di" bpmnElement="Flow_11jscfl">
-        <di:waypoint x="2030" y="830" />
-        <di:waypoint x="2130" y="830" />
-        <di:waypoint x="2130" y="895" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ooj5do_di" bpmnElement="Flow_0ooj5do">
         <di:waypoint x="2048" y="1050" />
         <di:waypoint x="2130" y="1050" />
-        <di:waypoint x="2130" y="945" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0na6cvg_di" bpmnElement="Flow_0na6cvg">
-        <di:waypoint x="2155" y="920" />
-        <di:waypoint x="2280" y="920" />
-        <di:waypoint x="2280" y="1320" />
-        <di:waypoint x="2465" y="1320" />
+        <di:waypoint x="2130" y="855" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1cro1hg_di" bpmnElement="Flow_1cro1hg">
         <di:waypoint x="3140" y="920" />
@@ -554,6 +543,15 @@
       <bpmndi:BPMNEdge id="Flow_0txzxcf_di" bpmnElement="Flow_0txzxcf">
         <di:waypoint x="4560" y="1650" />
         <di:waypoint x="4652" y="1650" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1aa2w0k_di" bpmnElement="Flow_1aa2w0k">
+        <di:waypoint x="2155" y="830" />
+        <di:waypoint x="2240" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_033bicw_di" bpmnElement="Flow_033bicw">
+        <di:waypoint x="2290" y="870" />
+        <di:waypoint x="2290" y="1320" />
+        <di:waypoint x="2465" y="1320" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
