@@ -92,6 +92,6 @@ public class DenunciasController {
             );
         }
         model.addAttribute("denuncias",processVariableInformesTecnicos);
-        return "conceptoTecnicoF";
+        return "conceptoTecnicoForm";
     }
 }
