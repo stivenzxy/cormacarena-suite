@@ -1,7 +1,7 @@
 package com.example.cormacarena_client.licenciamientoAmbiental.controller;
 
 import com.example.cormacarena_client.licenciamientoAmbiental.DTO.SolicitudDTO;
-import com.example.cormacarena_client.licenciamientoAmbiental.enums.SectorProyecto;
+import org.example.modelo.SectorProyecto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

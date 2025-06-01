@@ -1,9 +1,9 @@
 package com.example.cormacarena_client.sancionamientoAmbiental.service.impl;
 
-import com.example.cormacarena_client.sancionamientoAmbiental.entity.SancionamientoAmbiental;
 import com.example.cormacarena_client.sancionamientoAmbiental.repository.SancionamientoAmbientalRepository;
 import com.example.cormacarena_client.sancionamientoAmbiental.service.SancionamientoAmbientalService;
 import com.example.cormacarena_client.sancionamientoAmbiental.service.base.BaseServiceImpl;
+import org.example.modelo.SancionamientoAmbiental;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
