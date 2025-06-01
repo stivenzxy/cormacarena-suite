@@ -1,6 +1,6 @@
 package com.example.cormacarena_organization.sancionamientoAmbiental.repository;
 
-import com.example.cormacarena_organization.sancionamientoAmbiental.entity.ActoAdministrativo;
+import org.example.modelo.ActoAdministrativo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -2,69 +2,498 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Consulta Denuncia</title>
+    <title>Consulta Denuncia - CORMACARENA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0d348d',
+                        secondary: '#1a4fb4',
+                        tertiary: '#eaf2fe',
+                        accent: '#f59e0b'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'bounce-soft': 'bounce 1s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-tertiary min-h-screen flex flex-col">
+<body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen">
 
 <!-- Header y barra lateral -->
 <div th:replace="views/header :: contenido"></div>
 
 <!-- Contenido principal -->
-<main class="pt-28 md:pl-60 px-6 min-h-screen bg-[#eaf2fe] transition-all duration-300">
+<main class="pt-24 px-4 sm:px-6 lg:px-8 min-h-screen transition-all duration-300" id="mainContent">
+    <div class="max-w-6xl mx-auto">
 
-    <!-- Título -->
+        <!-- Breadcrumb -->
+        <nav class="mb-8" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-3 text-sm bg-white/70 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
+                <li>
+                    <a href="/" class="flex items-center text-gray-600 hover:text-primary transition-colors group">
+                        <i class="fas fa-home mr-2 group-hover:scale-110 transition-transform"></i>
+                        Inicio
+                    </a>
+                </li>
+                <li><i class="fas fa-chevron-right text-gray-400"></i></li>
+                <li class="text-primary font-semibold flex items-center">
+                    <i class="fas fa-search mr-2"></i>
+                    Consultar Denuncia
+                </li>
+            </ol>
+        </nav>
 
-    <div class="licence-request-form bg-white flex flex-col rounded-lg shadow-lg p-8 w-full max-w-4xl mx-auto">
-    <!-- Formulario de búsqueda -->
-    <form method="get" action="/consultar"
-          >
-        <h1 class="text-3xl font-bold text-[#0d348d] border-b-4 border-[#0d348d] pb-2 w-fit">
-            Consultar Denuncia
-        </h1>
-
-    <input type="number" name="idDenuncia" placeholder="Ingrese el ID de la denuncia"
-               th:value="${idDenuncia}" required
-               class="w-full sm:w-80 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#0d348d]" />
-        <button type="submit"
-                class="bg-[#0d348d] text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition">
-            Buscar
-        </button>
-    </form>
-
-    <!-- Tabla de resultados (solo si hay denuncias) -->
-        <!-- Tabla de resultados (solo si hay denuncia) -->
-        <div th:if="${denuncia != null}" class="mt-6">
-            <table class="w-full bg-white rounded-lg shadow-md table-auto">
-                <thead class="bg-[#0d348d] text-white">
-                <tr>
-                    <th class="py-3 px-6 text-left w-1/4">ID Denuncia</th>
-                    <th class="py-3 px-6 text-left w-1/4">Radicado</th>
-                    <th class="py-3 px-6 text-left w-1/4">Estado</th>
-                    <th class="py-3 px-6 text-left w-1/4">Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="border-b hover:bg-gray-100 transition">
-                    <td class="py-3 px-6" th:text="${denuncia.id}"></td>
-                    <td class="py-3 px-6"
-                        th:text="${denuncia.numeroradicado != null ? 'Sí — ' + denuncia.numeroradicado : 'No'}"></td>
-                    <td class="py-3 px-6" th:text="${denuncia.estado}"></td>
-                    <td class="py-3 px-6">
-                        <a th:href="@{'/denuncia/' + ${denuncia.id}}"
-                           class="text-blue-600 hover:underline">Ver más</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+        <!-- Título principal -->
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full mb-4 shadow-lg">
+                <i class="fas fa-search text-white text-2xl"></i>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-3">
+                Consultar Denuncia
+            </h1>
+            <p class="text-gray-600 text-xl max-w-2xl mx-auto leading-relaxed">
+                Ingrese el ID de su denuncia para consultar el estado y seguimiento
+            </p>
         </div>
 
-    <!-- Mensaje si no se encontraron resultados -->
-    <div th:if="${denuncia == null}" class="mt-6 text-center text-gray-600">
-        No se encontraron denuncias con ese número.
-    </div>
+        <!-- Mostrar mensaje de error si existe -->
+        <div th:if="${error}" class="mb-8 bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+            <div class="flex items-center justify-center gap-3 mb-3">
+                <div class="bg-red-500 p-2 rounded-full">
+                    <i class="fas fa-exclamation-triangle text-white"></i>
+                </div>
+                <h3 class="text-red-800 font-bold text-lg">Error en la consulta</h3>
+            </div>
+            <p class="text-red-700" th:text="${error}">Ha ocurrido un error</p>
+        </div>
+
+        <!-- Formulario de búsqueda -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-white/20 mb-8">
+            <!-- Header del formulario -->
+            <div class="bg-gradient-to-r from-green-500 via-emerald-600 to-green-500 px-8 py-8 relative overflow-hidden">
+                <div class="absolute inset-0 bg-black/10"></div>
+                <div class="relative z-10">
+                    <h2 class="text-white text-3xl font-bold flex items-center mb-2">
+                        <div class="bg-white/20 p-3 rounded-full mr-4">
+                            <i class="fas fa-search text-2xl"></i>
+                        </div>
+                        Buscar Denuncia
+                    </h2>
+                    <p class="text-green-100 text-lg">Ingrese el número de ID para consultar el estado</p>
+                </div>
+            </div>
+
+            <!-- Contenido del formulario -->
+            <form method="get" action="/consultar" class="p-8 lg:p-10" id="consultaForm">
+                <div class="flex flex-col lg:flex-row gap-6 items-end">
+                    <div class="flex-1 space-y-3">
+                        <label class="flex items-center text-gray-700 font-semibold text-lg">
+                            <div class="bg-green-100 p-2 rounded-lg mr-3">
+                                <i class="fas fa-hashtag text-green-600"></i>
+                            </div>
+                            ID de la Denuncia
+                        </label>
+                        <input type="number"
+                               name="idDenuncia"
+                               id="idDenuncia"
+                               placeholder="Ejemplo: 12345"
+                               th:value="${idDenuncia}"
+                               required
+                               min="1"
+                               class="w-full border-2 border-gray-200 rounded-xl px-5 py-4 text-lg focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/20 transition-all duration-300 hover:border-gray-300 hover:shadow-md" />
+                        <p class="text-sm text-gray-500 flex items-center">
+                            <i class="fas fa-info-circle mr-2 text-blue-500"></i>
+                            El ID se proporciona al momento de crear la denuncia
+                        </p>
+                    </div>
+                    <button type="submit"
+                            class="group px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-green-500 transition-all duration-300 flex items-center gap-3 shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105"
+                            id="buscarBtn">
+                        <i class="fas fa-search group-hover:scale-110 transition-transform"></i>
+                        <span>Buscar Denuncia</span>
+                        <div class="hidden" id="loadingSpinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Resultados de búsqueda - Solo se muestra si hay denuncia -->
+        <div th:if="${denuncia != null}" class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-white/20" id="resultadosContainer">
+            <!-- Header de resultados -->
+            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
+                <h3 class="text-white text-2xl font-bold flex items-center">
+                    <div class="bg-white/20 p-2 rounded-full mr-3">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    Resultado de la Búsqueda
+                </h3>
+                <p class="text-blue-100 mt-1">Información detallada de su denuncia</p>
+            </div>
+
+            <!-- Contenido de resultados -->
+            <div class="p-8">
+                <!-- Información principal en tarjetas -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <!-- ID Denuncia -->
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-blue-500 p-3 rounded-lg">
+                                <i class="fas fa-hashtag text-white text-xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-blue-800 text-lg">ID Denuncia</h4>
+                        </div>
+                        <p class="text-3xl font-bold text-blue-700" th:text="${denuncia.id}">-</p>
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-green-500 p-3 rounded-lg">
+                                <i class="fas fa-info-circle text-white text-xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-green-800 text-lg">Estado</h4>
+                        </div>
+                        <div th:if="${denuncia.estado != null}">
+                            <span class="inline-block px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800"
+                                  th:text="${denuncia.estado}">Estado</span>
+                        </div>
+                        <div th:if="${denuncia.estado == null}">
+                            <span class="inline-block px-4 py-2 rounded-full text-sm font-semibold bg-gray-100 text-gray-600">
+                                No disponible
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Radicado -->
+                    <div class="bg-gradient-to-br from-purple-50 to-violet-50 p-6 rounded-xl border border-purple-200">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-purple-500 p-3 rounded-lg">
+                                <i class="fas fa-file-contract text-white text-xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-purple-800 text-lg">Número de Radicado</h4>
+                        </div>
+                        <div th:if="${denuncia.numeroradicado != null}">
+                            <p class="text-2xl font-bold text-purple-700" th:text="${denuncia.numeroradicado}">-</p>
+                            <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 mt-2">
+                                <i class="fas fa-check-circle mr-1"></i>Radicada
+                            </span>
+                        </div>
+                        <div th:if="${denuncia.numeroradicado == null}">
+                            <p class="text-lg font-semibold text-gray-600">Pendiente de radicación</p>
+                            <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 mt-2">
+                                <i class="fas fa-clock mr-1"></i>En proceso
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="bg-gray-50 rounded-2xl p-8">
+                    <h4 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                        <i class="fas fa-info-circle text-primary"></i>
+                        Información de la Denuncia
+                    </h4>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between py-3 border-b border-gray-200">
+                                <span class="text-gray-600 font-medium">ID de la Denuncia:</span>
+                                <span class="font-bold text-gray-800" th:text="${denuncia.id}">-</span>
+                            </div>
+                            <div class="flex items-center justify-between py-3 border-b border-gray-200">
+                                <span class="text-gray-600 font-medium">Estado Actual:</span>
+                                <span class="font-bold text-gray-800" th:text="${denuncia.estado ?: 'No disponible'}">-</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between py-3 border-b border-gray-200">
+                                <span class="text-gray-600 font-medium">Número de Radicado:</span>
+                                <span class="font-bold text-gray-800" th:text="${denuncia.numeroradicado ?: 'Pendiente'}">-</span>
+                            </div>
+                            <div class="flex items-center justify-between py-3 border-b border-gray-200">
+                                <span class="text-gray-600 font-medium">Estado de Radicación:</span>
+                                <span th:if="${denuncia.numeroradicado != null}" class="font-bold text-green-600">
+                                    <i class="fas fa-check-circle mr-1"></i>Radicada
+                                </span>
+                                <span th:if="${denuncia.numeroradicado == null}" class="font-bold text-yellow-600">
+                                    <i class="fas fa-clock mr-1"></i>Pendiente
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+                    <a th:href="@{'/denuncia/' + ${denuncia.id}}"
+                       class="inline-flex items-center justify-center gap-3 bg-primary text-white px-8 py-4 rounded-xl hover:bg-secondary transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-eye"></i>
+                        Ver Detalles Completos
+                    </a>
+
+                    <button onclick="limpiarBusqueda()"
+                            class="inline-flex items-center justify-center gap-3 bg-gray-500 text-white px-8 py-4 rounded-xl hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-search"></i>
+                        Nueva Búsqueda
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensaje si no se encontraron resultados -->
+        <div th:if="${denuncia == null && idDenuncia != null && error == null}"
+             class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 text-center border border-white/20" id="noResultsContainer">
+            <div class="max-w-md mx-auto">
+                <div class="bg-red-100 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                    <i class="fas fa-search-minus text-red-500 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">No se encontraron resultados</h3>
+                <p class="text-gray-600 mb-6">
+                    No se encontró ninguna denuncia con el ID:
+                    <strong class="text-red-600" th:text="${idDenuncia}">-</strong>
+                </p>
+                <div class="space-y-3 text-sm text-gray-500 mb-6">
+                    <p class="flex items-center justify-center gap-2">
+                        <i class="fas fa-lightbulb text-yellow-500"></i>
+                        Verifique que el ID sea correcto
+                    </p>
+                    <p class="flex items-center justify-center gap-2">
+                        <i class="fas fa-phone text-blue-500"></i>
+                        Si necesita ayuda, llame al (123) 456-7890
+                    </p>
+                </div>
+                <button onclick="limpiarBusqueda()"
+                        class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                    <i class="fas fa-redo mr-2"></i>
+                    Nueva Búsqueda
+                </button>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="mt-10 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-8 shadow-lg">
+            <div class="flex items-start gap-4">
+                <div class="bg-blue-500 p-3 rounded-full flex-shrink-0">
+                    <i class="fas fa-info-circle text-white text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-blue-800 text-xl mb-4">¿Cómo consultar mi denuncia?</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-blue-700">
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3">
+                                <div class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">1</div>
+                                <span>Ingrese el ID de su denuncia en el campo de búsqueda</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">2</div>
+                                <span>Haga clic en "Buscar Denuncia"</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3">
+                                <div class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">3</div>
+                                <span>Revise la información y estado de su denuncia</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">4</div>
+                                <span>Haga clic en "Ver Detalles" para más información</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
+
+<!-- Floating Action Button para nueva denuncia -->
+<a href="/realizarDenuncia" class="fixed bottom-6 right-6 bg-gradient-to-r from-primary to-secondary text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300 z-50 group">
+    <i class="fas fa-plus text-xl group-hover:rotate-90 transition-transform"></i>
+</a>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log('Consulta Denuncia page loaded');
+
+        // Debug: Mostrar datos recibidos del servidor
+        console.log('ID Denuncia from server:', /*[[${idDenuncia}]]*/ null);
+        console.log('Denuncia object exists:', /*[[${denuncia != null}]]*/ false);
+        console.log('Error message:', /*[[${error}]]*/ null);
+
+        // Referencias a elementos
+        const form = document.getElementById('consultaForm');
+        const searchInput = document.getElementById('idDenuncia');
+        const buscarBtn = document.getElementById('buscarBtn');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        // Auto-focus en el campo de búsqueda si está vacío
+        if (searchInput && !searchInput.value) {
+            searchInput.focus();
+        }
+
+        // Validación del formulario
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const input = searchInput.value.trim();
+
+                if (!input) {
+                    e.preventDefault();
+                    showNotification('Por favor, ingrese un ID de denuncia válido', 'error');
+                    searchInput.focus();
+                    return false;
+                }
+
+                if (isNaN(input) || parseInt(input) <= 0) {
+                    e.preventDefault();
+                    showNotification('El ID debe ser un número válido mayor a 0', 'error');
+                    searchInput.focus();
+                    return false;
+                }
+
+                // Mostrar loading
+                if (buscarBtn && loadingSpinner) {
+                    buscarBtn.disabled = true;
+                    buscarBtn.querySelector('span').textContent = 'Buscando...';
+                    loadingSpinner.classList.remove('hidden');
+                }
+
+                return true;
+            });
+        }
+
+        // Limpiar campo con doble clic
+        if (searchInput) {
+            searchInput.addEventListener('dblclick', function() {
+                this.value = '';
+                this.focus();
+            });
+
+            // Validación en tiempo real
+            searchInput.addEventListener('input', function() {
+                const value = this.value.trim();
+                if (value && (isNaN(value) || parseInt(value) <= 0)) {
+                    this.classList.add('border-red-500');
+                    this.classList.remove('border-gray-200');
+                } else {
+                    this.classList.remove('border-red-500');
+                    this.classList.add('border-gray-200');
+                }
+            });
+        }
+
+        // Prevenir múltiples envíos
+        let isSubmitting = false;
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                if (isSubmitting) {
+                    e.preventDefault();
+                    return false;
+                }
+                isSubmitting = true;
+
+                // Resetear después de 3 segundos
+                setTimeout(() => {
+                    isSubmitting = false;
+                    if (buscarBtn && loadingSpinner) {
+                        buscarBtn.disabled = false;
+                        buscarBtn.querySelector('span').textContent = 'Buscar Denuncia';
+                        loadingSpinner.classList.add('hidden');
+                    }
+                }, 3000);
+            });
+        }
+    });
+
+    // Función para limpiar búsqueda
+    function limpiarBusqueda() {
+        const searchInput = document.getElementById('idDenuncia');
+        if (searchInput) {
+            searchInput.value = '';
+            searchInput.focus();
+        }
+
+        // Redirigir a la página sin parámetros
+        window.location.href = '/consultar';
+    }
+
+    // Función para mostrar notificaciones
+    function showNotification(message, type = 'info', duration = 5000) {
+        // Remover notificaciones existentes
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(n => n.remove());
+
+        const notification = document.createElement('div');
+        notification.className = `notification fixed top-24 right-4 z-50 p-4 rounded-xl shadow-2xl transform transition-all duration-300 translate-x-full max-w-sm`;
+
+        const colors = {
+            error: 'bg-red-500 text-white',
+            success: 'bg-green-500 text-white',
+            info: 'bg-blue-500 text-white',
+            warning: 'bg-yellow-500 text-white'
+        };
+
+        const icons = {
+            error: 'exclamation-circle',
+            success: 'check-circle',
+            info: 'info-circle',
+            warning: 'exclamation-triangle'
+        };
+
+        notification.className += ` ${colors[type]}`;
+        notification.innerHTML = `
+        <div class="flex items-center gap-3">
+            <div class="bg-white/20 p-2 rounded-full">
+                <i class="fas fa-${icons[type]}"></i>
+            </div>
+            <span class="flex-1">${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" class="ml-2 hover:bg-white/20 p-1 rounded">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full');
+        }, 100);
+
+        setTimeout(() => {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => notification.remove(), 300);
+        }, duration);
+    }
+
+    // Debug function
+    window.debugConsulta = function() {
+        console.log('Form:', document.getElementById('consultaForm'));
+        console.log('Input:', document.getElementById('idDenuncia'));
+        console.log('Current URL:', window.location.href);
+        console.log('URL Params:', new URLSearchParams(window.location.search));
+
+        // Mostrar datos del servidor
+        console.log('Server data:');
+        console.log('- idDenuncia:', /*[[${idDenuncia}]]*/ null);
+        console.log('- denuncia exists:', /*[[${denuncia != null}]]*/ false);
+        console.log('- error:', /*[[${error}]]*/ null);
+    };
+</script>
+<script th:src="@{/script/sidebar.js}"></script>
 
 </body>
 </html>

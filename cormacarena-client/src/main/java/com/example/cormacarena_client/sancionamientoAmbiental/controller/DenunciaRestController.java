@@ -3,16 +3,16 @@ package com.example.cormacarena_client.sancionamientoAmbiental.controller;
 
 import com.example.cormacarena_client.sancionamientoAmbiental.DTO.DenunciaDTO;
 import com.example.cormacarena_client.sancionamientoAmbiental.DTO.DenunciaInfoRadicado;
-import com.example.cormacarena_client.sancionamientoAmbiental.entity.Denuncia;
-import com.example.cormacarena_client.sancionamientoAmbiental.entity.Denunciante;
-import com.example.cormacarena_client.sancionamientoAmbiental.entity.SancionamientoAmbiental;
-import com.example.cormacarena_client.sancionamientoAmbiental.entity.State;
 import com.example.cormacarena_client.sancionamientoAmbiental.service.DenuncianteRealizaDenunciaService;
 import com.example.cormacarena_client.sancionamientoAmbiental.service.DenuncianteService;
 import com.example.cormacarena_client.sancionamientoAmbiental.service.impl.DenunciaServiceImpl;
 import com.example.cormacarena_client.sancionamientoAmbiental.service.impl.DenuncianteServiceImpl;
 import com.example.cormacarena_client.sancionamientoAmbiental.service.impl.SancionamientoAmbientalServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.example.modelo.Denuncia;
+import org.example.modelo.Denunciante;
+import org.example.modelo.SancionamientoAmbiental;
+import org.example.modelo.State;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,7 +65,6 @@ public class DenunciaRestController {
         System.out.println("***** PROCESS IDD: "+processId);
         redirectAttributes.addFlashAttribute("denunciaDTO", denunciaDTO);
         redirectAttributes.addAttribute("processId", processId);
-
 
         return new RedirectView("/realizarDenuncia");
     }

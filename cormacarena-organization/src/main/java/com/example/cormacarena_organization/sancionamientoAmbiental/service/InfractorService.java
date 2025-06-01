@@ -1,7 +1,7 @@
 package com.example.cormacarena_organization.sancionamientoAmbiental.service;
 
-import com.example.cormacarena_organization.sancionamientoAmbiental.entity.Infractor;
 import com.example.cormacarena_organization.sancionamientoAmbiental.service.base.BaseServiceOrganization;
+import org.example.modelo.Infractor;
 import org.springframework.stereotype.Service;
 
 @Service

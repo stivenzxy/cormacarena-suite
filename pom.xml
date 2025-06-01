@@ -15,6 +15,7 @@
         <module>BPM-Engine</module>
         <module>cormacarena-client</module>
         <module>cormacarena-organization</module>
+        <module>cormacarena-modelo</module>
     </modules>
 
     <parent>
@@ -30,6 +31,11 @@
                 <artifactId>postgresql</artifactId>
                 <version>42.7.5</version>
             </dependency>
+            <dependency>
+                <groupId>com.cormacarena</groupId>
+                <artifactId>cormacarena-modelo</artifactId>
+                <version>${project.version}</version> <!-- Todos los módulos usarán esta versión -->
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -38,6 +44,7 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
+
     </dependencies>
 
     <properties>
