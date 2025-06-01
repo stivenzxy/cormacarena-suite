@@ -1,6 +1,8 @@
-package com.example.cormacarena_client.sancionamientoAmbiental.entity;
+package org.example.modelo;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Data

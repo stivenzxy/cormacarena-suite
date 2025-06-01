@@ -1,4 +1,4 @@
-package com.example.cormacarena_organization.sancionamientoAmbiental.entity;
+package org.example.modelo;
 
 import jakarta.persistence.*;
 import lombok.Data;

@@ -1,6 +1,5 @@
-package com.example.cormacarena_client.licenciamientoAmbiental.entity;
+package org.example.modelo;
 
-import com.example.cormacarena_client.licenciamientoAmbiental.enums.SectorProyecto;
 import jakarta.persistence.*;
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.example.cormacarena_client.sancionamientoAmbiental.entity;
+package org.example.modelo;
 
 public enum State {
     DRAFT,

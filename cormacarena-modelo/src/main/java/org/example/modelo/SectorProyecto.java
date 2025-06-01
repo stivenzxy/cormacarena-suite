@@ -1,4 +1,4 @@
-package com.example.cormacarena_client.licenciamientoAmbiental.enums;
+package org.example.modelo;
 
 public enum SectorProyecto {
     HIDROCARBUROS,

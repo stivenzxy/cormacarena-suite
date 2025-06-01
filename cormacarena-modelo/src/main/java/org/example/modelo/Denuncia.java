@@ -1,11 +1,11 @@
-package com.example.cormacarena_client.sancionamientoAmbiental.entity;
+package org.example.modelo;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "Denuncia")
+@Table(name = "denuncia")
 public class Denuncia {
 
     @Id

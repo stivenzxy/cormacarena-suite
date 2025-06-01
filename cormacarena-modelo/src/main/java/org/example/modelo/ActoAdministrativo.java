@@ -1,9 +1,7 @@
-package com.example.cormacarena_organization.sancionamientoAmbiental.entity;
+package org.example.modelo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import lombok.Data;
 
 import java.time.LocalDateTime;
