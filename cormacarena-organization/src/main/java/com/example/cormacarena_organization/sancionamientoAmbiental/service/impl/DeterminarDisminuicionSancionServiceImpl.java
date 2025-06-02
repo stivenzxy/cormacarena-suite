@@ -1,0 +1,2 @@
+package com.example.cormacarena_organization.sancionamientoAmbiental.service.impl;public class DeterminarDisminuicionSancionServiceImpl {
+}
