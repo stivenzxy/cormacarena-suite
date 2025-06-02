@@ -10,6 +10,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -112,6 +114,24 @@ public abstract class BaseProcessServiceImpl {
         }
     }
 
+    public String getChildProcessInstanceId(String parentProcessId) {
+        String url = camundaURL + "/process-instance?superProcessInstance=" + parentProcessId;
+        try {
+            ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
+                    url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Map<String, Object>>>() {}
+            );
+            List<Map<String, Object>> body = response.getBody();
+            if (body != null && !body.isEmpty()) {
+                // Asumimos el primero (puedes adaptar según tu lógica)
+                return (String) body.get(0).get("id");
+            }
+        } catch (HttpClientErrorException e) {
+            System.err.println("Error consultando procesos hijos: " + e.getResponseBodyAsString());
+        }
+        return null;
+    }
+
+
     public String getTaskIdByProcessIdWithApi(String processId) {
         String camundaUrl = camundaURL + "task?processInstanceId=" + processId;
 
@@ -149,5 +169,29 @@ public abstract class BaseProcessServiceImpl {
             }
         }
     }
+    public String getParentProcessInstanceId(String childProcessInstanceId) {
+        String url = camundaURL + "history/process-instance?processInstanceId=" + childProcessInstanceId;
+        try {
+            ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<Map<String, Object>>>() {}
+            );
+            List<Map<String, Object>> body = response.getBody();
+            if (body != null && !body.isEmpty()) {
+                Map<String, Object> firstItem = body.get(0);
+                if (firstItem.containsKey("superProcessInstanceId")) {
+                    return (String) firstItem.get("superProcessInstanceId");
+                }
+            }
+        } catch (HttpClientErrorException e) {
+            System.err.println("Error consultando proceso padre: " + e.getResponseBodyAsString());
+        } catch (Exception e) {
+            System.err.println("Error inesperado consultando proceso padre: " + e.getMessage());
+        }
+        return null;
+    }
+
 }
 

@@ -42,7 +42,7 @@ public class InformeTecnicoServiceImpl extends BaseProcessServiceImpl implements
             String encargadoVisitaTecnica = (String) encargadoVisitaTecnicaMap.get("value");
             informeTecnicoDTO.setEncargadoVisitaTecnica(encargadoVisitaTecnica);
 
-            Map<String, Object> descripcionVisitaTecnicaMap = (Map<String, Object>) variablesMap.get("apellidosDenunciante");
+            Map<String, Object> descripcionVisitaTecnicaMap = (Map<String, Object>) variablesMap.get("descripcionVisitaTecnica");
             String descripcionVisitaTecnica = (String) descripcionVisitaTecnicaMap.get("value");
             informeTecnicoDTO.setDescripcionVisitaTecnica(descripcionVisitaTecnica);
             informeTecnicoDTO.setNumeroDocumentoDenuciante(sancionamientoAmbiental.getDenuncia().getDenunciante().getNumeroIdentificacion());

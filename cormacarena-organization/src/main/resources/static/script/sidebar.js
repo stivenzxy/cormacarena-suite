@@ -1,6 +1,32 @@
 let sidebarOpen = false;
 let isInitialized = false;
 let gemaSubmenuOpen = false;
+let giemaSubmenuOpen = false;
+let autoridadSubmenuOpen = false; // Nueva variable para el submenú de Autoridad Ambiental
+
+// Función para alternar el submenú de Autoridad Ambiental
+function toggleAutoridadSubmenu() {
+    const submenu = document.getElementById("autoridadSubmenu");
+    const chevron = document.getElementById("autoridadChevron");
+
+    if (!submenu || !chevron) return;
+
+    autoridadSubmenuOpen = !autoridadSubmenuOpen;
+
+    if (autoridadSubmenuOpen) {
+        submenu.classList.remove("hidden");
+        submenu.classList.add("animate-slide-down");
+        chevron.classList.remove("fa-chevron-down");
+        chevron.classList.add("fa-chevron-up");
+        chevron.style.transform = "rotate(180deg)";
+    } else {
+        submenu.classList.add("hidden");
+        submenu.classList.remove("animate-slide-down");
+        chevron.classList.remove("fa-chevron-up");
+        chevron.classList.add("fa-chevron-down");
+        chevron.style.transform = "rotate(0deg)";
+    }
+}
 
 // Función para alternar el submenú de GEMA
 function toggleGemaSubmenu() {
@@ -12,6 +38,30 @@ function toggleGemaSubmenu() {
     gemaSubmenuOpen = !gemaSubmenuOpen;
 
     if (gemaSubmenuOpen) {
+        submenu.classList.remove("hidden");
+        submenu.classList.add("animate-slide-down");
+        chevron.classList.remove("fa-chevron-down");
+        chevron.classList.add("fa-chevron-up");
+        chevron.style.transform = "rotate(180deg)";
+    } else {
+        submenu.classList.add("hidden");
+        submenu.classList.remove("animate-slide-down");
+        chevron.classList.remove("fa-chevron-up");
+        chevron.classList.add("fa-chevron-down");
+        chevron.style.transform = "rotate(0deg)";
+    }
+}
+
+// Función para alternar el submenú de GIEMA
+function toggleGiemaSubmenu() {
+    const submenu = document.getElementById("giemaSubmenu");
+    const chevron = document.getElementById("giemaChevron");
+
+    if (!submenu || !chevron) return;
+
+    giemaSubmenuOpen = !giemaSubmenuOpen;
+
+    if (giemaSubmenuOpen) {
         submenu.classList.remove("hidden");
         submenu.classList.add("animate-slide-down");
         chevron.classList.remove("fa-chevron-down");
@@ -90,9 +140,15 @@ function toggleSidebar() {
         // Restaurar scroll del body
         document.body.style.overflow = '';
 
-        // Cerrar submenú de GEMA al cerrar sidebar
+        // Cerrar submenús al cerrar sidebar
         if (gemaSubmenuOpen) {
             toggleGemaSubmenu();
+        }
+        if (giemaSubmenuOpen) {
+            toggleGiemaSubmenu();
+        }
+        if (autoridadSubmenuOpen) {
+            toggleAutoridadSubmenu();
         }
     }
 }
@@ -180,6 +236,8 @@ function initSidebar() {
     const sidebarToggle = document.getElementById("sidebarToggle");
     const overlay = document.getElementById("overlay");
     const gemaToggle = document.getElementById("gemaToggle");
+    const giemaToggle = document.getElementById("giemaToggle");
+    const autoridadToggle = document.getElementById("autoridadToggle"); // Nuevo toggle para Autoridad Ambiental
 
     if (!sidebar) {
         console.error('Sidebar element not found, retrying in 100ms...');
@@ -211,6 +269,23 @@ function initSidebar() {
             e.preventDefault();
             e.stopPropagation();
             toggleGemaSubmenu();
+        });
+    }
+
+    if (giemaToggle) {
+        giemaToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleGiemaSubmenu();
+        });
+    }
+
+    // Nuevo event listener para Autoridad Ambiental
+    if (autoridadToggle) {
+        autoridadToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleAutoridadSubmenu();
         });
     }
 

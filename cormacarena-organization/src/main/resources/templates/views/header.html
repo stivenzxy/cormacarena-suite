@@ -88,19 +88,41 @@
 
         <!-- Navegación principal con scroll -->
         <nav class="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
-            <!-- Subdirección de autoridad ambiental -->
-            <a href="/listaDenunciaSinRadicar" class="group block">
-                <div class="text-white px-4 py-4 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center gap-3 transform hover:scale-105 hover:shadow-lg">
-                    <div class="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
-                        <i class="fas fa-file-alt text-lg"></i>
+            <!-- Subdirección de autoridad ambiental con submenú -->
+            <div class="relative">
+                <button id="autoridadToggle" class="group w-full text-left">
+                    <div class="text-white px-4 py-4 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center gap-3 transform hover:scale-105 hover:shadow-lg">
+                        <div class="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
+                            <i class="fas fa-file-alt text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <span class="font-semibold text-base">Subdirección de autoridad ambiental</span>
+                            <p class="text-blue-100 text-xs mt-1">Gestión de denuncias</p>
+                        </div>
+                        <i id="autoridadChevron" class="fas fa-chevron-down text-sm opacity-50 group-hover:opacity-100 transition-all duration-300"></i>
                     </div>
-                    <div class="flex-1">
-                        <span class="font-semibold text-base">Subdirección de autoridad ambiental</span>
-                        <p class="text-blue-100 text-xs mt-1">Gestión de denuncias</p>
-                    </div>
-                    <i class="fas fa-chevron-right text-sm opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                </button>
+
+                <!-- Submenú de Subdirección de autoridad ambiental -->
+                <div id="autoridadSubmenu" class="hidden ml-4 mt-2 space-y-2 animate-slide-down">
+                    <a href="/listaDenunciaSinRadicar" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-file-import text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Radicar denuncias</span>
+                        </div>
+                    </a>
+                    <a href="/reSolucionesActosAdministrativos" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-file-signature text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Resoluciones de actos administrativos</span>
+                        </div>
+                    </a>
                 </div>
-            </a>
+            </div>
 
             <!-- Grupo GEMA con submenú -->
             <div class="relative">
@@ -143,7 +165,7 @@
                             <span class="text-sm font-medium">Elaborar informe técnico</span>
                         </div>
                     </a>
-                    <a href="/elaborarConceptoTecnico" class="group block">
+                    <a href="/registrarConceptoTecnico" class="group block">
                         <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
                             <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
                                 <i class="fas fa-clipboard-check text-sm"></i>
@@ -168,22 +190,68 @@
                 </div>
             </a>
 
-            <!-- Grupo GIEMA -->
-            <a href="/informesTecnicos" class="group block">
-                <div class="text-white px-4 py-4 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center gap-3 transform hover:scale-105 hover:shadow-lg">
-                    <div class="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
-                        <i class="fas fa-clipboard-list text-lg"></i>
+            <!-- Grupo GIEMA con submenú -->
+            <div class="relative">
+                <button id="giemaToggle" class="group w-full text-left">
+                    <div class="text-white px-4 py-4 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center gap-3 transform hover:scale-105 hover:shadow-lg">
+                        <div class="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
+                            <i class="fas fa-clipboard-list text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <span class="font-semibold text-base">Grupo GIEMA</span>
+                            <p class="text-blue-100 text-xs mt-1">Gestión de informes</p>
+                        </div>
+                        <i id="giemaChevron" class="fas fa-chevron-down text-sm opacity-50 group-hover:opacity-100 transition-all duration-300"></i>
                     </div>
-                    <div class="flex-1">
-                        <span class="font-semibold text-base">Grupo GIEMA</span>
-                        <p class="text-blue-100 text-xs mt-1">Gestión de informes</p>
-                    </div>
-                    <i class="fas fa-chevron-right text-sm opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                </button>
+
+                <!-- Submenú de GIEMA -->
+                <div id="giemaSubmenu" class="hidden ml-4 mt-2 space-y-2 animate-slide-down">
+                    <a href="/elaborarActosAdministrativos" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-file-signature text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Elaborar Actos Administrativos</span>
+                        </div>
+                    </a>
+                    <a href="/formularCargos" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-exclamation-circle text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Formular cargos al infractor</span>
+                        </div>
+                    </a>
+                    <a href="/denunciasADeterminar" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-gavel text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Determinar Sanción</span>
+                        </div>
+                    </a>
+                    <a href="/listaDeDisminuicion" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-gavel text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Determinar el porcentaje de disminuición de la sanción</span>
+                        </div>
+                    </a>
+                    <a href="/recursosReposicionADeterminar" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-balance-scale text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Verificar recursos de reposición</span>
+                        </div>
+                    </a>
                 </div>
-            </a>
+            </div>
 
             <!-- Oficina de asesoría jurídica -->
-            <a href="/juridica" class="group block">
+            <a href="/conceptosTecnicosAElaborar" class="group block">
                 <div class="text-white px-4 py-4 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center gap-3 transform hover:scale-105 hover:shadow-lg">
                     <div class="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
                         <i class="fas fa-gavel text-lg"></i>
@@ -218,6 +286,32 @@
     let sidebarOpen = false;
     let isInitialized = false;
     let gemaSubmenuOpen = false;
+    let giemaSubmenuOpen = false;
+    let autoridadSubmenuOpen = false; // Nueva variable para el submenú de Autoridad Ambiental
+
+    // Función para alternar el submenú de Autoridad Ambiental
+    function toggleAutoridadSubmenu() {
+        const submenu = document.getElementById("autoridadSubmenu");
+        const chevron = document.getElementById("autoridadChevron");
+
+        if (!submenu || !chevron) return;
+
+        autoridadSubmenuOpen = !autoridadSubmenuOpen;
+
+        if (autoridadSubmenuOpen) {
+            submenu.classList.remove("hidden");
+            submenu.classList.add("animate-slide-down");
+            chevron.classList.remove("fa-chevron-down");
+            chevron.classList.add("fa-chevron-up");
+            chevron.style.transform = "rotate(180deg)";
+        } else {
+            submenu.classList.add("hidden");
+            submenu.classList.remove("animate-slide-down");
+            chevron.classList.remove("fa-chevron-up");
+            chevron.classList.add("fa-chevron-down");
+            chevron.style.transform = "rotate(0deg)";
+        }
+    }
 
     // Función para alternar el submenú de GEMA
     function toggleGemaSubmenu() {
@@ -229,6 +323,30 @@
         gemaSubmenuOpen = !gemaSubmenuOpen;
 
         if (gemaSubmenuOpen) {
+            submenu.classList.remove("hidden");
+            submenu.classList.add("animate-slide-down");
+            chevron.classList.remove("fa-chevron-down");
+            chevron.classList.add("fa-chevron-up");
+            chevron.style.transform = "rotate(180deg)";
+        } else {
+            submenu.classList.add("hidden");
+            submenu.classList.remove("animate-slide-down");
+            chevron.classList.remove("fa-chevron-up");
+            chevron.classList.add("fa-chevron-down");
+            chevron.style.transform = "rotate(0deg)";
+        }
+    }
+
+    // Función para alternar el submenú de GIEMA
+    function toggleGiemaSubmenu() {
+        const submenu = document.getElementById("giemaSubmenu");
+        const chevron = document.getElementById("giemaChevron");
+
+        if (!submenu || !chevron) return;
+
+        giemaSubmenuOpen = !giemaSubmenuOpen;
+
+        if (giemaSubmenuOpen) {
             submenu.classList.remove("hidden");
             submenu.classList.add("animate-slide-down");
             chevron.classList.remove("fa-chevron-down");
@@ -307,9 +425,15 @@
             // Restaurar scroll del body
             document.body.style.overflow = '';
 
-            // Cerrar submenú de GEMA al cerrar sidebar
+            // Cerrar submenús al cerrar sidebar
             if (gemaSubmenuOpen) {
                 toggleGemaSubmenu();
+            }
+            if (giemaSubmenuOpen) {
+                toggleGiemaSubmenu();
+            }
+            if (autoridadSubmenuOpen) {
+                toggleAutoridadSubmenu();
             }
         }
     }
@@ -397,6 +521,8 @@
         const sidebarToggle = document.getElementById("sidebarToggle");
         const overlay = document.getElementById("overlay");
         const gemaToggle = document.getElementById("gemaToggle");
+        const giemaToggle = document.getElementById("giemaToggle");
+        const autoridadToggle = document.getElementById("autoridadToggle"); // Nuevo toggle para Autoridad Ambiental
 
         if (!sidebar) {
             console.error('Sidebar element not found, retrying in 100ms...');
@@ -428,6 +554,23 @@
                 e.preventDefault();
                 e.stopPropagation();
                 toggleGemaSubmenu();
+            });
+        }
+
+        if (giemaToggle) {
+            giemaToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleGiemaSubmenu();
+            });
+        }
+
+        // Nuevo event listener para Autoridad Ambiental
+        if (autoridadToggle) {
+            autoridadToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleAutoridadSubmenu();
             });
         }
 

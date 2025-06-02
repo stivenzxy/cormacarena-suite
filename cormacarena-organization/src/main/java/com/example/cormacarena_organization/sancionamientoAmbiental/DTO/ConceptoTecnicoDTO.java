@@ -6,7 +6,7 @@ import java.time.LocalDate;
 @Data
 public class ConceptoTecnicoDTO {
     LocalDate fechaCreacionInformeTecnico;
-    String razonesCometerDelito;
+    String razonesInfraccion;
     String encargadoVisitaTecnica;
     String descripcionVisitaTecnica;
     TaskInfo taskInfo;

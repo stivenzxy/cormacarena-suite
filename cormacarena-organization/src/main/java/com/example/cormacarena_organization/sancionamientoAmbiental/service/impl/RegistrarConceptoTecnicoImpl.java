@@ -67,7 +67,7 @@ public class RegistrarConceptoTecnicoImpl extends BaseProcessServiceImpl impleme
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("fechaConceptoTecnico", Map.of("value", fecha, "type", "String"));
-        variables.put("razonesInfraccion", Map.of("value", conceptoTecnicoDTO.getRazonesCometerDelito(), "type", "String"));
+        variables.put("razonesInfraccion", Map.of("value", conceptoTecnicoDTO.getRazonesInfraccion(), "type", "String"));
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("variables", variables);
         String taskId = getTaskIdByProcessIdWithApi(processId);
@@ -75,7 +75,8 @@ public class RegistrarConceptoTecnicoImpl extends BaseProcessServiceImpl impleme
 
         try {
             ResponseEntity<Map> response = restTemplate.postForEntity(camundaURL+"/task/"+taskId+"/submit-form", requestEntity,Map.class);
-            TaskInfo taskInfo = getTaskInfoByProcessId(processId);
+            String childProcessId = getChildProcessInstanceId(processId);
+            TaskInfo taskInfo = getTaskInfoByProcessId(childProcessId);
             setAssignee(taskInfo.getTaskId(),"GrupoGEIMA");
             taskInfo.setProcessId(processId);
             return "Fine";

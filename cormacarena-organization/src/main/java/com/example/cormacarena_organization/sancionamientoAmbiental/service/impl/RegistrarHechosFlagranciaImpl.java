@@ -55,8 +55,6 @@ public class RegistrarHechosFlagranciaImpl extends BaseProcessServiceImpl implem
 
     @Override
     public String enviarFormulario(DenunciaProcesoVerificacionDTO verificacionHechoDTO, String processId) {
-
-
         HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.APPLICATION_JSON);

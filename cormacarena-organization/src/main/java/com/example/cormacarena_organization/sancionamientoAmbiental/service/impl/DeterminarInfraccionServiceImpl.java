@@ -1,9 +1,8 @@
 package com.example.cormacarena_organization.sancionamientoAmbiental.service.impl;
 
 import com.example.cormacarena_organization.sancionamientoAmbiental.DTO.DeterminarInfraccionDTO;
-import com.example.cormacarena_organization.sancionamientoAmbiental.DTO.FormulacionCargosDTO;
 import com.example.cormacarena_organization.sancionamientoAmbiental.DTO.TaskInfo;
-import com.example.cormacarena_organization.sancionamientoAmbiental.service.DeterminarInfractorService;
+import com.example.cormacarena_organization.sancionamientoAmbiental.service.DeterminarInfraccionService;
 import com.example.cormacarena_organization.sancionamientoAmbiental.service.SancionamientoAmbientalService;
 import com.example.cormacarena_organization.sancionamientoAmbiental.service.base.BaseProcessServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -13,13 +12,12 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class DeterminarInfractorServiceImpl extends BaseProcessServiceImpl implements DeterminarInfractorService {
+public class DeterminarInfraccionServiceImpl extends BaseProcessServiceImpl implements DeterminarInfraccionService {
 
     private final SancionamientoAmbientalService sancionamientoAmbientalService;
 
@@ -61,12 +59,12 @@ public class DeterminarInfractorServiceImpl extends BaseProcessServiceImpl imple
     public String enviarFormulario(DeterminarInfraccionDTO determinarInfraccionDTO, String processId) {
 
         HttpHeaders headers = new HttpHeaders();
-
+        System.out.println(determinarInfraccionDTO.getValorInfracionBase()+"tipo: "+determinarInfraccionDTO.getTipoInfraccion());
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("tipoInfraccion", Map.of("value", determinarInfraccionDTO.getTipoInfraccion(), "type", "String"));
-        variables.put("valorInfracionBase", Map.of("value", determinarInfraccionDTO.getValorInfracionBase(), "type", "long"));
+        variables.put("valorInfraccionBase", Map.of("value", determinarInfraccionDTO.getValorInfracionBase(), "type", "Long"));
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("variables", variables);
         String taskId = getTaskIdByProcessIdWithApi(processId);

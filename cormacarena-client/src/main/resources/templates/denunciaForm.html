@@ -2,84 +2,217 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Digenciar la denuncia</title>
+    <title>Diligenciar la denuncia</title>
     <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0d348d',
+                        secondary: '#1a4fb4',
+                        tertiary: '#eaf2fe',
+                        accent: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-tertiary min-h-screen flex flex-col">
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
 
 <!-- Header con barra lateral -->
 <div th:replace="views/header :: contenido"></div>
 
-<main class="flex flex-1 pt-24 p-6 bg-[#eaf2fe] min-h-screen transition-all duration-300">
-    <form th:object="${denunciaDTO}" id="formDenuncia" enctype="multipart/form-data"
-          class="licence-request-form bg-white flex flex-col rounded-lg shadow-lg p-8 w-full max-w-4xl mx-auto">
-        <input type="hidden" id="processId" name="processId" th:value="${processId}" />
-        <div class="applicant-data">
-            <h2 class="text-primary text-2xl font-bold mb-6 border-b-4 border-primary pb-2">Datos de para la denuncia</h2>
+<main class="flex flex-1 pt-28 px-4 sm:px-6 lg:px-8 pb-12">
+    <div class="w-full max-w-4xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="mb-6" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2 text-sm text-gray-600">
+                <li><a href="/" class="hover:text-primary transition-colors">Inicio</a></li>
+                <li><i class="fas fa-chevron-right text-gray-400"></i></li>
+                <li class="text-primary font-medium">Registrar Denuncia</li>
+            </ol>
+        </nav>
 
-            <div class="mb-4">
-                <label class="block text-secondary font-semibold mb-1">Nombres del denunciante:*</label>
-                <input type="text" id="nombresDenunciante" name="nombresDenunciante" th:value="*{nombresDenunciante}"
-                       required class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"/>
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-secondary font-semibold mb-1">Apellidos del denunciante:*</label>
-                <input type="text" id="apellidosDenunciante" name="apellidosDenunciante" th:value="*{apellidosDenunciante}"
-                       required class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"/>
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-secondary font-semibold mb-1">Tipo de identificación:</label>
-                <select id="tipoIdentificacionDenunciante" name="tipoIdentificacionDenunciante"
-                        th:value="*{tipoIdentificacionDenunciante}" required
-                        class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                    <option value="">Seleccione</option>
-                    <option value="CC">Cédula de Ciudadanía</option>
-                    <option value="TI">Tarjeta de Identidad</option>
-                    <option value="CE">Cédula de Extranjería</option>
-                </select>
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-secondary font-semibold mb-1">Número del documento:</label>
-                <input type="number" id="numeroIdentificacionDenunciante" name="numeroIdentificacionDenunciante"
-                       th:value="*{numeroIdentificacionDenunciante}" required
-                       class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"/>
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-secondary font-semibold mb-1">Correo para recibir la respuesta:*</label>
-                <input type="email" id="correoDenunciante" name="correoDenunciante" th:value="*{correoDenunciante}"
-                       required class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"/>
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-secondary font-semibold mb-1">Descripción de la denuncia:*</label>
-                <textarea rows="4" id="descripcionDenuncia" name="descripcionDenuncia" th:value="*{descripcionDenuncia}"
-                          required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-gray-700 font-medium mb-1">Anexar soporte:</label>
-                <input type="file" id="soporteDenuncia" name="soporteDenuncia" accept=".pdf,.doc,.docx" required
-                       class="w-full border border-secondary rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"/>
-            </div>
-
-            <div class="flex justify-end gap-4 mt-6">
-                <button type="button" class="px-6 py-2 rounded bg-button-red text-white font-semibold hover:bg-purple-700 transition"
-                        onclick="enviarGet()">Enviar</button>
-                <button type="button" class="px-6 py-2 rounded bg-button-red text-white font-semibold hover:bg-purple-700 transition"
-                        onclick="guardar()">Guardar</button>
-            </div>
+        <!-- Título principal -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
+                <i class="fas fa-file-alt text-primary mr-3"></i>
+                Formulario de Denuncia
+            </h1>
+            <p class="text-gray-600 text-lg">Complete todos los campos requeridos para registrar su denuncia</p>
         </div>
-    </form>
 
+        <!-- Formulario -->
+        <form th:object="${denunciaDTO}" id="formDenuncia" enctype="multipart/form-data"
+              class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <input type="hidden" id="processId" name="processId" th:value="${processId}" />
+
+            <!-- Header del formulario -->
+            <div class="bg-gradient-to-r from-primary to-secondary px-8 py-6">
+                <h2 class="text-white text-2xl font-bold flex items-center">
+                    <i class="fas fa-user-edit mr-3"></i>
+                    Datos del Denunciante
+                </h2>
+                <p class="text-blue-100 mt-1">Los campos marcados con * son obligatorios</p>
+            </div>
+
+            <!-- Contenido del formulario -->
+            <div class="p-8 space-y-6">
+                <!-- Grid de campos personales -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Nombres -->
+                    <div class="space-y-2">
+                        <label class="flex items-center text-gray-700 font-semibold">
+                            <i class="fas fa-user text-primary mr-2"></i>
+                            Nombres del denunciante *
+                        </label>
+                        <input type="text" id="nombresDenunciante" name="nombresDenunciante"
+                               th:value="*{nombresDenunciante}" required
+                               class="w-full border-2 border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 hover:border-gray-300"
+                               placeholder="Ingrese sus nombres completos"/>
+                    </div>
+
+                    <!-- Apellidos -->
+                    <div class="space-y-2">
+                        <label class="flex items-center text-gray-700 font-semibold">
+                            <i class="fas fa-user text-primary mr-2"></i>
+                            Apellidos del denunciante *
+                        </label>
+                        <input type="text" id="apellidosDenunciante" name="apellidosDenunciante"
+                               th:value="*{apellidosDenunciante}" required
+                               class="w-full border-2 border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 hover:border-gray-300"
+                               placeholder="Ingrese sus apellidos completos"/>
+                    </div>
+
+                    <!-- Tipo de identificación -->
+                    <div class="space-y-2">
+                        <label class="flex items-center text-gray-700 font-semibold">
+                            <i class="fas fa-id-card text-primary mr-2"></i>
+                            Tipo de identificación *
+                        </label>
+                        <select id="tipoIdentificacionDenunciante" name="tipoIdentificacionDenunciante"
+                                th:value="*{tipoIdentificacionDenunciante}" required
+                                class="w-full border-2 border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 hover:border-gray-300 bg-white">
+                            <option value="">Seleccione el tipo de documento</option>
+                            <option value="CC">Cédula de Ciudadanía</option>
+                            <option value="TI">Tarjeta de Identidad</option>
+                            <option value="CE">Cédula de Extranjería</option>
+                        </select>
+                    </div>
+
+                    <!-- Número de documento -->
+                    <div class="space-y-2">
+                        <label class="flex items-center text-gray-700 font-semibold">
+                            <i class="fas fa-hashtag text-primary mr-2"></i>
+                            Número del documento *
+                        </label>
+                        <input type="number" id="numeroIdentificacionDenunciante" name="numeroIdentificacionDenunciante"
+                               th:value="*{numeroIdentificacionDenunciante}" required
+                               class="w-full border-2 border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 hover:border-gray-300"
+                               placeholder="Ingrese el número de documento"/>
+                    </div>
+                </div>
+
+                <!-- Correo electrónico -->
+                <div class="space-y-2">
+                    <label class="flex items-center text-gray-700 font-semibold">
+                        <i class="fas fa-envelope text-primary mr-2"></i>
+                        Correo para recibir la respuesta *
+                    </label>
+                    <input type="email" id="correoDenunciante" name="correoDenunciante"
+                           th:value="*{correoDenunciante}" required
+                           class="w-full border-2 border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 hover:border-gray-300"
+                           placeholder="ejemplo@correo.com"/>
+                </div>
+
+                <!-- Separador -->
+                <div class="border-t border-gray-200 pt-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-exclamation-triangle text-accent mr-3"></i>
+                        Detalles de la Denuncia
+                    </h3>
+                </div>
+
+                <!-- Descripción de la denuncia -->
+                <div class="space-y-2">
+                    <label class="flex items-center text-gray-700 font-semibold">
+                        <i class="fas fa-file-alt text-primary mr-2"></i>
+                        Descripción de la denuncia *
+                    </label>
+                    <textarea rows="5" id="descripcionDenuncia" name="descripcionDenuncia"
+                              th:text="*{descripcionDenuncia}" required
+                              class="w-full border-2 border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 hover:border-gray-300 resize-none"
+                              placeholder="Describa detalladamente los hechos que desea denunciar..."></textarea>
+                    <p class="text-sm text-gray-500">Proporcione la mayor cantidad de detalles posible</p>
+                </div>
+
+                <!-- Archivo de soporte -->
+                <div class="space-y-2">
+                    <label class="flex items-center text-gray-700 font-semibold">
+                        <i class="fas fa-paperclip text-primary mr-2"></i>
+                        Anexar soporte *
+                    </label>
+                    <div class="relative">
+                        <input type="file" id="soporteDenuncia" name="soporteDenuncia"
+                               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required
+                               class="w-full border-2 border-dashed border-gray-300 rounded-lg px-4 py-6 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 hover:border-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-secondary"/>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none" id="fileDropZone">
+                            <div class="text-center">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-500">Seleccione un archivo o arrástrelo aquí</p>
+                                <p class="text-sm text-gray-400">PDF, DOC, DOCX, JPG, PNG (máx. 10MB)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="flex flex-col sm:flex-row justify-end gap-4 pt-6 border-t border-gray-200">
+                    <button type="button"
+                            class="px-8 py-3 rounded-lg bg-gray-500 text-white font-semibold hover:bg-gray-600 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                            onclick="guardar()">
+                        <i class="fas fa-save"></i>
+                        Guardar Borrador
+                    </button>
+                    <button type="button"
+                            class="px-8 py-3 rounded-lg bg-gradient-to-r from-primary to-secondary text-white font-semibold hover:from-secondary hover:to-primary transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                            onclick="enviarGet()">
+                        <i class="fas fa-paper-plane"></i>
+                        Enviar Denuncia
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Información adicional -->
+        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h4 class="font-semibold text-blue-800 mb-2 flex items-center">
+                <i class="fas fa-info-circle mr-2"></i>
+                Información importante
+            </h4>
+            <ul class="text-blue-700 text-sm space-y-1">
+                <li>• Su denuncia será procesada en un plazo máximo de 15 días hábiles</li>
+                <li>• Recibirá una confirmación en el correo electrónico proporcionado</li>
+                <li>• Puede consultar el estado de su denuncia en cualquier momento</li>
+                <li>• Mantenga el número de radicado para futuras consultas</li>
+            </ul>
+        </div>
+    </div>
 </main>
 
-<script  th:inline="javascript">
+<script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", function () {
         const formulario = document.querySelector("form");
+        const fileInput = document.getElementById("soporteDenuncia");
+        const fileDropZone = document.getElementById("fileDropZone");
+
+        // Validación del formulario
         formulario.addEventListener("submit", function (event) {
             const camposRequeridos = formulario.querySelectorAll("[required]");
             let formularioValido = true;
@@ -92,32 +225,109 @@
                         primerCampoInvalido = campo;
                     }
                     campo.classList.add("border-red-500", "ring-2", "ring-red-400");
+
+                    // Agregar mensaje de error
+                    let errorMsg = campo.parentNode.querySelector('.error-message');
+                    if (!errorMsg) {
+                        errorMsg = document.createElement('p');
+                        errorMsg.className = 'error-message text-red-500 text-sm mt-1';
+                        errorMsg.textContent = 'Este campo es obligatorio';
+                        campo.parentNode.appendChild(errorMsg);
+                    }
                 } else {
                     campo.classList.remove("border-red-500", "ring-2", "ring-red-400");
+
+                    // Remover mensaje de error
+                    let errorMsg = campo.parentNode.querySelector('.error-message');
+                    if (errorMsg) {
+                        errorMsg.remove();
+                    }
                 }
             });
 
             if (!formularioValido) {
                 event.preventDefault();
-                alert("Por favor, completa todos los campos obligatorios marcados con *.");
+
+                // Mostrar notificación moderna
+                showNotification("Por favor, completa todos los campos obligatorios marcados con *.", "error");
+
                 primerCampoInvalido.scrollIntoView({ behavior: "smooth", block: "center" });
                 primerCampoInvalido.focus();
             }
         });
+
+        // Manejo del archivo
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileDropZone.innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-file-check text-4xl text-green-500 mb-2"></i>
+                        <p class="text-green-600 font-semibold">${this.files[0].name}</p>
+                        <p class="text-sm text-gray-500">Archivo seleccionado correctamente</p>
+                    </div>
+                `;
+            }
+        });
     });
+
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full`;
+
+        if (type === 'error') {
+            notification.className += ' bg-red-500 text-white';
+        } else if (type === 'success') {
+            notification.className += ' bg-green-500 text-white';
+        } else {
+            notification.className += ' bg-blue-500 text-white';
+        }
+
+        notification.innerHTML = `
+            <div class="flex items-center gap-3">
+                <i class="fas fa-${type === 'error' ? 'exclamation-circle' : type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Animar entrada
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full');
+        }, 100);
+
+        // Auto-remover después de 5 segundos
+        setTimeout(() => {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => notification.remove(), 300);
+        }, 5000);
+    }
 
     function guardar() {
         const formulario = document.getElementById("formDenuncia");
         formulario.method = "post";
         formulario.action = "/denuncia/crear";
-        formulario.submit();
+
+        showNotification("Guardando borrador...", "info");
+
+        setTimeout(() => {
+            formulario.submit();
+        }, 500);
     }
 
     function enviarGet() {
         const form = document.getElementById("formDenuncia");
         form.method = "post";
         form.action = "/complete";
-        form.submit();
+
+        showNotification("Enviando denuncia...", "info");
+
+        setTimeout(() => {
+            form.submit();
+        }, 500);
     }
 </script>
 

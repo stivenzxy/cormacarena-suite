@@ -1,24 +1,14 @@
 package com.example.cormacarena_organization.sancionamientoAmbiental.controller;
 
 
-import com.example.cormacarena_organization.sancionamientoAmbiental.DTO.DenunciaInfoRadicado;
-import com.example.cormacarena_organization.sancionamientoAmbiental.DTO.DenunciaProcesoVerificacionDTO;
-import com.example.cormacarena_organization.sancionamientoAmbiental.DTO.DenunciaRadicaDTO;
-import com.example.cormacarena_organization.sancionamientoAmbiental.DTO.InformeTecnicoDTO;
+import com.example.cormacarena_organization.sancionamientoAmbiental.DTO.*;
 import com.example.cormacarena_organization.sancionamientoAmbiental.service.RadicarDenunciasService;
-import com.example.cormacarena_organization.sancionamientoAmbiental.service.RegistrarHechosFlagrancia;
 import com.example.cormacarena_organization.sancionamientoAmbiental.service.SancionamientoAmbientalService;
-import com.example.cormacarena_organization.sancionamientoAmbiental.service.VerificacionHechosDenuncia;
-import com.example.cormacarena_organization.sancionamientoAmbiental.service.impl.InformeTecnicoServiceImpl;
-import com.example.cormacarena_organization.sancionamientoAmbiental.service.impl.RegistrarHechosFlagranciaImpl;
-import com.example.cormacarena_organization.sancionamientoAmbiental.service.impl.VerificacionHechosDenunciaImpl;
+import com.example.cormacarena_organization.sancionamientoAmbiental.service.impl.*;
 import lombok.RequiredArgsConstructor;
 import org.example.modelo.Denuncia;
 import org.example.modelo.SancionamientoAmbiental;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 @RequiredArgsConstructor
@@ -30,6 +20,15 @@ public class ProcessController {
     private final VerificacionHechosDenunciaImpl verificacionHechosDenuncia;
     private final InformeTecnicoServiceImpl informeTecnicoService;
     private final RegistrarHechosFlagranciaImpl registrarHechosFlagranciaService;
+    private final RegistrarConceptoTecnicoImpl registrarConceptoTecnicoService;
+    private final RegistrarActoAdministrativoServiceImpl registrarActoAdministrativoService;
+    private final ResolucionActoAdministrativoImpl resolucionActoAdministrativoService;
+    private final FormulacionCargosServiceImpl formulacionCargosService;
+    private final DeterminarInfraccionServiceImpl determinarInfractorService;
+    private final ConceptoTecnicoPruebasServiceImpl conceptoTecnicoPruebasService;
+    private final DeterminarRecursosReposicionServiceImpl determinarRecursosReposicionService;
+    private final DeterminarDisminuicionSancionServiceImpl determinarDisminuicionSancionService;
+
     @PostMapping("/radicar")
     RedirectView radicarDenuncia(@ModelAttribute DenunciaRadicaDTO denunciaRadicaDTO,
                                  @RequestParam("processId") String processId){
@@ -104,5 +103,160 @@ public class ProcessController {
         }
         return new RedirectView("/elaborarInformesTecnicos");
     }
+    @PostMapping("/conceptosTecnicosRegistrados")
+    RedirectView conceptoTecnicosRegistrados(@ModelAttribute ConceptoTecnicoDTO conceptoTecnicoDTO,
+                                   @RequestParam("processId") String processId) {
 
+        if (conceptoTecnicoDTO != null && processId != null) {
+            String resultado = registrarConceptoTecnicoService.enviarFormulario(conceptoTecnicoDTO, processId);
+            if (resultado.equals("Fine")) {
+                SancionamientoAmbiental sancionamientoAmbiental = sancionamientoAmbientalService.encontrarSancionamientoAmbientalPorProcessId(processId);
+                Denuncia denuncia = sancionamientoAmbiental.getDenuncia();
+                denuncia.setEstado("Concepto tecnico registrado en proceso de judilización");
+                sancionamientoAmbiental.setDenuncia(denuncia);
+                sancionamientoAmbientalService.actualizarSancionAmbiental(sancionamientoAmbiental.getId(), sancionamientoAmbiental);
+            } else {
+                System.out.println("Error no se puede actualizar los datos");
+            }
+        }
+        return new RedirectView("/registrarConceptoTecnico");
+    }
+    @PostMapping("/elaborarActoAdministrativo")
+    RedirectView elaborarActoAdministrativo(@ModelAttribute ActoAdministrativaDTO actoAdministrativaDTO,
+                                             @RequestParam("processId") String processId) {
+
+        if (actoAdministrativaDTO != null && processId != null) {
+            System.out.println("Fecha: "+ actoAdministrativaDTO.getFechaActoAdministrativo() + actoAdministrativaDTO.getDescripcionActoAdministrativo());
+
+            String resultado = registrarActoAdministrativoService.enviarFormulario(actoAdministrativaDTO, processId);
+            if (resultado.equals("Fine")) {
+                String superProcessId = registrarActoAdministrativoService.getParentProcessInstanceId(processId);
+                System.out.println("padre: "+superProcessId);
+                SancionamientoAmbiental sancionamientoAmbiental = sancionamientoAmbientalService.encontrarSancionamientoAmbientalPorProcessId(superProcessId);
+                Denuncia denuncia = sancionamientoAmbiental.getDenuncia();
+                denuncia.setEstado("Acto administrativo");
+                sancionamientoAmbiental.setDenuncia(denuncia);
+                sancionamientoAmbientalService.actualizarSancionAmbiental(sancionamientoAmbiental.getId(), sancionamientoAmbiental);
+            } else {
+                System.out.println("Error no se puede actualizar los datos");
+            }
+        }
+        return new RedirectView("/elaborarActosAdministrativos");
+    }
+    @PostMapping("/resolverActoAdministrativo")
+    RedirectView resolverActoAdministratuvi(@ModelAttribute ActoAdministrativaDTO actoAdministrativaDTO,
+                                            @RequestParam("processId") String processId) {
+
+        if (actoAdministrativaDTO != null && processId != null) {
+            System.out.println("Fecha: "+ actoAdministrativaDTO.getFechaActoAdministrativo() + actoAdministrativaDTO.getDescripcionActoAdministrativo());
+            String resultado = resolucionActoAdministrativoService.enviarFormulario(actoAdministrativaDTO, processId);
+            if (resultado.equals("Fine")) {
+                String superProcessId = resolucionActoAdministrativoService.getParentProcessInstanceId(processId);
+                System.out.println("padre: "+superProcessId);
+                SancionamientoAmbiental sancionamientoAmbiental = sancionamientoAmbientalService.encontrarSancionamientoAmbientalPorProcessId(superProcessId);
+                Denuncia denuncia = sancionamientoAmbiental.getDenuncia();
+                denuncia.setEstado("Acto administrativo");
+                sancionamientoAmbiental.setDenuncia(denuncia);
+                sancionamientoAmbientalService.actualizarSancionAmbiental(sancionamientoAmbiental.getId(), sancionamientoAmbiental);
+            } else {
+                System.out.println("Error no se puede actualizar los datos");
+            }
+        }
+        return new RedirectView("/reSolucionesActosAdministrativos");
+    }
+    @PostMapping("/enviaCargosFormulados")
+    RedirectView enviaCargosFormulados(@ModelAttribute FormulacionCargosDTO formulacionCargosDTO,
+                                       @RequestParam("processId") String processId){
+
+        if (formulacionCargosDTO != null && processId != null){
+            String resultado=formulacionCargosService.enviarFormulario(formulacionCargosDTO,processId);
+            if(resultado.equals("Fine")){
+                SancionamientoAmbiental sancionamientoAmbiental = sancionamientoAmbientalService.encontrarSancionamientoAmbientalPorProcessId(processId);
+                Denuncia denuncia = sancionamientoAmbiental.getDenuncia();
+                denuncia.setEstado("Cargos Formulados");
+                sancionamientoAmbiental.setDenuncia(denuncia);
+                sancionamientoAmbientalService.actualizarSancionAmbiental(sancionamientoAmbiental.getId(),sancionamientoAmbiental);
+            }
+            else {
+                System.out.println("Error no se puede actualizar los datos");
+            }
+        }
+        return new RedirectView("/formularCargos");
+    }
+    @PostMapping("/determinarInfraccion")
+    RedirectView determinarInfraccion(@ModelAttribute DeterminarInfraccionDTO determinarInfraccionDTO,
+                                       @RequestParam("processId") String processId){
+
+        if (determinarInfraccionDTO != null && processId != null){
+            String resultado=determinarInfractorService.enviarFormulario(determinarInfraccionDTO,processId);
+            if(resultado.equals("Fine")){
+                SancionamientoAmbiental sancionamientoAmbiental = sancionamientoAmbientalService.encontrarSancionamientoAmbientalPorProcessId(processId);
+                Denuncia denuncia = sancionamientoAmbiental.getDenuncia();
+                denuncia.setEstado("Infraccion Determinada");
+                sancionamientoAmbiental.setDenuncia(denuncia);
+                sancionamientoAmbientalService.actualizarSancionAmbiental(sancionamientoAmbiental.getId(),sancionamientoAmbiental);
+            }
+            else {
+                System.out.println("Error no se puede actualizar los datos");
+            }
+        }
+        return new RedirectView("/denunciasADeterminar");
+    }
+    @PostMapping("/enviarConceptoTecnicoPruebas")
+    RedirectView enviarConceptoTecnicoPruebas(@ModelAttribute ConceptoTecnicoPruebasDTO conceptoTecnicoPruebasDTO,
+                                      @RequestParam("processId") String processId){
+
+        if (conceptoTecnicoPruebasDTO != null && processId != null){
+            String resultado=conceptoTecnicoPruebasService.enviarFormulario(conceptoTecnicoPruebasDTO,processId);
+            if(resultado.equals("Fine")){
+                SancionamientoAmbiental sancionamientoAmbiental = sancionamientoAmbientalService.encontrarSancionamientoAmbientalPorProcessId(processId);
+                Denuncia denuncia = sancionamientoAmbiental.getDenuncia();
+                denuncia.setEstado("Concepto Tecnico de las pruebas de la denuncia Emitidos");
+                sancionamientoAmbiental.setDenuncia(denuncia);
+                sancionamientoAmbientalService.actualizarSancionAmbiental(sancionamientoAmbiental.getId(),sancionamientoAmbiental);
+            }
+            else {
+                System.out.println("Error no se puede actualizar los datos");
+            }
+        }
+        return new RedirectView("/conceptosTecnicosAElaborar");
+    }
+    @PostMapping("/determinarRecursosReposicion")
+    RedirectView determinarRecursosReposicion(@ModelAttribute RecursosReposicionDTO recursosReposicionDTO,
+                                              @RequestParam("processId") String processId){
+
+        if (recursosReposicionDTO != null && processId != null){
+            String resultado=determinarRecursosReposicionService.enviarFormulario(recursosReposicionDTO,processId);
+            if(resultado.equals("Fine")){
+                SancionamientoAmbiental sancionamientoAmbiental = sancionamientoAmbientalService.encontrarSancionamientoAmbientalPorProcessId(processId);
+                Denuncia denuncia = sancionamientoAmbiental.getDenuncia();
+                denuncia.setEstado("Recursos de reposicion determinados");
+                sancionamientoAmbiental.setDenuncia(denuncia);
+                sancionamientoAmbientalService.actualizarSancionAmbiental(sancionamientoAmbiental.getId(),sancionamientoAmbiental);
+            }
+            else {
+                System.out.println("Error no se puede actualizar los datos");
+            }
+        }
+        return new RedirectView("/recursosReposicionADeterminar");
+    }
+    @PostMapping("/determinarDisminuicionSancion")
+    RedirectView determinarDisminuicionSancion(@ModelAttribute DisminuicionSancionDTO disminuicionSancionDTO,
+                                              @RequestParam("processId") String processId){
+
+        if (disminuicionSancionDTO != null && processId != null){
+            String resultado=determinarDisminuicionSancionService.enviarFormulario(disminuicionSancionDTO,processId);
+            if(resultado.equals("Fine")){
+                SancionamientoAmbiental sancionamientoAmbiental = sancionamientoAmbientalService.encontrarSancionamientoAmbientalPorProcessId(processId);
+                Denuncia denuncia = sancionamientoAmbiental.getDenuncia();
+                denuncia.setEstado("Sancion disminuidad");
+                sancionamientoAmbiental.setDenuncia(denuncia);
+                sancionamientoAmbientalService.actualizarSancionAmbiental(sancionamientoAmbiental.getId(),sancionamientoAmbiental);
+            }
+            else {
+                System.out.println("Error no se puede actualizar los datos");
+            }
+        }
+        return new RedirectView("/listaDeDisminuicion");
+    }
 }
