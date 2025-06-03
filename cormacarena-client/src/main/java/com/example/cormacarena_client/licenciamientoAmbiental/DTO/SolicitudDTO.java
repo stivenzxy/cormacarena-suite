@@ -1,7 +1,7 @@
 package com.example.cormacarena_client.licenciamientoAmbiental.DTO;
 
-import com.example.cormacarena_client.licenciamientoAmbiental.enums.SectorProyecto;
 import lombok.Data;
+import org.example.modelo.SectorProyecto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

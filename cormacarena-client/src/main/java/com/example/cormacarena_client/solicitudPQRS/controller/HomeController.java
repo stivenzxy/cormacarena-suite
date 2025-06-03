@@ -1,7 +1,8 @@
 package com.example.cormacarena_client.solicitudPQRS.controller;
 
 import com.example.cormacarena_client.solicitudPQRS.dto.MensajeDTO;
-import com.example.cormacarena_client.solicitudPQRS.model.Bandeja;
+
+import org.example.modelo.Bandeja;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

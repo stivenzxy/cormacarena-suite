@@ -9,7 +9,7 @@
         "columns": null
       },
       "id": "Field_0xlpetj",
-      "key": "fechaResoluci"
+      "key": "fechaResolucion"
     },
     {
       "label": "Encargado del acto administativo:",
@@ -20,27 +20,6 @@
       },
       "id": "Field_0742agd",
       "key": "profesionalActoAdministrativo",
-      "disabled": true
-    },
-    {
-      "label": "Encargado(s) de la resolución:",
-      "type": "textfield",
-      "layout": {
-        "row": "Row_1s1cmdo",
-        "columns": null
-      },
-      "id": "Field_0ojoi8r",
-      "key": "encargadoResolucion"
-    },
-    {
-      "label": "Tipo del acto administrativo",
-      "type": "textfield",
-      "layout": {
-        "row": "Row_1qrev8s",
-        "columns": null
-      },
-      "id": "Field_1tclxb7",
-      "key": "tipoActoAdministrativo",
       "disabled": true
     },
     {

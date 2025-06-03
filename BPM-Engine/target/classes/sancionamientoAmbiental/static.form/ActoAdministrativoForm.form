@@ -12,38 +12,6 @@
       "key": "fechaActoAdministrativo"
     },
     {
-      "label": "Tipo de acto administrativo:",
-      "values": [
-        {
-          "label": "Inicio de penalización",
-          "value": "inicioPenalizacion"
-        },
-        {
-          "label": "Formulación de cargos",
-          "value": "formularCargos"
-        },
-        {
-          "label": "Etapa para el infractor se defienda:",
-          "value": "etapaDefensaInfractor"
-        },
-        {
-          "label": "Conclusiones de la denuncia",
-          "value": "etapaConclusionesDenuncias"
-        },
-        {
-          "label": "Finalización y resolución de la denuncia",
-          "value": "etapaFinalizacionDenuncia"
-        }
-      ],
-      "type": "select",
-      "layout": {
-        "row": "Row_0kax0mu",
-        "columns": null
-      },
-      "id": "Field_1qr1nx5",
-      "key": "tipoActoAdministrativo"
-    },
-    {
       "label": "Profesional encargado del acto administrativo:",
       "type": "textfield",
       "layout": {
@@ -51,8 +19,7 @@
         "columns": null
       },
       "id": "Field_1e9a95p",
-      "key": "profesionalActoAdministrativo",
-      "defaultValue": "profesionalActoAdministrativo"
+      "key": "profesionalActoAdministrativo"
     },
     {
       "label": "Razones para realizar el acto administrativo:",
@@ -62,8 +29,7 @@
         "columns": null
       },
       "id": "Field_0rs7t67",
-      "key": "descripcionActoAdministrativo",
-      "defaultValue": "descripcionActoAdministrativo"
+      "key": "descripcionActoAdministrativo"
     }
   ],
   "type": "default",

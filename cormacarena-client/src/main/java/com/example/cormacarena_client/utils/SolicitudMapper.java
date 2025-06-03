@@ -1,7 +1,7 @@
 package com.example.cormacarena_client.utils;
 
 import com.example.cormacarena_client.licenciamientoAmbiental.DTO.SolicitudDTO;
-import com.example.cormacarena_client.licenciamientoAmbiental.entity.SolicitudLicencia;
+import org.example.modelo.SolicitudLicencia;
 
 public class SolicitudMapper {
 

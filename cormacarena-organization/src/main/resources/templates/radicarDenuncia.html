@@ -2,110 +2,227 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Denuncias</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radicar Denuncia - CORMACARENA</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0d348d',
+                        secondary: '#1a4fb4',
+                        tertiary: '#eaf2fe',
+                        accent: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         // Función modal
-        function mostrarModal(id, descripcion, nombres, apellidos, correo) {
+        function mostrarModal(id, descripcion, nombres, apellidos, correo, processId) {
             document.getElementById("inputId").textContent = id;
-            document.getElementById("inputDescripcion").textContent = descripcion;
-            document.getElementById("inputApellido").textContent = apellidos;
-            document.getElementById("inputCorreo").textContent = correo;
-            document.getElementById("inputNombre").textContent = nombres;
-            document.getElementById("modal").style.display='';
-            console.log(id,descripcion)
+            document.getElementById("inputDescripcion").value = descripcion;
+            document.getElementById("inputApellido").value = apellidos;
+            document.getElementById("inputCorreo").value = correo;
+            document.getElementById("inputNombre").value = nombres;
+            document.getElementById("inputProcessId").value = processId;
+            document.getElementById("modal").classList.remove('hidden');
+            console.log(id, descripcion);
         }
 
         function cerrarModal() {
-            document.getElementById("modal").style.display='none';
+            document.getElementById("modal").classList.add('hidden');
         }
     </script>
 </head>
-<body class="bg-tertiary h-screen">
+<body class="bg-tertiary min-h-screen">
 <div th:replace="views/header :: contenido"></div>
 
-<main class="pt-28 md:pl-60 px-6 min-h-screen bg-[#eaf2fe] transition-all duration-300">
-    <div class="overflow-auto licence-request-form bg-white flex flex-col rounded-lg shadow-lg p-8 w-full max-w-4xl mx-auto">
-
-        <h1 class="text-3xl font-bold mb-6 text-center">Lista de Denuncias</h1>
-
-        <!-- Tabla de denuncias -->
-        <div>
-            <table th:if="${denuncias != null and !denuncias.isEmpty()}"
-                   class="min-w-full bg-white shadow-md rounded-lg overflow-hidden mb-4">
-                <thead class="bg-blue-700 text-white">
-                <tr>
-                    <th class="px-6 py-3 text-center text-gray-700">ID Denuncia</th>
-                    <th class="px-6 py-3 text-center text-gray-700">Descripción</th>
-                    <th class="px-6 py-3 text-left text-gray-700">Acción</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="denuncia : ${denuncias}" class="border-b hover:bg-gray-50">
-                    <td class="px-6 py-4" th:text="${denuncia.idDenuncia}"></td>
-                    <td class="px-6 py-4" th:text="${denuncia.descripcionDenuncia}"></td>
-                    <td class="px-6 py-4">
-                        <button type="button"
-                                class="bg-blue-500 text-gray-700 px-3 py-1 rounded hover:bg-blue-600"
-                                th:attr="data-id-denuncia=${denuncia.idDenuncia}, data-descripcion-denuncia=${denuncia.descripcionDenuncia},
-                                data-nombre-denuncia=${denuncia.nombresDenunciante}, data-apellidos-denuncia=${denuncia.apellidosDenunciante},
-                                data-correo-denuncia=${denuncia.correoDenunciante}"
-                                onclick="mostrarModal(this.getAttribute('data-id-denuncia'),this.getAttribute('data-descripcion-denuncia'),
-                                                    this.getAttribute('data-nombre-denuncia'),this.getAttribute('data-apellidos-denuncia'),
-                                                    this.getAttribute('data-correo-denuncia'))">
-                            Ver más
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+<main class="pt-28 px-6 min-h-screen bg-tertiary transition-all duration-300" id="mainContent">
+    <div class="max-w-6xl mx-auto">
+        <!-- Título principal -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-primary to-secondary rounded-full mb-4 shadow-lg">
+                <i class="fas fa-file-alt text-white text-2xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-3">
+                Lista de Denuncias por Radicar
+            </h1>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                Gestione las denuncias pendientes de radicación
+            </p>
         </div>
 
-        <!-- Mensaje si no hay denuncias -->
-        <div th:if="${denuncias == null or denuncias.isEmpty()}"
-             class="text-center text-gray-600 text-lg mt-8">
-            No hay denuncias por el momento.
+        <!-- Tabla de denuncias -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+            <div class="p-6">
+                <div class="overflow-x-auto">
+                    <table th:if="${denuncias != null and !denuncias.isEmpty()}"
+                           class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                ID Denuncia
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Descripción
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Acción
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tr th:each="denuncia : ${denuncias}" class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900" th:text="${denuncia.idDenuncia}"></div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-gray-900 line-clamp-2" th:text="${denuncia.descripcionDenuncia}"></div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <button type="button"
+                                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
+                                        th:attr="data-id-denuncia=${denuncia.idDenuncia}, data-descripcion-denuncia=${denuncia.descripcionDenuncia},
+                                        data-nombre-denuncia=${denuncia.nombresDenunciante}, data-apellidos-denuncia=${denuncia.apellidosDenunciante},
+                                        data-correo-denuncia=${denuncia.correoDenunciante}, data-processId-denuncia=${denuncia.taskInfo.processId}"
+                                        onclick="mostrarModal(this.getAttribute('data-id-denuncia'),this.getAttribute('data-descripcion-denuncia'),
+                                                        this.getAttribute('data-nombre-denuncia'),this.getAttribute('data-apellidos-denuncia'),
+                                                        this.getAttribute('data-correo-denuncia'), this.getAttribute('data-processId-denuncia'))">
+                                    <i class="fas fa-eye mr-2"></i>
+                                    Ver más
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Mensaje si no hay denuncias -->
+            <div th:if="${denuncias == null or denuncias.isEmpty()}"
+                 class="text-center text-gray-600 text-lg p-8">
+                <div class="flex flex-col items-center justify-center py-12">
+                    <i class="fas fa-inbox text-5xl text-gray-400 mb-4"></i>
+                    <p>No hay denuncias pendientes por radicar.</p>
+                </div>
+            </div>
         </div>
     </div>
 </main>
 
-<!-- Modal: SIEMPRE visible en el DOM, pero oculto con hidden -->
-<!-- Modal como formulario -->
-<div id="modal" style="display: none" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-40 flex justify-center items-center z-50 backdrop-blur">
-    <form th:action="@{/denuncias/radicar}" th:method="post"
-          class="bg-white rounded-lg shadow-xl p-6 w-96 text-black">
-        <h2 class="text-xl font-bold mb-4 text-blue-700">Radicar denuncia</h2>
+<!-- Modal -->
+<div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 backdrop-blur-sm hidden">
+    <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md transform transition-all">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-primary">Radicar Denuncia</h2>
+            <button type="button" onclick="cerrarModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
 
-        <!-- Campo oculto para el ID de la denuncia -->
-        <input type="hidden" id="inputId" name="idDenuncia">
+        <form th:action="@{/denuncias/radicar}" th:method="post" class="space-y-6">
+            <!-- Fecha de radicación -->
+            <div>
+                <label for="fecha" class="block text-sm font-medium text-gray-700 mb-1">Fecha de radicación</label>
+                <input type="date" id="fecha" name="fechaRadicacion" readonly
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+            </div>
 
-        <!-- Campo de descripción (sólo lectura o editable si deseas modificar) -->
-        <div class="mb-4">
-            <label for="inputNombre" class="block font-semibold">Nombres del denunciante: </label>
-            <text id="inputNombre" name="nombreDenunciante" rows="3" class="w-full border rounded px-3 py-2" readonly></text>
-        </div>
-        <div class="mb-4">
-            <label for="inputApellido" class="block font-semibold">Apellidos del denunciante: </label>
-            <text id="inputApellido" name="nombreApellido" rows="3" class="w-full border rounded px-3 py-2" readonly></text>
-        </div>
-        <div class="mb-4">
-            <label for="inputCorreo" class="block font-semibold">Correo del denunciante </label>
-            <text id="inputCorreo" name="nombreDenunciante" rows="3" class="w-full border rounded px-3 py-2" readonly></text>
-        </div>
-        <div class="mb-4">
-            <label for="inputDescripcion" class="block font-semibold">Descripción</label>
-            <textarea id="inputDescripcion" name="descripcionDenuncia" rows="3" class="w-full border rounded px-3 py-2" readonly></textarea>
-        </div>
-        <!-- Botones -->
-        <div class="flex justify-between">
-            <button type="button"
-                    class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                    onclick="cerrarModal()">Cerrar</button>
-            <button type="submit"
-                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Radicar</button>
-        </div>
-    </form>
+            <!-- Encargado de la denuncia -->
+            <div>
+                <label for="inputEncargadoDenuncia" class="block text-sm font-medium text-gray-700 mb-1">Nombres del encargado</label>
+                <input type="text" id="inputEncargadoDenuncia" name="encargadoDenuncia" required
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+            </div>
+
+            <!-- ID de la denuncia (oculto) -->
+            <input type="hidden" id="inputId" name="idDenuncia">
+
+            <!-- Información del denunciante (solo lectura) -->
+            <div class="bg-gray-50 p-4 rounded-lg space-y-4">
+                <h3 class="font-medium text-gray-700">Información del denunciante</h3>
+
+                <div>
+                    <label for="inputNombre" class="block text-sm font-medium text-gray-500 mb-1">Nombres</label>
+                    <input type="text" id="inputNombre" readonly
+                           class="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-md text-gray-700">
+                </div>
+
+                <div>
+                    <label for="inputApellido" class="block text-sm font-medium text-gray-500 mb-1">Apellidos</label>
+                    <input type="text" id="inputApellido" readonly
+                           class="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-md text-gray-700">
+                </div>
+
+                <div>
+                    <label for="inputCorreo" class="block text-sm font-medium text-gray-500 mb-1">Correo electrónico</label>
+                    <input type="text" id="inputCorreo" readonly
+                           class="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-md text-gray-700">
+                </div>
+
+                <div>
+                    <label for="inputDescripcion" class="block text-sm font-medium text-gray-500 mb-1">Descripción</label>
+                    <textarea id="inputDescripcion" readonly rows="3"
+                              class="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-md text-gray-700"></textarea>
+                </div>
+            </div>
+
+            <!-- Flagrancia -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">¿Es en flagrancia?</label>
+                <div class="flex space-x-4">
+                    <div class="flex items-center">
+                        <input type="radio" id="flagranciaSi" name="flagrancia" value="si" required
+                               class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                        <label for="flagranciaSi" class="ml-2 block text-sm text-gray-700">Sí</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="flagranciaNo" name="flagrancia" value="no" required
+                               class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                        <label for="flagranciaNo" class="ml-2 block text-sm text-gray-700">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Process ID (oculto) -->
+            <input type="hidden" name="processId" id="inputProcessId">
+
+            <!-- Botones -->
+            <div class="flex justify-end space-x-3 pt-4">
+                <button type="button" onclick="cerrarModal()"
+                        class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    Radicar Denuncia
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+    // Obtener la fecha actual en formato YYYY-MM-DD
+    const hoy = new Date();
+    const yyyy = hoy.getFullYear();
+    const mm = String(hoy.getMonth() + 1).padStart(2, '0'); // Meses van de 0 a 11
+    const dd = String(hoy.getDate()).padStart(2, '0');
+    const fechaActual = `${yyyy}-${mm}-${dd}`;
+
+    // Establecer el valor por defecto del input
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('fecha').value = fechaActual;
+    });
+</script>
+<script th:src="@{/script/sidebar.js}"></script>
 
 </body>
 </html>

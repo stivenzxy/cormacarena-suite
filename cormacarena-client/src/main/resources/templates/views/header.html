@@ -3,59 +3,497 @@
 <head>
     <meta charset="UTF-8" />
     <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById("sidebar");
-            sidebar.classList.toggle("-translate-x-full");
-        }
-        function closeSidebarOnClickOutside(e) {
-            const sidebar = document.getElementById("sidebar");
-            if (!sidebar.contains(e.target) && !e.target.closest("#sidebarToggle")) {
-                sidebar.classList.add("-translate-x-full");
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0d348d',
+                        secondary: '#1a4fb4'
+                    },
+                    animation: {
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'pulse-soft': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'button-hover': 'buttonHover 0.3s ease-out',
+                    },
+                    keyframes: {
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(0)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        buttonHover: {
+                            '0%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.02)' },
+                            '100%': { transform: 'scale(1.05)' }
+                        }
+                    }
+                }
             }
         }
-        document.addEventListener("DOMContentLoaded", function () {
-            document.addEventListener("click", closeSidebarOnClickOutside);
-        });
     </script>
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<header id="mainHeader" th:fragment="contenido" class="fixed w-full z-50 transition-transform duration-300">
-    <div class="bg-[#0d348d] h-20 flex items-center justify-between px-6 shadow-lg">
-        <button id="sidebarToggle" onclick="toggleSidebar()" class="text-white text-2xl focus:outline-none">
-            ☰
+<header id="mainHeader" th:fragment="contenido" class="fixed w-full z-50 transition-all duration-300">
+    <!-- Barra principal -->
+    <div class="bg-gradient-to-r from-primary via-secondary to-primary h-20 flex items-center justify-between px-6 shadow-2xl backdrop-blur-sm border-b border-white/10">
+        <!-- Botón del menú -->
+        <button id="sidebarToggle" type="button"
+                class="relative text-white text-2xl focus:outline-none hover:bg-white/10 p-3 rounded-xl transition-all duration-300 group overflow-hidden z-50">
+            <div class="absolute inset-0 bg-white/5 rounded-xl transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+            <i id="menuIcon" class="fas fa-bars relative z-10 group-hover:scale-110 transition-all duration-300"></i>
         </button>
-        <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo">
+
+        <!-- Logo y título -->
+        <div class="flex items-center gap-4">
+            <div class="relative">
+                <img class="h-16 w-auto drop-shadow-2xl transform hover:scale-105 transition-transform duration-300"
+                     th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo">
+            </div>
+            <div class="hidden md:block text-white">
+                <h1 class="text-2xl font-bold">CORMACARENA</h1>
+                <p class="text-blue-100 text-sm font-medium">Sistema de Denuncias Ambientales</p>
+            </div>
+        </div>
+
+        <!-- Información del usuario -->
+        <div class="hidden sm:flex items-center gap-4">
+            <div class="flex items-center gap-3 text-white bg-white/10 rounded-full px-4 py-2 backdrop-blur-sm border border-white/20">
+                <div class="bg-white/20 p-2 rounded-full">
+                    <i class="fas fa-user text-sm"></i>
+                </div>
+                <div class="text-sm">
+                    <p class="font-semibold">Usuario</p>
+                    <p class="text-blue-100 text-xs">En línea</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="sidebar" class="fixed top-20 left-0 w-60 h-full bg-[#0d348d] transform -translate-x-full transition-transform duration-300 ease-in-out z-50 shadow-lg">
-        <nav class="flex flex-col justify-center items-stretch h-full p-4 space-y-2">
-            <a href="/realizarDenuncia" class="text-white text-lg px-4 py-3 rounded hover:bg-[#1a4fb4] transition flex items-center gap-3">
-                <span class="text-xl">📄</span>
-                <span class="font-semibold">Registrar Denuncia</span>
-            </a>
-            <a href="/consultar" class="text-white text-lg px-4 py-3 rounded hover:bg-[#1a4fb4] transition flex items-center gap-3">
-                <span class="text-xl">🔍</span>
-                <span class="font-semibold">Consultar Denuncia</span>
-            </a>
-        </nav>
-    </div>
+    <!-- Overlay para móvil -->
+    <div id="overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden transition-all duration-300"></div>
+
+    <!-- Sidebar rediseñado con scroll -->
+    <aside id="sidebar" class="fixed top-20 left-0 w-80 h-[calc(100vh-5rem)] bg-white transform -translate-x-full transition-all duration-300 ease-in-out z-50 shadow-2xl border-r border-gray-200 flex flex-col overflow-hidden">
+        <!-- Header del sidebar -->
+        <div class="bg-gradient-to-br from-primary via-secondary to-primary p-6 text-white relative overflow-hidden flex-shrink-0">
+            <div class="absolute inset-0 bg-black/10"></div>
+            <div class="relative z-10">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="bg-white/20 p-2 rounded-full">
+                        <i class="fas fa-shield-alt text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold">Menú Principal</h2>
+                        <p class="text-blue-100 text-sm">Seleccione una opción</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-green-200 text-sm">
+                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span>Sistema operativo</span>
+                </div>
+            </div>
+            <!-- Decorative elements -->
+            <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+        </div>
+
+        <!-- Navegación principal con scroll -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-blue-50">
+            <!-- Botones principales mejorados -->
+            <div class="space-y-4">
+                <!-- Realizar Denuncia - Botón mejorado -->
+                <a href="/realizarDenuncia" class="block group">
+                    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary to-secondary p-6 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25 transform hover:scale-105">
+                        <!-- Elementos decorativos -->
+                        <div class="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10 group-hover:scale-110 transition-transform duration-300"></div>
+                        <div class="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full translate-y-8 -translate-x-8 group-hover:scale-110 transition-transform duration-300"></div>
+
+                        <!-- Contenido del botón -->
+                        <div class="relative z-10 flex items-center gap-4">
+                            <div class="bg-white/20 p-3 rounded-xl group-hover:bg-white/30 transition-all duration-300 group-hover:rotate-3">
+                                <i class="fas fa-file-plus text-2xl text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold mb-1 text-white">Realizar Denuncia</h3>
+                                <p class="text-blue-100 text-sm">Crear nueva denuncia ambiental</p>
+                            </div>
+                            <div class="transform group-hover:translate-x-2 transition-transform duration-300">
+                                <i class="fas fa-arrow-right text-xl text-white"></i>
+                            </div>
+                        </div>
+
+                        <!-- Barra de hover -->
+                        <div class="absolute bottom-0 left-0 right-0 h-1 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+
+                        <!-- Efecto de brillo -->
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                    </div>
+                </a>
+
+                <!-- Consultar Denuncia - Botón mejorado -->
+                <a href="/consultar" class="block group">
+                    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-blue-800 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25 transform hover:scale-105">
+                        <!-- Elementos decorativos -->
+                        <div class="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10 group-hover:scale-110 transition-transform duration-300"></div>
+                        <div class="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full translate-y-8 -translate-x-8 group-hover:scale-110 transition-transform duration-300"></div>
+
+                        <!-- Contenido del botón -->
+                        <div class="relative z-10 flex items-center gap-4">
+                            <div class="bg-white/20 p-3 rounded-xl group-hover:bg-white/30 transition-all duration-300 group-hover:rotate-3">
+                                <i class="fas fa-search text-2xl text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold mb-1 text-white">Consultar Denuncia</h3>
+                                <p class="text-blue-100 text-sm">Ver estado y seguimiento</p>
+                            </div>
+                            <div class="transform group-hover:translate-x-2 transition-transform duration-300">
+                                <i class="fas fa-arrow-right text-xl text-white"></i>
+                            </div>
+                        </div>
+
+                        <!-- Barra de hover -->
+                        <div class="absolute bottom-0 left-0 right-0 h-1 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+
+                        <!-- Efecto de brillo -->
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Separador -->
+            <div class="relative py-4">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-200"></div>
+                </div>
+                <div class="relative flex justify-center">
+                    <span class="bg-white px-4 text-sm text-gray-500 font-medium">Recursos adicionales</span>
+                </div>
+            </div>
+
+            <!-- Enlaces secundarios -->
+            <div class="space-y-2">
+                <a href="#" class="flex items-center gap-3 text-gray-700 px-4 py-3 rounded-xl hover:bg-blue-50 transition-all duration-200 group">
+                    <div class="bg-blue-100 p-2 rounded-lg group-hover:bg-blue-200 transition-colors">
+                        <i class="fas fa-book text-blue-600"></i>
+                    </div>
+                    <span class="font-medium">Guías y Tutoriales</span>
+                    <i class="fas fa-external-link-alt text-gray-400 text-sm ml-auto group-hover:text-blue-600 transition-colors"></i>
+                </a>
+
+                <a href="#" class="flex items-center gap-3 text-gray-700 px-4 py-3 rounded-xl hover:bg-blue-50 transition-all duration-200 group">
+                    <div class="bg-blue-100 p-2 rounded-lg group-hover:bg-blue-200 transition-colors">
+                        <i class="fas fa-headset text-blue-600"></i>
+                    </div>
+                    <span class="font-medium">Soporte Técnico</span>
+                    <i class="fas fa-external-link-alt text-gray-400 text-sm ml-auto group-hover:text-blue-600 transition-colors"></i>
+                </a>
+
+                <a href="#" class="flex items-center gap-3 text-gray-700 px-4 py-3 rounded-xl hover:bg-blue-50 transition-all duration-200 group">
+                    <div class="bg-blue-100 p-2 rounded-lg group-hover:bg-blue-200 transition-colors">
+                        <i class="fas fa-phone text-blue-600"></i>
+                    </div>
+                    <span class="font-medium">Contacto</span>
+                    <i class="fas fa-external-link-alt text-gray-400 text-sm ml-auto group-hover:text-blue-600 transition-colors"></i>
+                </a>
+
+                <!-- Enlaces adicionales para demostrar scroll -->
+                <a href="#" class="flex items-center gap-3 text-gray-700 px-4 py-3 rounded-xl hover:bg-blue-50 transition-all duration-200 group">
+                    <div class="bg-blue-100 p-2 rounded-lg group-hover:bg-blue-200 transition-colors">
+                        <i class="fas fa-map-marker-alt text-blue-600"></i>
+                    </div>
+                    <span class="font-medium">Ubicaciones</span>
+                    <i class="fas fa-external-link-alt text-gray-400 text-sm ml-auto group-hover:text-blue-600 transition-colors"></i>
+                </a>
+
+                <a href="#" class="flex items-center gap-3 text-gray-700 px-4 py-3 rounded-xl hover:bg-blue-50 transition-all duration-200 group">
+                    <div class="bg-blue-100 p-2 rounded-lg group-hover:bg-blue-200 transition-colors">
+                        <i class="fas fa-file-download text-blue-600"></i>
+                    </div>
+                    <span class="font-medium">Descargar Formatos</span>
+                    <i class="fas fa-external-link-alt text-gray-400 text-sm ml-auto group-hover:text-blue-600 transition-colors"></i>
+                </a>
+
+                <a href="#" class="flex items-center gap-3 text-gray-700 px-4 py-3 rounded-xl hover:bg-blue-50 transition-all duration-200 group">
+                    <div class="bg-blue-100 p-2 rounded-lg group-hover:bg-blue-200 transition-colors">
+                        <i class="fas fa-question-circle text-blue-600"></i>
+                    </div>
+                    <span class="font-medium">Preguntas Frecuentes</span>
+                    <i class="fas fa-external-link-alt text-gray-400 text-sm ml-auto group-hover:text-blue-600 transition-colors"></i>
+                </a>
+
+                <a href="#" class="flex items-center gap-3 text-gray-700 px-4 py-3 rounded-xl hover:bg-blue-50 transition-all duration-200 group">
+                    <div class="bg-blue-100 p-2 rounded-lg group-hover:bg-blue-200 transition-colors">
+                        <i class="fas fa-calendar text-blue-600"></i>
+                    </div>
+                    <span class="font-medium">Horarios</span>
+                    <i class="fas fa-external-link-alt text-gray-400 text-sm ml-auto group-hover:text-blue-600 transition-colors"></i>
+                </a>
+
+                <a href="#" class="flex items-center gap-3 text-gray-700 px-4 py-3 rounded-xl hover:bg-blue-50 transition-all duration-200 group">
+                    <div class="bg-blue-100 p-2 rounded-lg group-hover:bg-blue-200 transition-colors">
+                        <i class="fas fa-envelope text-blue-600"></i>
+                    </div>
+                    <span class="font-medium">Correo Institucional</span>
+                    <i class="fas fa-external-link-alt text-gray-400 text-sm ml-auto group-hover:text-blue-600 transition-colors"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer del sidebar fijo -->
+        <div class="flex-shrink-0 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-t border-blue-200">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="bg-blue-500 p-2 rounded-lg">
+                    <i class="fas fa-clock text-white text-sm"></i>
+                </div>
+                <div>
+                    <p class="font-semibold text-blue-800 text-sm">Horario de Atención</p>
+                    <p class="text-blue-600 text-xs">Lun - Vie: 8:00 AM - 5:00 PM</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="bg-green-500 p-2 rounded-lg">
+                    <i class="fas fa-phone text-white text-sm"></i>
+                </div>
+                <div>
+                    <p class="font-semibold text-green-800 text-sm">Línea de Atención</p>
+                    <p class="text-green-600 text-xs">(123) 456-7890</p>
+                </div>
+            </div>
+        </div>
+    </aside>
 </header>
-<script>
-    let prevScroll = window.scrollY;
-    const header = document.getElementById("mainHeader");
 
-    window.addEventListener("scroll", () => {
-        const currentScroll = window.scrollY;
-        if (currentScroll > prevScroll && currentScroll > 100) {
-            // Scroll hacia abajo
-            header.classList.add("-translate-y-full");
-        } else {
-            // Scroll hacia arriba
-            header.classList.remove("-translate-y-full");
+<!-- JavaScript integrado para el sidebar -->
+<script>
+    // Variables globales para el sidebar
+    let sidebarOpen = false;
+    let isInitialized = false;
+
+    // Función principal para alternar el sidebar
+    function toggleSidebar() {
+        console.log('Toggle sidebar called, current state:', sidebarOpen);
+
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+        const menuIcon = document.getElementById("menuIcon");
+        const mainContent = document.getElementById("mainContent");
+
+        if (!sidebar) {
+            console.error('Sidebar element not found');
+            return;
         }
-        prevScroll = currentScroll;
-    });
+
+        sidebarOpen = !sidebarOpen;
+        console.log('New sidebar state:', sidebarOpen);
+
+        if (sidebarOpen) {
+            // Abrir sidebar
+            sidebar.classList.remove("-translate-x-full");
+            sidebar.classList.add("translate-x-0");
+
+            if (overlay) {
+                overlay.classList.remove("hidden");
+            }
+
+            if (menuIcon) {
+                menuIcon.classList.remove("fa-bars");
+                menuIcon.classList.add("fa-times");
+            }
+
+            // Ajustar contenido principal en pantallas grandes
+            if (mainContent && window.innerWidth >= 1024) {
+                mainContent.style.marginLeft = "320px";
+                mainContent.style.transition = "margin-left 0.3s ease-in-out";
+            }
+
+            // Prevenir scroll del body en móviles
+            if (window.innerWidth < 1024) {
+                document.body.style.overflow = 'hidden';
+            }
+
+        } else {
+            // Cerrar sidebar
+            sidebar.classList.add("-translate-x-full");
+            sidebar.classList.remove("translate-x-0");
+
+            if (overlay) {
+                overlay.classList.add("hidden");
+            }
+
+            if (menuIcon) {
+                menuIcon.classList.remove("fa-times");
+                menuIcon.classList.add("fa-bars");
+            }
+
+            // Restaurar contenido principal
+            if (mainContent) {
+                mainContent.style.marginLeft = "";
+            }
+
+            // Restaurar scroll del body
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Función para cerrar sidebar al hacer clic fuera
+    function closeSidebarOnClickOutside(e) {
+        if (!sidebarOpen) return;
+
+        const sidebar = document.getElementById("sidebar");
+        const sidebarToggle = document.getElementById("sidebarToggle");
+
+        if (sidebar && !sidebar.contains(e.target) &&
+            sidebarToggle && !sidebarToggle.contains(e.target)) {
+            toggleSidebar();
+        }
+    }
+
+    // Función para cerrar sidebar con overlay
+    function closeSidebarWithOverlay() {
+        if (sidebarOpen) {
+            toggleSidebar();
+        }
+    }
+
+    // Función para manejar el redimensionamiento de ventana
+    function handleResize() {
+        const mainContent = document.getElementById("mainContent");
+        const overlay = document.getElementById("overlay");
+
+        if (window.innerWidth >= 1024) {
+            if (overlay) {
+                overlay.classList.add("hidden");
+            }
+            if (mainContent && sidebarOpen) {
+                mainContent.style.marginLeft = "320px";
+            }
+            // Restaurar scroll en desktop
+            document.body.style.overflow = '';
+        } else {
+            if (overlay && sidebarOpen) {
+                overlay.classList.remove("hidden");
+            }
+            if (mainContent) {
+                mainContent.style.marginLeft = "";
+            }
+            // Prevenir scroll en móvil si sidebar está abierto
+            if (sidebarOpen) {
+                document.body.style.overflow = 'hidden';
+            }
+        }
+    }
+
+    // Función para manejar el scroll del header
+    function handleHeaderScroll() {
+        let prevScroll = window.scrollY;
+        const header = document.getElementById("mainHeader");
+
+        if (!header) return;
+
+        window.addEventListener("scroll", () => {
+            const currentScroll = window.scrollY;
+
+            if (currentScroll > prevScroll && currentScroll > 100) {
+                header.style.transform = "translateY(-100%)";
+            } else {
+                header.style.transform = "translateY(0)";
+            }
+
+            prevScroll = currentScroll;
+        });
+    }
+
+    // Función para manejar teclas
+    function handleKeyPress(e) {
+        if (e.key === 'Escape' && sidebarOpen) {
+            toggleSidebar();
+        }
+    }
+
+    // Función principal de inicialización
+    function initSidebar() {
+        if (isInitialized) {
+            console.log('Sidebar already initialized');
+            return;
+        }
+
+        console.log('Initializing sidebar...');
+
+        const sidebar = document.getElementById("sidebar");
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        const overlay = document.getElementById("overlay");
+
+        if (!sidebar) {
+            console.error('Sidebar element not found, retrying in 100ms...');
+            setTimeout(initSidebar, 100);
+            return;
+        }
+
+        console.log('Sidebar elements found, setting up event listeners...');
+
+        // Configurar event listeners
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleSidebar();
+            });
+        }
+
+        if (overlay) {
+            overlay.addEventListener('click', closeSidebarWithOverlay);
+        }
+
+        // Event listeners globales
+        document.addEventListener("click", closeSidebarOnClickOutside);
+        document.addEventListener('keydown', handleKeyPress);
+        window.addEventListener('resize', handleResize);
+
+        // Inicializar scroll del header
+        handleHeaderScroll();
+
+        // Asegurar estado inicial correcto
+        if (sidebar) {
+            sidebar.classList.add("-translate-x-full");
+            sidebar.classList.remove("translate-x-0");
+        }
+
+        if (overlay) {
+            overlay.classList.add("hidden");
+        }
+
+        isInitialized = true;
+        console.log('Sidebar initialized successfully');
+    }
+
+    // Función de respaldo para inicialización
+    function ensureSidebarInit() {
+        if (!isInitialized) {
+            initSidebar();
+        }
+    }
+
+    // Múltiples puntos de inicialización
+    document.addEventListener("DOMContentLoaded", initSidebar);
+    window.addEventListener("load", ensureSidebarInit);
+
+    // Función global para debugging
+    window.debugSidebar = function() {
+        console.log('Sidebar state:', sidebarOpen);
+        console.log('Sidebar element:', document.getElementById("sidebar"));
+        console.log('Toggle button:', document.getElementById("sidebarToggle"));
+        console.log('Overlay:', document.getElementById("overlay"));
+        console.log('Is initialized:', isInitialized);
+    };
 </script>
 
 </body>

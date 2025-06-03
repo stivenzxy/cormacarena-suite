@@ -1,11 +1,11 @@
 package com.example.cormacarena_client.licenciamientoAmbiental.service.Impl;
 
-import com.example.cormacarena_client.licenciamientoAmbiental.entity.SolicitudLicencia;
 import com.example.cormacarena_client.licenciamientoAmbiental.repository.SolicitudRepository;
 import com.example.cormacarena_client.licenciamientoAmbiental.service.ActualizacionEstadoProceso;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.modelo.SolicitudLicencia;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

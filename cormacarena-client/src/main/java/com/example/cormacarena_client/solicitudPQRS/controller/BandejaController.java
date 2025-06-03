@@ -2,8 +2,8 @@ package com.example.cormacarena_client.solicitudPQRS.controller;
 
 
 import com.example.cormacarena_client.solicitudPQRS.dto.MensajeDTO;
-import com.example.cormacarena_client.solicitudPQRS.model.Bandeja;
 import com.example.cormacarena_client.solicitudPQRS.repository.BandejaRepository;
+import org.example.modelo.Bandeja;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

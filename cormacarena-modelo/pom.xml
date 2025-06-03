@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.cormacarena</groupId>
+        <artifactId>cormacarena-suite</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>cormacarena-modelo</artifactId>
+    <!-- packaging es 'jar' por defecto, no es necesario especificarlo -->
+
+    <name>Cormacarena Modelo</name>
+    <description>Módulo con las entidades y clases compartidas.</description>
+
+    <dependencies>
+        <!-- Lombok (la versión se hereda del parent) -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional> <!-- Correcto para Lombok -->
+        </dependency>
+
+        <!-- Dependencia de JPA (la versión se hereda del parent) -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+        </dependency>
+    </dependencies>
+</project>

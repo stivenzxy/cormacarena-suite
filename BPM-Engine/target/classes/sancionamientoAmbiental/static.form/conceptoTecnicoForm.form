@@ -12,18 +12,6 @@
       "key": "fechaConceptoTecnico"
     },
     {
-      "subtype": "date",
-      "dateLabel": "Fecha de la visita técnica",
-      "type": "datetime",
-      "layout": {
-        "row": "Row_0fbnjla",
-        "columns": null
-      },
-      "id": "Field_1jbzl5u",
-      "key": "fechaVisitaTecnica",
-      "disabled": true
-    },
-    {
       "label": "Nombre del encargado de la visita técnica:",
       "type": "textfield",
       "layout": {

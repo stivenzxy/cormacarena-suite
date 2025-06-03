@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de denuncias a realizar conceptos técnicos de pruebas</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0d348d',
+                        secondary: '#1a4fb4',
+                        tertiary: '#eaf2fe',
+                        accent: '#f59e0b'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'modal-appear': 'modalAppear 0.3s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        modalAppear: {
+                            '0%': { transform: 'scale(0.9)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // Función modal mejorada
+        function mostrarModal(id, descripcion, numeroDocumentoDenuciante, processId, nombreInfractor) {
+            document.getElementById("inputIdDenuciante").value = id;
+            document.getElementById("inputDescripcionDenuncia").value = descripcion;
+            document.getElementById("inputDocumentoDenuciante").value = numeroDocumentoDenuciante;
+            document.getElementById("inputProcessId").value = processId;
+            document.getElementById("nombreInfractor").value =nombreInfractor
+
+
+
+            const modal = document.getElementById("modal");
+            const modalContent = document.getElementById("modalContent");
+
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+
+            // Animación de entrada
+            setTimeout(() => {
+                modalContent.classList.add('animate-modal-appear');
+            }, 10);
+
+            // Prevenir scroll del body
+            document.body.style.overflow = 'hidden';
+
+            console.log('Modal abierto:', id, descripcion);
+        }
+
+        function cerrarModal() {
+            const modal = document.getElementById("modal");
+            const modalContent = document.getElementById("modalContent");
+
+            modalContent.classList.remove('animate-modal-appear');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 200);
+        }
+
+        // Cerrar modal con Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                cerrarModal();
+            }
+        });
+    </script>
+</head>
+<body class="bg-tertiary min-h-screen">
+<!-- Header con sidebar -->
+<div th:replace="views/header :: contenido"></div>
+
+<!-- Contenido principal -->
+<main class="pt-24 px-4 sm:px-6 lg:px-8 min-h-screen bg-tertiary transition-all duration-300" id="mainContent">
+    <div class="max-w-7xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="mb-8" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-3 text-sm bg-white/70 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
+                <li>
+                    <a href="/" class="flex items-center text-gray-600 hover:text-primary transition-colors group">
+                        <i class="fas fa-home mr-2 group-hover:scale-110 transition-transform"></i>
+                        Inicio
+                    </a>
+                </li>
+                <li><i class="fas fa-chevron-right text-gray-400"></i></li>
+                <li>
+                    <a href="/verificarHechos" class="text-gray-600 hover:text-primary transition-colors">Grupo GIEMA</a>
+                </li>
+                <li><i class="fas fa-chevron-right text-gray-400"></i></li>
+                <li class="text-primary font-semibold flex items-center">
+                    <i class="fas fa-list-check mr-2"></i>
+                    Realizar conceptos tecnicos de pruebas
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Título principal -->
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-primary to-secondary rounded-full mb-4 shadow-lg">
+                <i class="fas fa-search text-white text-2xl"></i>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-3">
+                Lista de Denuncias para realizar concepto tecnico de pruebas
+            </h1>
+            <p class="text-gray-600 text-xl max-w-2xl mx-auto leading-relaxed">
+                Gestione y realice los conceptos técnicos de prueba de las denuncias ambientales pendientes
+            </p>
+        </div>
+
+        <!-- Contenedor principal -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-white/20 animate-fade-in">
+            <!-- Header de la tabla -->
+            <div class="bg-gradient-to-r from-primary via-secondary to-primary px-8 py-6 relative overflow-hidden">
+                <div class="absolute inset-0 bg-black/10"></div>
+                <div class="relative z-10">
+                    <h2 class="text-white text-2xl font-bold flex items-center mb-2">
+                        <div class="bg-white/20 p-3 rounded-full mr-4">
+                            <i class="fas fa-clipboard-list text-xl"></i>
+                        </div>
+                        Denuncias Pendientes
+                    </h2>
+                    <p class="text-blue-100 text-lg">Seleccione una denuncia para realizar los conceptos técnicos de pruebas</p>
+                </div>
+                <!-- Elementos decorativos -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+                <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+            </div>
+
+            <!-- Contenido de la tabla -->
+            <div class="p-8">
+                <!-- Tabla de denuncias -->
+                <div th:if="${denuncias != null and !denuncias.isEmpty()}" class="overflow-x-auto">
+                    <table class="min-w-full bg-white shadow-lg rounded-xl overflow-hidden">
+                        <thead class="bg-gradient-to-r from-primary to-secondary text-white">
+                        <tr>
+                            <th class="px-6 py-4 text-left font-semibold">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-hashtag"></i>
+                                    ID Denuncia
+                                </div>
+                            </th>
+                            <th class="px-6 py-4 text-left font-semibold">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-user"></i>
+                                    ID Denunciante
+                                </div>
+                            </th>
+                            <th class="px-6 py-4 text-left font-semibold">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-file-alt"></i>
+                                    Descripción
+                                </div>
+                            </th>
+                            <th class="px-6 py-4 text-center font-semibold">
+                                <div class="flex items-center justify-center gap-2">
+                                    <i class="fas fa-cogs"></i>
+                                    Acciones
+                                </div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                        <tr th:each="denuncia, iterStat : ${denuncias}"
+                            class="hover:bg-blue-50 transition-all duration-200 group"
+                            th:classappend="${iterStat.even} ? 'bg-gray-50' : 'bg-white'">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="bg-primary/10 p-2 rounded-lg">
+                                        <i class="fas fa-file text-primary text-sm"></i>
+                                    </div>
+                                    <span class="font-semibold text-gray-800" th:text="${denuncia.idDenuncia}"></span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="bg-blue-100 p-2 rounded-lg">
+                                        <i class="fas fa-id-card text-blue-600 text-sm"></i>
+                                    </div>
+                                    <span class="text-gray-700" th:text="${denuncia.numeroDocumentoDenuciante}"></span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="max-w-xs">
+                                    <p class="text-gray-700 truncate" th:text="${denuncia.DescripcionDenuncia}" th:title="${denuncia.DescripcionDenuncia}"></p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <button type="button"
+                                        class="group inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl hover:from-secondary hover:to-primary transition-all duration-300 transform hover:scale-105 hover:shadow-lg font-semibold"
+                                        th:attr="data-id-denuncia=${denuncia.idDenuncia},
+                                                        data-descripcion-denuncia=${denuncia.descripcionDenuncia},
+                                                        data-numeroDocumentoDenuciante-denuncia=${denuncia.numeroDocumentoDenuciante},
+                                                        data-processId-denuncia=${denuncia.taskInfo.processId},
+                                                        data-nombreInfractor-denuncia=${denuncia.nombreInfractor}"
+                                        onclick="mostrarModal(this.getAttribute('data-id-denuncia'),
+                                                                    this.getAttribute('data-descripcion-denuncia'),
+                                                                    this.getAttribute('data-numeroDocumentoDenuciante-denuncia'),
+                                                                    this.getAttribute('data-processId-denuncia'),
+                                                                    this.getAttribute('data-nombreInfractor-denuncia'))">
+                                    <i class="fas fa-eye group-hover:scale-110 transition-transform"></i>
+                                    Ver Detalles
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mensaje si no hay denuncias -->
+                <div th:if="${denuncias == null or denuncias.isEmpty()}"
+                     class="text-center py-16">
+                    <div class="inline-flex items-center justify-center w-24 h-24 bg-gray-100 rounded-full mb-6">
+                        <i class="fas fa-inbox text-gray-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-600 mb-2">No hay denuncias disponibles</h3>
+                    <p class="text-gray-500 text-lg">No hay denuncias pendientes para realizar realizar concepto técnicos de pruebas en este momento.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modal mejorado -->
+<div id="modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div id="modalContent" class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <form th:action="@{/denuncias/enviarConceptoTecnicoPruebas}" th:method="post">
+            <!-- Header del modal -->
+            <div class="bg-gradient-to-r from-primary to-secondary p-6 text-white relative overflow-hidden">
+                <div class="absolute inset-0 bg-black/10"></div>
+                <div class="relative z-10">
+                    <h2 class="text-2xl font-bold flex items-center mb-2">
+                        <div class="bg-white/20 p-2 rounded-full mr-3">
+                            <i class="fas fa-search-plus text-xl"></i>
+                        </div>
+                        Determine la infracción de la Denuncia
+                    </h2>
+                    <p class="text-blue-100">Complete la información para determinar la infracción</p>
+                </div>
+                <!-- Botón cerrar -->
+                <button type="button" onclick="cerrarModal()"
+                        class="absolute top-4 right-4 text-white hover:bg-white/20 p-2 rounded-full transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Contenido del modal -->
+            <div class="p-6 space-y-6">
+
+                <!-- Información de la denuncia (solo lectura) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="inputIdDenuciante" class="flex items-center text-gray-700 font-semibold">
+                            <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                                <i class="fas fa-hashtag text-blue-600"></i>
+                            </div>
+                            ID de la denuncia
+                        </label>
+                        <input type="number" id="inputIdDenuciante" readonly
+                               class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-600">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="inputDocumentoDenuciante" class="flex items-center text-gray-700 font-semibold">
+                            <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                                <i class="fas fa-id-card text-blue-600"></i>
+                            </div>
+                            Documento del denunciante
+                        </label>
+                        <input type="number" id="inputDocumentoDenuciante" readonly
+                               class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-600">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="inputDescripcionDenuncia" class="flex items-center text-gray-700 font-semibold">
+                            <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                                <i class="fas fa-file-alt text-blue-600"></i>
+                            </div>
+                            Descripción de la denuncia
+                        </label>
+                        <textarea id="inputDescripcionDenuncia" rows="3" readonly
+                                  class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-600 resize-none"></textarea>
+                    </div>
+
+                </div>
+
+                <div class="space-y-2">
+                    <label for="nombreInfractor" class="flex items-center text-gray-700 font-semibold text-lg">
+                        <div class="bg-primary/10 p-2 rounded-lg mr-3">
+                            <i class="fas fa-user-tie text-primary"></i>
+                        </div>
+                        Nombre del infractor: *
+                    </label>
+                    <input type="text" id="nombreInfractor" readonly
+                           class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300"
+                           placeholder="Nombre completo de la persona responsable del crimen">
+                </div>
+
+
+                <label for="culpable">¿Es culpable?: *</label>
+                <select id="culpable" name="culpable" required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option value="true">Si</option>
+                    <option value="false">No</option>
+                </select>
+                <div class="space-y-2">
+                    <label for="descripcionConclusiones" class="flex items-center text-gray-700 font-semibold text-lg">
+                        <div class="bg-primary/10 p-2 rounded-lg mr-3">
+                            <i class="fas fa-clipboard-list text-primary"></i>
+                        </div>
+                        Describa los ultimos resultados de la denuncia: *
+                    </label>
+                    <textarea id="descripcionConclusiones" rows="4" name="descripcionConclusiones" required
+                              class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 resize-none"
+                              placeholder="Describa detalladamente los resultados y conclusiones de la denuncia ..."></textarea>
+                </div>
+
+
+
+                <input type="hidden" name="processId" id="inputProcessId">
+            </div>
+
+            <!-- Footer del modal -->
+            <div class="flex flex-col sm:flex-row justify-end gap-4 p-6 border-t border-gray-200 bg-gray-50">
+                <button type="button" onclick="cerrarModal()"
+                        class="px-6 py-3 rounded-xl bg-gray-500 text-white font-semibold hover:bg-gray-600 transition-all duration-300 flex items-center justify-center gap-2">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-semibold hover:from-secondary hover:to-primary transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                    <i class="fas fa-check"></i>
+                    Verificar y Radicar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Establecer fecha actual por defecto
+    document.addEventListener('DOMContentLoaded', function() {
+        const hoy = new Date();
+        const yyyy = hoy.getFullYear();
+        const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+        const dd = String(hoy.getDate()).padStart(2, '0');
+        const fechaActual = `${yyyy}-${mm}-${dd}`;
+
+        const fechaInput = document.getElementById('fecha');
+        if (fechaInput) {
+            fechaInput.value = fechaActual;
+        }
+    });
+</script>
+<script th:src="@{/script/sidebar.js}"></script>
+
+</body>
+</html>

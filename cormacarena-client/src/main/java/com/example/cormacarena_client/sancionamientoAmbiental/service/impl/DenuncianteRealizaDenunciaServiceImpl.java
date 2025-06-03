@@ -2,12 +2,12 @@ package com.example.cormacarena_client.sancionamientoAmbiental.service.impl;
 
 import com.example.cormacarena_client.sancionamientoAmbiental.DTO.TaskInfo;
 import com.example.cormacarena_client.sancionamientoAmbiental.DTO.DenunciaDTO;
-import com.example.cormacarena_client.sancionamientoAmbiental.entity.SancionamientoAmbiental;
 import com.example.cormacarena_client.sancionamientoAmbiental.service.DenuncianteRealizaDenunciaService;
 import com.example.cormacarena_client.sancionamientoAmbiental.service.SancionamientoAmbientalService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.example.modelo.SancionamientoAmbiental;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -182,6 +182,7 @@ public class DenuncianteRealizaDenunciaServiceImpl implements DenuncianteRealiza
 
     @Override
     public String completeTask(String processId,DenunciaDTO denunciaDTO) {
+        System.out.println("PROCESS id: "+ processId);
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {

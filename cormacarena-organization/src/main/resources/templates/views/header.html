@@ -2,71 +2,602 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById("sidebar");
-            sidebar.classList.toggle("-translate-x-full");
-        }
-        function closeSidebarOnClickOutside(e) {
-            const sidebar = document.getElementById("sidebar");
-            if (!sidebar.contains(e.target) && !e.target.closest("#sidebarToggle")) {
-                sidebar.classList.add("-translate-x-full");
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0d348d',
+                        secondary: '#1a4fb4',
+                        tertiary: '#eaf2fe',
+                        accent: '#f59e0b'
+                    },
+                    animation: {
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'slide-down': 'slideDown 0.3s ease-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                    },
+                    keyframes: {
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(0)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideDown: {
+                            '0%': { transform: 'translateY(-10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(0)', opacity: '1' },
+                            '100%': { transform: 'translateY(-10px)', opacity: '0' }
+                        }
+                    }
+                }
             }
         }
-        document.addEventListener("DOMContentLoaded", function () {
-            document.addEventListener("click", closeSidebarOnClickOutside);
-        });
     </script>
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<header id="mainHeader" th:fragment="contenido" class="fixed w-full z-50 transition-transform duration-300">
-    <div class="bg-[#0d348d] h-20 flex items-center justify-between px-6 shadow-lg">
-        <button id="sidebarToggle" onclick="toggleSidebar()" class="text-white text-2xl focus:outline-none">
-            ☰
+<header id="mainHeader" th:fragment="contenido" class="fixed w-full z-50 transition-all duration-300">
+    <!-- Barra principal -->
+    <div class="bg-gradient-to-r from-primary to-secondary h-20 flex items-center justify-between px-6 shadow-xl">
+        <!-- Botón del menú -->
+        <button id="sidebarToggle" type="button"
+                class="relative text-white text-2xl focus:outline-none hover:bg-white/10 p-3 rounded-xl transition-all duration-300 group overflow-hidden z-50">
+            <div class="absolute inset-0 bg-white/5 rounded-xl transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+            <i id="menuIcon" class="fas fa-bars relative z-10 group-hover:scale-110 transition-all duration-300"></i>
         </button>
-        <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo">
+
+        <!-- Logo -->
+        <div class="flex items-center justify-center">
+            <img class="h-16 w-auto drop-shadow-lg transform hover:scale-105 transition-transform duration-300"
+                 th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo">
+        </div>
+
+        <!-- Espacio para mantener el logo centrado -->
+        <div class="w-10"></div>
     </div>
 
-    <div id="sidebar" class="fixed top-20 left-0 w-60 h-full bg-[#0d348d] transform -translate-x-full transition-transform duration-300 ease-in-out z-50 shadow-lg">
-        <nav class="flex flex-col justify-center items-stretch h-full p-4 space-y-2">
-            <a href="/listaDenunciaSinRadicar" class="text-white text-lg px-4 py-3 rounded hover:bg-[#1a4fb4] transition flex items-center gap-3">
-                <span class="font-semibold">Subdirección de autoridad ambiental</span>
+    <!-- Overlay para móvil -->
+    <div id="overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden transition-all duration-300"></div>
+
+    <!-- Sidebar mejorado -->
+    <aside id="sidebar" class="fixed top-20 left-0 w-72 h-[calc(100vh-5rem)] bg-gradient-to-b from-primary to-secondary transform -translate-x-full transition-all duration-300 ease-in-out z-50 shadow-2xl flex flex-col overflow-hidden">
+        <!-- Header del sidebar -->
+        <div class="p-6 border-b border-white/20">
+            <div class="flex items-center gap-3">
+                <div class="bg-white/20 p-2 rounded-full">
+                    <i class="fas fa-shield-alt text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-white text-lg font-bold">CORMACARENA</h2>
+                    <p class="text-blue-100 text-sm">Sistema de Gestión</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegación principal con scroll -->
+        <nav class="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+            <!-- Subdirección de autoridad ambiental con submenú -->
+            <div class="relative">
+                <button id="autoridadToggle" class="group w-full text-left">
+                    <div class="text-white px-4 py-4 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center gap-3 transform hover:scale-105 hover:shadow-lg">
+                        <div class="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
+                            <i class="fas fa-file-alt text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <span class="font-semibold text-base">Subdirección de autoridad ambiental</span>
+                            <p class="text-blue-100 text-xs mt-1">Gestión de denuncias</p>
+                        </div>
+                        <i id="autoridadChevron" class="fas fa-chevron-down text-sm opacity-50 group-hover:opacity-100 transition-all duration-300"></i>
+                    </div>
+                </button>
+
+                <!-- Submenú de Subdirección de autoridad ambiental -->
+                <div id="autoridadSubmenu" class="hidden ml-4 mt-2 space-y-2 animate-slide-down">
+                    <a href="/listaDenunciaSinRadicar" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-file-import text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Radicar denuncias</span>
+                        </div>
+                    </a>
+                    <a href="/reSolucionesActosAdministrativos" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-file-signature text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Resoluciones de actos administrativos</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Grupo GEMA con submenú -->
+            <div class="relative">
+                <button id="gemaToggle" class="group w-full text-left">
+                    <div class="text-white px-4 py-4 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center gap-3 transform hover:scale-105 hover:shadow-lg">
+                        <div class="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
+                            <i class="fas fa-check-circle text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <span class="font-semibold text-base">Grupo GEMA</span>
+                            <p class="text-blue-100 text-xs mt-1">Evaluación y monitoreo</p>
+                        </div>
+                        <i id="gemaChevron" class="fas fa-chevron-down text-sm opacity-50 group-hover:opacity-100 transition-all duration-300"></i>
+                    </div>
+                </button>
+
+                <!-- Submenú de GEMA -->
+                <div id="gemaSubmenu" class="hidden ml-4 mt-2 space-y-2 animate-slide-down">
+                    <a href="/verificarHechos" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-search text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Verificar hechos</span>
+                        </div>
+                    </a>
+                    <a href="/registrarHechosFlagrancia" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-search text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Registrar hechos en flagrancia</span>
+                        </div>
+                    </a>
+                    <a href="/elaborarInformesTecnicos" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-file-medical text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Elaborar informe técnico</span>
+                        </div>
+                    </a>
+                    <a href="/registrarConceptoTecnico" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-clipboard-check text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Elaborar concepto técnico</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Consultar Denuncias -->
+            <a href="/consultar" class="group block">
+                <div class="text-white px-4 py-4 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center gap-3 transform hover:scale-105 hover:shadow-lg">
+                    <div class="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
+                        <i class="fas fa-search text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <span class="font-semibold text-base">Consultar Denuncias</span>
+                        <p class="text-blue-100 text-xs mt-1">Búsqueda y seguimiento</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-sm opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                </div>
             </a>
-            <a href="/consultar" class="text-white text-lg px-4 py-3 rounded hover:bg-[#1a4fb4] transition flex items-center gap-3">
 
-                <span class="font-semibold">Grupo GEMA</span>
-            </a>
-            <a href="/consultar" class="text-white text-lg px-4 py-3 rounded hover:bg-[#1a4fb4] transition flex items-center gap-3">
+            <!-- Grupo GIEMA con submenú -->
+            <div class="relative">
+                <button id="giemaToggle" class="group w-full text-left">
+                    <div class="text-white px-4 py-4 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center gap-3 transform hover:scale-105 hover:shadow-lg">
+                        <div class="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
+                            <i class="fas fa-clipboard-list text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <span class="font-semibold text-base">Grupo GIEMA</span>
+                            <p class="text-blue-100 text-xs mt-1">Gestión de informes</p>
+                        </div>
+                        <i id="giemaChevron" class="fas fa-chevron-down text-sm opacity-50 group-hover:opacity-100 transition-all duration-300"></i>
+                    </div>
+                </button>
 
-                <span class="font-semibold">Grupo GEMA</span>
-            </a>
-            <a href="/consultar" class="text-white text-lg px-4 py-3 rounded hover:bg-[#1a4fb4] transition flex items-center gap-3">
+                <!-- Submenú de GIEMA -->
+                <div id="giemaSubmenu" class="hidden ml-4 mt-2 space-y-2 animate-slide-down">
+                    <a href="/elaborarActosAdministrativos" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-file-signature text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Elaborar Actos Administrativos</span>
+                        </div>
+                    </a>
+                    <a href="/formularCargos" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-exclamation-circle text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Formular cargos al infractor</span>
+                        </div>
+                    </a>
+                    <a href="/denunciasADeterminar" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-gavel text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Determinar Sanción</span>
+                        </div>
+                    </a>
+                    <a href="/listaDeDisminuicion" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-gavel text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Determinar el porcentaje de disminuición de la sanción</span>
+                        </div>
+                    </a>
+                    <a href="/recursosReposicionADeterminar" class="group block">
+                        <div class="text-white px-4 py-3 rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-3 transform hover:translate-x-2">
+                            <div class="bg-white/10 p-1.5 rounded-md group-hover:bg-white/20 transition-colors">
+                                <i class="fas fa-balance-scale text-sm"></i>
+                            </div>
+                            <span class="text-sm font-medium">Verificar recursos de reposición</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
 
-            <span class="font-semibold">Grupo GIEMA</span>
-        </a>
-            <a href="/consultar" class="text-white text-lg px-4 py-3 rounded hover:bg-[#1a4fb4] transition flex items-center gap-3">
-
-                <span class="font-semibold">Oficina de asesoria juridica</span>
+            <!-- Oficina de asesoría jurídica -->
+            <a href="/conceptosTecnicosAElaborar" class="group block">
+                <div class="text-white px-4 py-4 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center gap-3 transform hover:scale-105 hover:shadow-lg">
+                    <div class="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 transition-colors">
+                        <i class="fas fa-gavel text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <span class="font-semibold text-base">Oficina de asesoría jurídica</span>
+                        <p class="text-blue-100 text-xs mt-1">Soporte legal</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-sm opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                </div>
             </a>
         </nav>
-    </div>
-</header>
-<script>
-    let prevScroll = window.scrollY;
-    const header = document.getElementById("mainHeader");
 
-    window.addEventListener("scroll", () => {
-        const currentScroll = window.scrollY;
-        if (currentScroll > prevScroll && currentScroll > 100) {
-            // Scroll hacia abajo
-            header.classList.add("-translate-y-full");
+        <!-- Footer del sidebar -->
+        <div class="p-4 border-t border-white/20">
+            <div class="flex items-center gap-3 text-white">
+                <div class="bg-green-500 p-2 rounded-lg">
+                    <i class="fas fa-circle text-xs"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold">Sistema Activo</p>
+                    <p class="text-xs text-blue-100">Conectado</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+</header>
+
+<!-- JavaScript integrado para el sidebar -->
+<script>
+    // Variables globales para el sidebar
+    let sidebarOpen = false;
+    let isInitialized = false;
+    let gemaSubmenuOpen = false;
+    let giemaSubmenuOpen = false;
+    let autoridadSubmenuOpen = false; // Nueva variable para el submenú de Autoridad Ambiental
+
+    // Función para alternar el submenú de Autoridad Ambiental
+    function toggleAutoridadSubmenu() {
+        const submenu = document.getElementById("autoridadSubmenu");
+        const chevron = document.getElementById("autoridadChevron");
+
+        if (!submenu || !chevron) return;
+
+        autoridadSubmenuOpen = !autoridadSubmenuOpen;
+
+        if (autoridadSubmenuOpen) {
+            submenu.classList.remove("hidden");
+            submenu.classList.add("animate-slide-down");
+            chevron.classList.remove("fa-chevron-down");
+            chevron.classList.add("fa-chevron-up");
+            chevron.style.transform = "rotate(180deg)";
         } else {
-            // Scroll hacia arriba
-            header.classList.remove("-translate-y-full");
+            submenu.classList.add("hidden");
+            submenu.classList.remove("animate-slide-down");
+            chevron.classList.remove("fa-chevron-up");
+            chevron.classList.add("fa-chevron-down");
+            chevron.style.transform = "rotate(0deg)";
         }
-        prevScroll = currentScroll;
-    });
+    }
+
+    // Función para alternar el submenú de GEMA
+    function toggleGemaSubmenu() {
+        const submenu = document.getElementById("gemaSubmenu");
+        const chevron = document.getElementById("gemaChevron");
+
+        if (!submenu || !chevron) return;
+
+        gemaSubmenuOpen = !gemaSubmenuOpen;
+
+        if (gemaSubmenuOpen) {
+            submenu.classList.remove("hidden");
+            submenu.classList.add("animate-slide-down");
+            chevron.classList.remove("fa-chevron-down");
+            chevron.classList.add("fa-chevron-up");
+            chevron.style.transform = "rotate(180deg)";
+        } else {
+            submenu.classList.add("hidden");
+            submenu.classList.remove("animate-slide-down");
+            chevron.classList.remove("fa-chevron-up");
+            chevron.classList.add("fa-chevron-down");
+            chevron.style.transform = "rotate(0deg)";
+        }
+    }
+
+    // Función para alternar el submenú de GIEMA
+    function toggleGiemaSubmenu() {
+        const submenu = document.getElementById("giemaSubmenu");
+        const chevron = document.getElementById("giemaChevron");
+
+        if (!submenu || !chevron) return;
+
+        giemaSubmenuOpen = !giemaSubmenuOpen;
+
+        if (giemaSubmenuOpen) {
+            submenu.classList.remove("hidden");
+            submenu.classList.add("animate-slide-down");
+            chevron.classList.remove("fa-chevron-down");
+            chevron.classList.add("fa-chevron-up");
+            chevron.style.transform = "rotate(180deg)";
+        } else {
+            submenu.classList.add("hidden");
+            submenu.classList.remove("animate-slide-down");
+            chevron.classList.remove("fa-chevron-up");
+            chevron.classList.add("fa-chevron-down");
+            chevron.style.transform = "rotate(0deg)";
+        }
+    }
+
+    // Función principal para alternar el sidebar
+    function toggleSidebar() {
+        console.log('Toggle sidebar called, current state:', sidebarOpen);
+
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+        const menuIcon = document.getElementById("menuIcon");
+        const mainContent = document.getElementById("mainContent");
+
+        if (!sidebar) {
+            console.error('Sidebar element not found');
+            return;
+        }
+
+        sidebarOpen = !sidebarOpen;
+        console.log('New sidebar state:', sidebarOpen);
+
+        if (sidebarOpen) {
+            // Abrir sidebar
+            sidebar.classList.remove("-translate-x-full");
+            sidebar.classList.add("translate-x-0");
+
+            if (overlay) {
+                overlay.classList.remove("hidden");
+            }
+
+            if (menuIcon) {
+                menuIcon.classList.remove("fa-bars");
+                menuIcon.classList.add("fa-times");
+            }
+
+            // Ajustar contenido principal en pantallas grandes
+            if (mainContent && window.innerWidth >= 1024) {
+                mainContent.style.marginLeft = "288px";
+                mainContent.style.transition = "margin-left 0.3s ease-in-out";
+            }
+
+            // Prevenir scroll del body en móviles
+            if (window.innerWidth < 1024) {
+                document.body.style.overflow = 'hidden';
+            }
+
+        } else {
+            // Cerrar sidebar
+            sidebar.classList.add("-translate-x-full");
+            sidebar.classList.remove("translate-x-0");
+
+            if (overlay) {
+                overlay.classList.add("hidden");
+            }
+
+            if (menuIcon) {
+                menuIcon.classList.remove("fa-times");
+                menuIcon.classList.add("fa-bars");
+            }
+
+            // Restaurar contenido principal
+            if (mainContent) {
+                mainContent.style.marginLeft = "";
+            }
+
+            // Restaurar scroll del body
+            document.body.style.overflow = '';
+
+            // Cerrar submenús al cerrar sidebar
+            if (gemaSubmenuOpen) {
+                toggleGemaSubmenu();
+            }
+            if (giemaSubmenuOpen) {
+                toggleGiemaSubmenu();
+            }
+            if (autoridadSubmenuOpen) {
+                toggleAutoridadSubmenu();
+            }
+        }
+    }
+
+    // Función para cerrar sidebar al hacer clic fuera
+    function closeSidebarOnClickOutside(e) {
+        if (!sidebarOpen) return;
+
+        const sidebar = document.getElementById("sidebar");
+        const sidebarToggle = document.getElementById("sidebarToggle");
+
+        if (sidebar && !sidebar.contains(e.target) &&
+            sidebarToggle && !sidebarToggle.contains(e.target)) {
+            toggleSidebar();
+        }
+    }
+
+    // Función para manejar el scroll del header
+    function handleHeaderScroll() {
+        let prevScroll = window.scrollY;
+        const header = document.getElementById("mainHeader");
+
+        if (!header) return;
+
+        window.addEventListener("scroll", () => {
+            const currentScroll = window.scrollY;
+
+            if (currentScroll > prevScroll && currentScroll > 100) {
+                // Scroll hacia abajo - ocultar header
+                header.style.transform = "translateY(-100%)";
+            } else {
+                // Scroll hacia arriba - mostrar header
+                header.style.transform = "translateY(0)";
+            }
+
+            prevScroll = currentScroll;
+        });
+    }
+
+    // Función para manejar el redimensionamiento de ventana
+    function handleResize() {
+        const mainContent = document.getElementById("mainContent");
+        const overlay = document.getElementById("overlay");
+
+        if (window.innerWidth >= 1024) {
+            if (overlay) {
+                overlay.classList.add("hidden");
+            }
+            if (mainContent && sidebarOpen) {
+                mainContent.style.marginLeft = "288px";
+            }
+            // Restaurar scroll en desktop
+            document.body.style.overflow = '';
+        } else {
+            if (overlay && sidebarOpen) {
+                overlay.classList.remove("hidden");
+            }
+            if (mainContent) {
+                mainContent.style.marginLeft = "";
+            }
+            // Prevenir scroll en móvil si sidebar está abierto
+            if (sidebarOpen) {
+                document.body.style.overflow = 'hidden';
+            }
+        }
+    }
+
+    // Función para manejar teclas
+    function handleKeyPress(e) {
+        if (e.key === 'Escape' && sidebarOpen) {
+            toggleSidebar();
+        }
+    }
+
+    // Función principal de inicialización
+    function initSidebar() {
+        if (isInitialized) {
+            console.log('Sidebar already initialized');
+            return;
+        }
+
+        console.log('Initializing sidebar...');
+
+        const sidebar = document.getElementById("sidebar");
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        const overlay = document.getElementById("overlay");
+        const gemaToggle = document.getElementById("gemaToggle");
+        const giemaToggle = document.getElementById("giemaToggle");
+        const autoridadToggle = document.getElementById("autoridadToggle"); // Nuevo toggle para Autoridad Ambiental
+
+        if (!sidebar) {
+            console.error('Sidebar element not found, retrying in 100ms...');
+            setTimeout(initSidebar, 100);
+            return;
+        }
+
+        console.log('Sidebar elements found, setting up event listeners...');
+
+        // Configurar event listeners
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleSidebar();
+            });
+        }
+
+        if (overlay) {
+            overlay.addEventListener('click', function() {
+                if (sidebarOpen) {
+                    toggleSidebar();
+                }
+            });
+        }
+
+        if (gemaToggle) {
+            gemaToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleGemaSubmenu();
+            });
+        }
+
+        if (giemaToggle) {
+            giemaToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleGiemaSubmenu();
+            });
+        }
+
+        // Nuevo event listener para Autoridad Ambiental
+        if (autoridadToggle) {
+            autoridadToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleAutoridadSubmenu();
+            });
+        }
+
+        // Event listeners globales
+        document.addEventListener("click", closeSidebarOnClickOutside);
+        document.addEventListener('keydown', handleKeyPress);
+        window.addEventListener('resize', handleResize);
+
+        // Inicializar scroll del header
+        handleHeaderScroll();
+
+        // Asegurar estado inicial correcto
+        if (sidebar) {
+            sidebar.classList.add("-translate-x-full");
+            sidebar.classList.remove("translate-x-0");
+        }
+
+        if (overlay) {
+            overlay.classList.add("hidden");
+        }
+
+        isInitialized = true;
+        console.log('Sidebar initialized successfully');
+    }
+
+    // Inicializar cuando el DOM esté listo
+    document.addEventListener("DOMContentLoaded", initSidebar);
 </script>
 
 </body>

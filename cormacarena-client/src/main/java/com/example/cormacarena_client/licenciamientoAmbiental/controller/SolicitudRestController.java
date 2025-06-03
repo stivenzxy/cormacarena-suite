@@ -1,13 +1,14 @@
 package com.example.cormacarena_client.licenciamientoAmbiental.controller;
 
 import com.example.cormacarena_client.licenciamientoAmbiental.DTO.SolicitudDTO;
-import com.example.cormacarena_client.licenciamientoAmbiental.entity.SolicitudLicencia;
 import com.example.cormacarena_client.licenciamientoAmbiental.enums.EstadoProceso;
 import com.example.cormacarena_client.licenciamientoAmbiental.service.LicenciaAmbientalService;
 import com.example.cormacarena_client.licenciamientoAmbiental.service.SolicitudLicenciaService;
 import com.example.cormacarena_client.utils.SolicitudMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.modelo.SolicitudLicencia;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,8 +27,7 @@ public class SolicitudRestController {
 
     @GetMapping("/solicitud-borrador/{idSolicitante}")
     public ResponseEntity<SolicitudDTO> obtenerSolicitudEnBorradorPorId(@PathVariable String idSolicitante) {
-        SolicitudLicencia solicitud = solicitudLicenciaService
-                .obtenerPorEstadoYSolicitante(idSolicitante, EstadoProceso.BORRADOR.toString());
+        SolicitudLicencia solicitud = solicitudLicenciaService.obtenerPorEstadoYSolicitante(idSolicitante, EstadoProceso.BORRADOR.toString());
 
         if (solicitud == null) {
             return ResponseEntity.notFound().build();

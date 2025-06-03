@@ -1,7 +1,7 @@
 package com.example.cormacarena_client.sancionamientoAmbiental.service;
 
-import com.example.cormacarena_client.sancionamientoAmbiental.entity.SancionamientoAmbiental;
 import com.example.cormacarena_client.sancionamientoAmbiental.repository.SancionamientoAmbientalRepository;
+import org.example.modelo.SancionamientoAmbiental;
 
 import java.util.List;
 

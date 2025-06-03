@@ -12,14 +12,14 @@
       "key": "fechaFormulacionCargos"
     },
     {
-      "label": "Profesional de formular los cargos:",
+      "label": "Nombre del infractor:",
       "type": "textfield",
       "layout": {
         "row": "Row_07yj2or",
         "columns": null
       },
       "id": "Field_0h00z4q",
-      "key": "profesionalActoAdministrativo",
+      "key": "nombreInfractor",
       "disabled": true
     },
     {
@@ -34,7 +34,7 @@
     }
   ],
   "type": "default",
-  "id": "Form_08n9s4f",
+  "id": "formularCargosForm",
   "exporter": {
     "name": "Camunda Modeler",
     "version": "5.33.1"

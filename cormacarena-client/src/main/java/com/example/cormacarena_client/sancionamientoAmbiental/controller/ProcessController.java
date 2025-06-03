@@ -1,13 +1,12 @@
 package com.example.cormacarena_client.sancionamientoAmbiental.controller;
 
 import com.example.cormacarena_client.sancionamientoAmbiental.DTO.DenunciaDTO;
-import com.example.cormacarena_client.sancionamientoAmbiental.entity.Denuncia;
-import com.example.cormacarena_client.sancionamientoAmbiental.entity.SancionamientoAmbiental;
 import com.example.cormacarena_client.sancionamientoAmbiental.service.DenunciaService;
 import com.example.cormacarena_client.sancionamientoAmbiental.service.DenuncianteRealizaDenunciaService;
 import com.example.cormacarena_client.sancionamientoAmbiental.service.impl.DenunciaServiceImpl;
 import com.example.cormacarena_client.sancionamientoAmbiental.service.impl.SancionamientoAmbientalServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.example.modelo.SancionamientoAmbiental;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,7 +22,7 @@ public class ProcessController {
 
     @PostMapping("/complete")
     public String completeTask(@ModelAttribute DenunciaDTO denunciaDTO,
-                                @RequestParam String processId){
+                                @RequestParam(value = "processId",required = false) String processId){
 
         if(processId !=null && denunciaDTO != null){
             System.out.println("Process: "+ processId);

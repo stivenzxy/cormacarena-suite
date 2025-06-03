@@ -2,7 +2,6 @@ package com.example.cormacarena_client.sancionamientoAmbiental.service;
 
 import com.example.cormacarena_client.sancionamientoAmbiental.DTO.TaskInfo;
 import com.example.cormacarena_client.sancionamientoAmbiental.DTO.DenunciaDTO;
-import com.example.cormacarena_client.sancionamientoAmbiental.entity.SancionamientoAmbiental;
 
 import java.sql.SQLException;
 

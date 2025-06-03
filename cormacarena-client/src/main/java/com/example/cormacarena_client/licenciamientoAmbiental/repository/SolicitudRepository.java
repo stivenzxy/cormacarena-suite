@@ -1,6 +1,6 @@
 package com.example.cormacarena_client.licenciamientoAmbiental.repository;
 
-import com.example.cormacarena_client.licenciamientoAmbiental.entity.SolicitudLicencia;
+import org.example.modelo.SolicitudLicencia;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,3 +15,4 @@ public interface SolicitudRepository extends JpaRepository<SolicitudLicencia, St
     boolean existsByCodigoSolicitud(String codigoSolicitud);
     SolicitudLicencia findByCodigoSolicitud(String codigoSolicitud);
 }
+
