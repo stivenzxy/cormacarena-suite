@@ -1,0 +1,50 @@
+{
+  "components": [
+    {
+      "label": "Responsable",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0ckitvc",
+        "columns": null
+      },
+      "id": "Field_15ra7ve",
+      "key": "jefeDependencia",
+      "disabled": true
+    },
+    {
+      "label": "Documento",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0q7thp3",
+        "columns": null
+      },
+      "id": "Field_041m2za",
+      "key": "documentoResponsable",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Firma",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1d7z9nd",
+        "columns": null
+      },
+      "id": "Field_18opclk",
+      "key": "firma",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "firmar",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 18
+}

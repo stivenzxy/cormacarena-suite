@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PQRS - Formulario</title>
+    <!-- Tailwind CSS CDN (en producción deberías compilarlo) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0d348d',
+                        'primary-hover': '#0941a8',
+                        secondary: '#4a5568',
+                        tertiary: '#eaf2fe',
+                        'button-red': '#e53e3e'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos adicionales si son necesarios */
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+
+        /* Estilo para el input file personalizado */
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-tertiary h-screen overflow-hidden">
+
+<!-- Header fijo -->
+<header class="bg-primary h-20 w-full fixed top-0 left-0 z-50 flex items-center justify-between px-6 shadow-lg">
+    <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena Logo" />
+</header>
+
+<!-- Contenedor principal: flex para sidebar + main -->
+<div class="flex pt-20 h-full">
+
+    <!-- Sidebar fijo con altura completa -->
+    <aside class="w-64 bg-primary text-white flex flex-col p-6 h-full shadow-xl">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-white">PQRS</h2>
+            <p class="text-blue-200 text-sm mt-1">Sistema de Gestión</p>
+        </div>
+
+        <nav class="flex flex-col gap-2">
+            <!-- Inicio -->
+            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span class="font-medium">Inicio</span>
+            </a>
+
+            <!-- Nueva Solicitud (activo) -->
+            <a href="/formulario" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-primary-hover text-white shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span class="font-medium">Nueva Solicitud</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-auto text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+
+            <!-- Bandeja de Entrada -->
+            <a href="/bandeja" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+                <span class="font-medium">Bandeja de Entrada</span>
+            </a>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-blue-600">
+            <div class="text-xs text-blue-200">
+                <p>Corporación para el Desarrollo</p>
+                <p>Sostenible del Área de Manejo</p>
+                <p>Especial La Macarena</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Área principal de contenido -->
+    <main class="flex-1 bg-tertiary min-h-screen flex items-start justify-center p-8 transition-all duration-300 overflow-y-auto">
+        <div class="w-full max-w-3xl pb-8">
+            <!-- Formulario PQRS -->
+            <form th:action="@{/enviar}" th:object="${formulario}" method="post" enctype="multipart/form-data"
+                  class="bg-white rounded-lg shadow-xl border-0 mt-8 mb-8">
+
+                <!-- Encabezado del formulario -->
+                <div class="border-b-4 border-primary pb-4 px-8 pt-6">
+                    <h2 class="text-primary text-2xl font-bold">Formulario de Solicitud PQRS</h2>
+                    <p class="text-gray-600 text-sm mt-2">Complete todos los campos marcados con (*) para enviar su solicitud</p>
+                </div>
+
+                <!-- Contenido del formulario -->
+                <div class="p-8 space-y-6">
+                    <!-- Tipo de solicitud -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold">
+                            Tipo de solicitud <span class="text-red-500">*</span>
+                        </label>
+                        <select th:field="*{tipoSolicitud}" required
+                                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="">Seleccione el tipo de solicitud</option>
+                            <option value="peticion">Petición</option>
+                            <option value="queja">Queja</option>
+                            <option value="reclamo">Reclamo</option>
+                            <option value="sugerencia">Sugerencia</option>
+                        </select>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold">
+                            Descripción <span class="text-red-500">*</span>
+                        </label>
+                        <textarea th:field="*{descripcion}" rows="4" required
+                                  placeholder="Describa detalladamente su solicitud..."
+                                  class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                    </div>
+
+                    <!-- Nombre -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold">
+                            Nombre completo <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" th:field="*{nombre}" required
+                               placeholder="Ingrese su nombre completo"
+                               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary" />
+                    </div>
+
+                    <!-- Email -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold">
+                            Correo electrónico <span class="text-red-500">*</span>
+                        </label>
+                        <input type="email" th:field="*{email}" required
+                               placeholder="ejemplo@correo.com"
+                               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary" />
+                    </div>
+
+                    <!-- Archivo -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold">Documento anexado (PDF)</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition-colors">
+                            <!-- Icono de upload -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            <p class="text-sm text-gray-600 mb-2">Haga clic para seleccionar un archivo PDF o arrástrelo aquí</p>
+
+                            <div class="file-input-wrapper">
+                                <button type="button" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-hover transition-colors">
+                                    Seleccionar archivo
+                                </button>
+                                <input type="file" name="archivo" accept="application/pdf" id="file-upload" />
+                            </div>
+
+                            <p id="file-name" class="text-sm text-green-600 mt-2 hidden"></p>
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="flex justify-end gap-4 pt-6 border-t border-gray-200 px-8 pb-8">
+                        <a th:href="@{/pqrs}">
+                            <button type="button" class="px-6 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-50 transition-colors flex items-center">
+                                <!-- Icono X -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                Cancelar
+                            </button>
+                        </a>
+                        <button type="submit" class="px-6 py-2 bg-primary hover:bg-primary-hover text-white rounded-md transition-colors flex items-center">
+                            <!-- Icono Send -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                            </svg>
+                            Enviar Solicitud
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+<!-- Script para la validación del formulario y mostrar el nombre del archivo -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Mostrar el nombre del archivo seleccionado
+        const fileInput = document.getElementById('file-upload');
+        const fileNameDisplay = document.getElementById('file-name');
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                fileNameDisplay.textContent = 'Archivo seleccionado: ' + this.files[0].name;
+                fileNameDisplay.classList.remove('hidden');
+            } else {
+                fileNameDisplay.classList.add('hidden');
+            }
+        });
+
+        // Validación del formulario
+        const formulario = document.querySelector("form");
+        formulario.addEventListener("submit", function(event) {
+            const camposRequeridos = formulario.querySelectorAll("[required]");
+            let formularioValido = true;
+            let primerCampoInvalido = null;
+
+            camposRequeridos.forEach(function(campo) {
+                if (!campo.value) {
+                    formularioValido = false;
+                    if (!primerCampoInvalido) primerCampoInvalido = campo;
+                    campo.classList.add("border-red-500", "ring-2", "ring-red-400");
+                } else {
+                    campo.classList.remove("border-red-500", "ring-2", "ring-red-400");
+                }
+            });
+
+            if (!formularioValido) {
+                event.preventDefault();
+                alert("Por favor, completa todos los campos obligatorios marcados con *.");
+                primerCampoInvalido.scrollIntoView({ behavior: "smooth", block: "center" });
+                primerCampoInvalido.focus();
+            }
+        });
+
+        // Resaltar campos al hacer focus
+        const inputFields = document.querySelectorAll('input, textarea, select');
+        inputFields.forEach(field => {
+            field.addEventListener('focus', () => {
+                field.classList.add('ring-2', 'ring-primary', 'border-primary');
+            });
+
+            field.addEventListener('blur', () => {
+                field.classList.remove('ring-2', 'ring-primary', 'border-primary');
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

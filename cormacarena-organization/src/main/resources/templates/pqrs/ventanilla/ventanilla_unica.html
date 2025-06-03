@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verificación de Competencia - Ventanilla Única</title>
+    <!-- Tailwind CSS CDN (en producción deberías compilarlo) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0d348d',
+                        'primary-hover': '#0941a8',
+                        secondary: '#4a5568',
+                        tertiary: '#eaf2fe',
+                        'button-red': '#e53e3e'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos adicionales */
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+
+        /* Animación para las secciones */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilo para radio buttons personalizados */
+        .custom-radio {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #d1d5db;
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .custom-radio:checked {
+            border-color: #0d348d;
+            background-color: #0d348d;
+        }
+
+        .custom-radio:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background-color: white;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="bg-tertiary h-screen overflow-hidden">
+
+<!-- Header fijo -->
+<header class="bg-primary h-20 w-full fixed top-0 left-0 z-50 flex items-center justify-between px-6 shadow-lg">
+    <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena Logo" />
+
+    <div class="flex items-center space-x-4">
+        <div class="text-white text-right">
+            <span class="text-sm font-medium">Ventanilla Única</span>
+            <p class="text-xs text-blue-200">Verificación de Competencia</p>
+        </div>
+        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+        </div>
+    </div>
+</header>
+
+<!-- Contenedor principal: flex para sidebar + main -->
+<div class="flex pt-20 h-full">
+
+    <!-- Sidebar fijo con altura completa -->
+    <aside class="w-64 bg-primary text-white flex flex-col p-6 h-full shadow-xl">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-white">Gestor PQRS</h2>
+            <p class="text-blue-200 text-sm mt-1">Panel Administrativo</p>
+        </div>
+
+        <nav class="flex flex-col gap-2">
+            <!-- Inicio -->
+            <a href="/organizacion" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span class="font-medium">Inicio</span>
+            </a>
+
+            <!-- Separador -->
+            <div class="my-2">
+                <div class="border-t border-blue-600"></div>
+                <p class="text-xs text-blue-200 mt-2 px-2 font-medium">ROLES DEL SISTEMA</p>
+            </div>
+
+            <!-- Ventanilla Única (activo) -->
+            <a th:href="@{/ventanilla}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-primary-hover text-white shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <span class="font-medium">Ventanilla Única</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-auto text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+
+            <!-- Otros roles -->
+            <a th:href="@{/grupo-archivo}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+                </svg>
+                <span class="font-medium">Grupo de Archivo</span>
+            </a>
+
+            <a th:href="@{/jefe-dependencia}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span class="font-medium">Jefe de Dependencia</span>
+            </a>
+
+            <a th:href="@{/profesional-area}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2V6" />
+                </svg>
+                <span class="font-medium">Profesional del Área</span>
+            </a>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-blue-600">
+            <div class="text-xs text-blue-200">
+                <p>Corporación para el Desarrollo</p>
+                <p>Sostenible del Área de Manejo</p>
+                <p>Especial La Macarena</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Área principal de contenido -->
+    <main class="flex-1 bg-tertiary min-h-screen flex items-start justify-center p-8 transition-all duration-300 overflow-y-auto">
+        <div class="w-full max-w-5xl pb-8">
+
+            <!-- Encabezado -->
+            <div class="bg-white rounded-lg shadow-xl border-0 mt-8 mb-6 fade-in">
+                <div class="border-b-4 border-blue-500 pb-4 px-8 pt-6">
+                    <h1 class="text-blue-600 text-2xl font-bold flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                        </svg>
+                        Verificación de Competencia
+                    </h1>
+                    <p class="text-gray-600 text-sm mt-2">Revisión y validación de solicitud PQRS</p>
+                </div>
+            </div>
+
+            <!-- Información del Solicitante -->
+            <div class="bg-white rounded-lg shadow-lg mb-6 fade-in" style="animation-delay: 0.2s;">
+                <div class="border-b border-gray-200 px-6 py-4">
+                    <h2 class="text-lg font-semibold text-gray-800 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        Información del Solicitante
+                    </h2>
+                </div>
+
+                <div class="p-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Datos personales -->
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <label class="text-sm font-medium text-gray-600">Nombre Completo</label>
+                                <p class="text-gray-800 font-semibold mt-1" th:text="${nombre}">Juan Pérez García</p>
+                            </div>
+
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <label class="text-sm font-medium text-gray-600">Correo Electrónico</label>
+                                <p class="text-gray-800 font-semibold mt-1" th:text="${email}">juan.perez@email.com</p>
+                            </div>
+
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <label class="text-sm font-medium text-gray-600">Fecha de Solicitud</label>
+                                <p class="text-gray-800 font-semibold mt-1" th:text="${fechaSolicitud}">2024-01-15</p>
+                            </div>
+                        </div>
+
+                        <!-- Información de la solicitud -->
+                        <div class="space-y-4">
+                            <div class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-500">
+                                <label class="text-sm font-medium text-blue-700">Tipo de Solicitud</label>
+                                <p class="text-blue-800 font-semibold mt-1 capitalize" th:text="${tipoSolicitud}">Petición</p>
+                            </div>
+
+                            <div class="bg-gray-50 rounded-lg p-4" th:if="${adjDocumentos != false}">
+                                <label class="text-sm font-medium text-gray-600">Archivo Adjunto</label>
+                                <div class="flex items-center mt-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                    <span class="text-gray-800 font-medium" th:text="${nombreArchivo}">documento.pdf</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Descripción completa -->
+                    <div class="mt-6">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <label class="text-sm font-medium text-gray-600">Descripción de la Solicitud</label>
+                            <p class="text-gray-800 mt-2 leading-relaxed" th:text="${descripcion}">
+                                Descripción detallada de la solicitud presentada por el ciudadano...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Verificación -->
+            <div class="bg-white rounded-lg shadow-lg mb-6 fade-in" style="animation-delay: 0.4s;">
+                <div class="border-b border-gray-200 px-6 py-4">
+                    <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Verificación de Competencia
+                    </h3>
+                    <p class="text-gray-600 text-sm mt-1">Determine si la entidad tiene competencia para atender esta solicitud</p>
+                </div>
+
+                <form th:action="@{/ventanilla/enviar}" th:object="${verificarDTO}" method="post" class="p-6">
+                    <input type="hidden" name="taskId" th:value="${taskId}"/>
+
+                    <div class="mb-6">
+                        <label class="block text-lg font-medium text-gray-800 mb-4">
+                            ¿Tiene competencia la entidad para atender esta solicitud?
+                        </label>
+
+                        <div class="space-y-3">
+                            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-green-50 hover:border-green-300 transition-colors cursor-pointer">
+                                <input type="radio" th:field="*{competencia}" value="true" class="custom-radio mr-3"/>
+                                <div>
+                                    <span class="text-green-700 font-semibold">Sí, tiene competencia</span>
+                                    <p class="text-sm text-gray-600 mt-1">La entidad puede atender y resolver esta solicitud</p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-colors cursor-pointer">
+                                <input type="radio" th:field="*{competencia}" value="false" class="custom-radio mr-3"/>
+                                <div>
+                                    <span class="text-red-700 font-semibold">No, no tiene competencia</span>
+                                    <p class="text-sm text-gray-600 mt-1">La solicitud debe ser remitida a otra entidad competente</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="flex justify-end gap-4 pt-6 border-t border-gray-200">
+                        <a th:href="@{/ventanilla}" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Cancelar
+                        </a>
+                        <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Confirmar Verificación
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Script para interactividad -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Efectos de animación para las secciones
+        const sections = document.querySelectorAll('.fade-in');
+        sections.forEach((section, index) => {
+            section.style.animationDelay = `${index * 0.2}s`;
+        });
+
+        // Mejorar la experiencia de los radio buttons
+        const radioButtons = document.querySelectorAll('input[type="radio"]');
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Remover clases activas de todos los labels
+                document.querySelectorAll('label').forEach(label => {
+                    label.classList.remove('bg-green-50', 'border-green-300', 'bg-red-50', 'border-red-300');
+                });
+
+                // Agregar clase activa al label seleccionado
+                const parentLabel = this.closest('label');
+                if (this.value === 'true') {
+                    parentLabel.classList.add('bg-green-50', 'border-green-300');
+                } else {
+                    parentLabel.classList.add('bg-red-50', 'border-red-300');
+                }
+            });
+        });
+
+        // Validación del formulario
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            const competenciaSelected = document.querySelector('input[name="competencia"]:checked');
+            if (!competenciaSelected) {
+                e.preventDefault();
+                alert('Por favor, seleccione si la entidad tiene competencia para atender esta solicitud.');
+                return false;
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

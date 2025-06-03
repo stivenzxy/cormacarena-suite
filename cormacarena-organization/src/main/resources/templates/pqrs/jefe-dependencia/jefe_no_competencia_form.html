@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Informar No Competencia - Jefe de Dependencia</title>
+    <!-- Tailwind CSS CDN (en producción deberías compilarlo) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0d348d',
+                        'primary-hover': '#0941a8',
+                        secondary: '#4a5568',
+                        tertiary: '#eaf2fe',
+                        'button-red': '#e53e3e'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos adicionales */
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+
+        /* Animación para el formulario */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Efecto para el textarea de explicación */
+        .explanation-textarea {
+            resize: vertical;
+            min-height: 120px;
+            background: linear-gradient(135deg, #fef7f7 0%, #fef2f2 100%);
+            border: 2px solid #fecaca;
+            transition: all 0.3s ease;
+        }
+
+        .explanation-textarea:focus {
+            background: linear-gradient(135deg, #fff5f5 0%, #fef2f2 100%);
+            border-color: #f87171;
+            box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.1);
+        }
+
+        /* Efecto de pulso para el botón de enviar */
+        .transfer-button {
+            position: relative;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+        }
+
+        .transfer-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+            animation: transferPulse 2.5s infinite;
+        }
+
+        @keyframes transferPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 12px rgba(220, 38, 38, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+            }
+        }
+
+        /* Contador de caracteres */
+        .char-counter {
+            transition: color 0.3s ease;
+        }
+
+        .char-counter.warning {
+            color: #f59e0b;
+        }
+
+        .char-counter.danger {
+            color: #ef4444;
+        }
+
+        /* Efecto de alerta para la sección de no competencia */
+        .non-competence-alert {
+            background: linear-gradient(135deg, #fef7f7 0%, #fef2f2 100%);
+            border-left: 6px solid #dc2626;
+            position: relative;
+        }
+
+        .non-competence-alert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(220, 38, 38, 0.05) 10px,
+                    rgba(220, 38, 38, 0.05) 20px
+            );
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-tertiary h-screen overflow-hidden">
+
+<!-- Header fijo -->
+<header class="bg-primary h-20 w-full fixed top-0 left-0 z-50 flex items-center justify-between px-6 shadow-lg">
+    <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena Logo" />
+
+    <div class="flex items-center space-x-4">
+        <div class="text-white text-right">
+            <span class="text-sm font-medium">Jefe de Dependencia</span>
+            <p class="text-xs text-blue-200">Declaración de No Competencia</p>
+        </div>
+        <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+        </div>
+    </div>
+</header>
+
+<!-- Contenedor principal: flex para sidebar + main -->
+<div class="flex pt-20 h-full">
+
+    <!-- Sidebar fijo con altura completa -->
+    <aside class="w-64 bg-primary text-white flex flex-col p-6 h-full shadow-xl">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-white">Gestor PQRS</h2>
+            <p class="text-blue-200 text-sm mt-1">Panel Administrativo</p>
+        </div>
+
+        <nav class="flex flex-col gap-2">
+            <!-- Inicio -->
+            <a href="/organizacion" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span class="font-medium">Inicio</span>
+            </a>
+
+            <!-- Separador -->
+            <div class="my-2">
+                <div class="border-t border-blue-600"></div>
+                <p class="text-xs text-blue-200 mt-2 px-2 font-medium">ROLES DEL SISTEMA</p>
+            </div>
+
+            <!-- Ventanilla Única -->
+            <a th:href="@{/ventanilla}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <span class="font-medium">Ventanilla Única</span>
+            </a>
+
+            <!-- Grupo de Archivo -->
+            <a th:href="@{/grupo-archivo}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+                </svg>
+                <span class="font-medium">Grupo de Archivo</span>
+            </a>
+
+            <!-- Jefe de Dependencia (activo) -->
+            <a th:href="@{/jefe-dependencia}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-primary-hover text-white shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span class="font-medium">Jefe de Dependencia</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-auto text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+
+            <!-- Profesional del Área -->
+            <a th:href="@{/profesional-area}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2V6" />
+                </svg>
+                <span class="font-medium">Profesional del Área</span>
+            </a>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-blue-600">
+            <div class="text-xs text-blue-200">
+                <p>Corporación para el Desarrollo</p>
+                <p>Sostenible del Área de Manejo</p>
+                <p>Especial La Macarena</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Área principal de contenido -->
+    <main class="flex-1 bg-tertiary min-h-screen flex items-start justify-center p-8 transition-all duration-300 overflow-y-auto">
+        <div class="w-full max-w-4xl pb-8">
+
+            <!-- Tarjeta de no competencia -->
+            <div class="bg-white rounded-lg shadow-xl border-0 mt-8 fade-in">
+                <div class="border-b-4 border-red-500 pb-4 px-8 pt-6">
+                    <h2 class="text-red-600 text-2xl font-bold flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                        Declaración de No Competencia
+                    </h2>
+                    <p class="text-gray-600 text-sm mt-2">Transferir solicitud a la dependencia competente</p>
+                </div>
+
+                <div class="p-8">
+                    <!-- Alerta de no competencia -->
+                    <div class="non-competence-alert rounded-lg p-6 mb-8 relative">
+                        <div class="flex items-start gap-4 relative z-10">
+                            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-red-800 mb-2">Solicitud Fuera de Competencia</h3>
+                                <p class="text-red-700 text-sm leading-relaxed">
+                                    Esta solicitud no corresponde a la competencia de su dependencia. Al completar este formulario,
+                                    la solicitud será transferida automáticamente a la dependencia apropiada para su resolución.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información del responsable -->
+                    <div class="bg-gray-50 rounded-lg p-6 mb-8 border-l-4 border-gray-300">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            Información del Responsable
+                        </h3>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white rounded-lg p-4 shadow-sm">
+                                <label class="text-sm font-medium text-gray-600 block mb-2">Jefe de Dependencia</label>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    <span class="text-gray-800 font-semibold" th:text="${jefeDependencia}">Nombre del Jefe</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulario de no competencia -->
+                    <form th:action="@{/jefe-dependencia/no-competencia}" method="post" class="space-y-6">
+                        <input type="hidden" name="taskId" th:value="${taskId}" />
+                        <input type="hidden" name="jefeDependencia" th:value="${jefeDependencia}" />
+
+                        <!-- Campo de explicación -->
+                        <div class="space-y-3">
+                            <label for="explicacionNoCompetencia" class="block text-lg font-medium text-gray-800 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                Justificación de No Competencia:
+                                <span class="text-red-500 ml-1">*</span>
+                            </label>
+                            <p class="text-sm text-gray-600 mb-3">
+                                Explique detalladamente por qué esta solicitud no corresponde a la competencia de su dependencia
+                                y sugiera cuál sería la dependencia apropiada para su resolución.
+                            </p>
+
+                            <div class="relative">
+                                <textarea
+                                        id="explicacionNoCompetencia"
+                                        name="explicacionNoCompetencia"
+                                        required
+                                        maxlength="1000"
+                                        placeholder="Describa las razones por las cuales esta solicitud no es competencia de su dependencia. Incluya sugerencias sobre qué dependencia debería manejar este caso..."
+                                        class="explanation-textarea w-full rounded-lg px-4 py-3 focus:outline-none transition-all text-gray-800"
+                                ></textarea>
+                                <div class="absolute bottom-2 right-2 text-xs text-gray-500 char-counter">
+                                    <span id="charCount">0</span>/1000 caracteres
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="flex justify-end gap-4 pt-6 border-t border-gray-200">
+                            <!-- Botón para volver a la lista de tareas -->
+                            <a th:href="@{/jefe-dependencia}" class="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                                Justificar Después
+                            </a>
+
+                            <button type="submit" class="transfer-button px-6 py-3 text-white rounded-lg transition-colors font-medium flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                </svg>
+                                Transferir Solicitud
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Información sobre el proceso -->
+            <div class="mt-6 bg-white rounded-lg shadow-lg p-6 fade-in" style="animation-delay: 0.3s;">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">¿Qué sucede después de la transferencia?</h4>
+                        <ul class="text-gray-600 text-sm leading-relaxed space-y-1">
+                            <li>• La solicitud será redirigida automáticamente a la dependencia competente</li>
+                            <li>• El ciudadano recibirá una notificación explicando la transferencia</li>
+                            <li>• Se mantendrá un registro completo del proceso de transferencia</li>
+                            <li>• Los tiempos de respuesta se ajustarán según la nueva dependencia</li>
+                            <li>• Su justificación quedará documentada para auditorías futuras</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal de validación moderna -->
+<div id="validationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-all duration-300">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95" id="validationModalContent">
+        <div class="p-6">
+            <!-- Header del modal -->
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">Error de Validación</h3>
+                    <p class="text-sm text-gray-500">Por favor, corrija el siguiente error</p>
+                </div>
+            </div>
+
+            <!-- Mensaje del modal -->
+            <div class="mb-6">
+                <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
+                    <p id="validationMessage" class="text-sm text-red-700">
+                        <!-- Se llenará dinámicamente -->
+                    </p>
+                </div>
+            </div>
+
+            <!-- Botón del modal -->
+            <div class="flex justify-end">
+                <button id="validationOkButton"
+                        class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación moderna -->
+<div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden transition-all duration-300">
+    <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4 transform transition-all duration-300 scale-95" id="modalContent">
+        <div class="p-6">
+            <!-- Header del modal -->
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">Confirmar Transferencia</h3>
+                    <p class="text-sm text-gray-500">Esta acción no se puede deshacer</p>
+                </div>
+            </div>
+
+            <!-- Mensaje del modal -->
+            <div class="mb-6">
+                <p class="text-gray-700 leading-relaxed mb-4">
+                    <strong>¿Está seguro de que desea transferir esta solicitud?</strong>
+                </p>
+
+                <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 mb-4">
+                    <p class="text-sm font-medium text-red-800 mb-2">Justificación:</p>
+                    <p id="modalJustification" class="text-sm text-red-700 italic">
+                        <!-- Se llenará dinámicamente -->
+                    </p>
+                </div>
+
+                <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                    <p class="text-sm font-medium text-yellow-800 mb-2">Esta acción:</p>
+                    <ul class="text-sm text-yellow-700 space-y-1">
+                        <li>• Transferirá la solicitud a otra dependencia</li>
+                        <li>• Notificará al ciudadano sobre el cambio</li>
+                        <li>• Generará un registro permanente de la transferencia</li>
+                        <li>• No podrá ser revertida una vez completada</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Botones del modal -->
+            <div class="flex gap-3 justify-end">
+                <button id="cancelButton"
+                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                    Cancelar
+                </button>
+                <button id="confirmButton"
+                        class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                    Sí, Transferir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para interactividad -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Referencias de los modales
+        const validationModal = document.getElementById('validationModal');
+        const validationModalContent = document.getElementById('validationModalContent');
+        const validationMessage = document.getElementById('validationMessage');
+        const validationOkButton = document.getElementById('validationOkButton');
+
+        const confirmModal = document.getElementById('confirmModal');
+        const modalContent = document.getElementById('modalContent');
+        const modalJustification = document.getElementById('modalJustification');
+        const confirmButton = document.getElementById('confirmButton');
+        const cancelButton = document.getElementById('cancelButton');
+
+        // Función para mostrar modal de validación
+        function showValidationModal(message) {
+            validationMessage.textContent = message;
+
+            validationModal.classList.remove('hidden');
+            setTimeout(() => {
+                validationModal.classList.add('opacity-100');
+                validationModalContent.classList.remove('scale-95');
+                validationModalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        // Función para ocultar modal de validación
+        function hideValidationModal() {
+            validationModalContent.classList.remove('scale-100');
+            validationModalContent.classList.add('scale-95');
+            validationModal.classList.remove('opacity-100');
+
+            setTimeout(() => {
+                validationModal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Función para mostrar modal de confirmación
+        function showConfirmModal(justification) {
+            const truncatedJustification = justification.length > 150
+                ? justification.substring(0, 150) + '...'
+                : justification;
+
+            modalJustification.textContent = `"${truncatedJustification}"`;
+
+            confirmModal.classList.remove('hidden');
+            setTimeout(() => {
+                confirmModal.classList.add('opacity-100');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        // Función para ocultar modal de confirmación
+        function hideConfirmModal() {
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            confirmModal.classList.remove('opacity-100');
+
+            setTimeout(() => {
+                confirmModal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Contador de caracteres
+        const textarea = document.getElementById('explicacionNoCompetencia');
+        const charCount = document.getElementById('charCount');
+        const charCounter = document.querySelector('.char-counter');
+
+        textarea.addEventListener('input', function() {
+            const count = this.value.length;
+            charCount.textContent = count;
+
+            // Cambiar color según el límite
+            charCounter.classList.remove('warning', 'danger');
+            if (count > 800) {
+                charCounter.classList.add('danger');
+            } else if (count > 600) {
+                charCounter.classList.add('warning');
+            }
+        });
+
+        // Auto-resize del textarea
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.max(120, this.scrollHeight) + 'px';
+        });
+
+        // Validación del formulario con modales modernos
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevenir envío automático
+
+            const explicacion = textarea.value.trim();
+
+            if (explicacion.length < 20) {
+                showValidationModal('La justificación debe tener al menos 20 caracteres para ser considerada válida.');
+                textarea.focus();
+                return false;
+            }
+
+            // Mostrar modal de confirmación
+            showConfirmModal(explicacion);
+        });
+
+        // Event listeners para modales
+        validationOkButton.addEventListener('click', hideValidationModal);
+
+        confirmButton.addEventListener('click', function() {
+            // Mostrar indicador de carga
+            this.innerHTML = `
+                <svg class="animate-spin h-4 w-4 mr-2 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Procesando Transferencia...
+            `;
+            this.disabled = true;
+
+            // Enviar el formulario
+            setTimeout(() => {
+                form.submit();
+            }, 500);
+        });
+
+        cancelButton.addEventListener('click', hideConfirmModal);
+
+        // Cerrar modales con click fuera o Escape
+        [validationModal, confirmModal].forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    if (modal === validationModal) hideValidationModal();
+                    if (modal === confirmModal) hideConfirmModal();
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (!validationModal.classList.contains('hidden')) hideValidationModal();
+                if (!confirmModal.classList.contains('hidden')) hideConfirmModal();
+            }
+        });
+
+        // Guardar borrador automáticamente
+        let draftTimer;
+        textarea.addEventListener('input', function() {
+            clearTimeout(draftTimer);
+            draftTimer = setTimeout(() => {
+                localStorage.setItem('draft_no_competencia_' + document.querySelector('input[name="taskId"]').value, this.value);
+                console.log('Borrador guardado automáticamente');
+            }, 2000);
+        });
+
+        // Cargar borrador si existe
+        const taskId = document.querySelector('input[name="taskId"]').value;
+        const draft = localStorage.getItem('draft_no_competencia_' + taskId);
+        if (draft && textarea.value === '') {
+            textarea.value = draft;
+            textarea.dispatchEvent(new Event('input'));
+        }
+
+        // Limpiar borrador al enviar
+        form.addEventListener('submit', function() {
+            localStorage.removeItem('draft_no_competencia_' + taskId);
+        });
+    });
+</script>
+<!-- Incluir el script de validación de tareas -->
+<script th:src="@{/js/task-validation.js}"></script>
+
+</body>
+</html>

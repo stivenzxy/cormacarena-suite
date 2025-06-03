@@ -121,7 +121,7 @@
     <bpmn:sequenceFlow id="Flow_0kcerdc" sourceRef="Activity_10rhcun" targetRef="Gateway_04sj1b1" />
     <bpmn:sequenceFlow id="Flow_12lmgy1" name="Si" sourceRef="Gateway_04sj1b1" targetRef="Activity_0ry2plt" />
     <bpmn:sequenceFlow id="Flow_14upgum" name="No" sourceRef="Gateway_04sj1b1" targetRef="Gateway_1slq0sj">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${variable==true}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${recursos=='no'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_17ljdiq" sourceRef="Event_1pjhcid" targetRef="Gateway_1slq0sj" />
     <bpmn:sequenceFlow id="Flow_10z1ly4" sourceRef="Gateway_1slq0sj" targetRef="Activity_1yhvyaj" />

@@ -1,0 +1,15 @@
+org\example\modelo\Denuncia.class
+org\example\modelo\ConceptoTecnico.class
+org\example\modelo\Sancion.class
+org\example\modelo\State.class
+org\example\modelo\SancionamientoAmbiental.class
+org\example\modelo\Bandeja.class
+org\example\modelo\Denunciante.class
+org\example\modelo\SolicitudLicencia.class
+org\example\Main.class
+org\example\modelo\Infractor.class
+org\example\modelo\SectorProyecto.class
+org\example\modelo\ActoAdministrativo.class
+org\example\modelo\DenunciasRadicadas.class
+org\example\modelo\InformeTecnico.class
+com\example\cormacarena_client\licenciamientoAmbiental\enums\EstadoProceso.class

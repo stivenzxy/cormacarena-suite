@@ -1,0 +1,103 @@
+{
+  "components": [
+    {
+      "label": "Tipo de solicitud",
+      "values": [
+        {
+          "label": "Peticion",
+          "value": "peticion"
+        },
+        {
+          "label": "Queja",
+          "value": "queja"
+        },
+        {
+          "label": "Reclamo",
+          "value": "reclamo"
+        },
+        {
+          "label": "Sugerencia",
+          "value": "sugerencia"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_0gixz99",
+        "columns": null
+      },
+      "id": "Field_0dw2x9v",
+      "key": "tipoSolicitud"
+    },
+    {
+      "label": "Descripcion de la solicitud",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_17d3ieh",
+        "columns": null
+      },
+      "id": "Field_1p52kl9",
+      "key": "descripcion"
+    },
+    {
+      "label": "Nombre",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0830kxf",
+        "columns": null
+      },
+      "id": "Field_11txx7m",
+      "key": "nombre"
+    },
+    {
+      "label": "Correo electronico",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1uflpe8",
+        "columns": null
+      },
+      "id": "Field_0x10hzz",
+      "key": "email"
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Fecha de la solicitud",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_04w5wpi",
+        "columns": null
+      },
+      "id": "Field_0dsudi4",
+      "key": "fechaSolicitud"
+    },
+    {
+      "label": "¿Adjunta documentos?",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1oiovou",
+        "columns": null
+      },
+      "id": "Field_0f90qql",
+      "key": "adjDocumentos"
+    },
+    {
+      "label": "Documento anexado",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0czvxoa",
+        "columns": null
+      },
+      "id": "Field_0x1cyt5",
+      "key": "nombreArchivo"
+    }
+  ],
+  "type": "default",
+  "id": "formPQRS",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.7.0",
+  "versionTag": "1",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "schemaVersion": 18
+}

@@ -1,0 +1,26 @@
+{
+  "components": [
+    {
+      "label": "",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_051yhrc",
+        "columns": null
+      },
+      "id": "Field_1kgsbcd",
+      "key": "noCompetencia",
+      "disabled": true,
+      "defaultValue": "No es competencia de la organizacion"
+    }
+  ],
+  "type": "default",
+  "id": "noCompetencia",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.7.0",
+  "versionTag": "1",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "schemaVersion": 18
+}

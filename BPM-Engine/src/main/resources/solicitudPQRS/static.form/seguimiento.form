@@ -1,0 +1,23 @@
+{
+  "components": [
+    {
+      "label": "Observaciones",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_03po5nr",
+        "columns": null
+      },
+      "id": "Field_0uarw85",
+      "key": "observaciones"
+    }
+  ],
+  "type": "default",
+  "id": "seguimiento",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.34.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 18
+}

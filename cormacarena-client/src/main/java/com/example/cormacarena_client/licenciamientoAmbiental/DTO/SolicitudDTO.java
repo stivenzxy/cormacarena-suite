@@ -9,7 +9,8 @@ import java.util.List;
 @Data
 public class SolicitudDTO {
 
-    private Long codigoSolicitud;
+    // Id del proceso
+    private String codigoSolicitud;
     // Datos del Solicitante
     private String nombreSolicitante;
     private String tipoIdentificacion;
@@ -21,10 +22,12 @@ public class SolicitudDTO {
     // Datos del Proyecto
     private String nombreProyecto;
     private SectorProyecto sectorProyecto;
-    private String valorProyecto;
+    private Long valorProyecto;
     private String departamentoProyecto;
     private String municipioProyecto;
 
     private String nombreSoporteEIA;
     private MultipartFile soporteEIAPdf;
+
+    private String estado;
 }

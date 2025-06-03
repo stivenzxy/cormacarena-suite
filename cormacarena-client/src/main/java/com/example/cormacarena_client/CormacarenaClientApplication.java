@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
 @EntityScan(basePackages = "org.example.modelo")
-
 public class CormacarenaClientApplication {
 
 	public static void main(String[] args) {
