@@ -1,11 +1,14 @@
-FROM eclipse-temurin:21-jdk as build
-WORKDIR /app
-COPY . .
-RUN ./mvnw clean package -DskipTests
+# Dockerfile
+FROM eclipse-temurin:21-jdk-alpine
 
-FROM eclipse-temurin:21-jdk
+# Establece el directorio de trabajo
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
-EXPOSE 9095
-ENV SERVER_PORT=9095
-ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${SERVER_PORT}"]
+
+# Copia el jar construido
+COPY target/*.jar app.jar
+
+# Expone el puerto (ajústalo por módulo)
+EXPOSE 8080
+
+# Comando para ejecutar la aplicación
+ENTRYPOINT ["java", "-jar", "app.jar"]

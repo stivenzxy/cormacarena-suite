@@ -42,7 +42,7 @@ public class CoordinadorRevSolServiceImpl implements CoordinadorRevSolService {
     @Value("${spring.datasource.password}")
     private String databasePassword;
 
-    @Value("${camunda.url:http://localhost:8080/engine-rest/}")
+    @Value("${camunda.url}")
     private String camundaUrl;
 
 

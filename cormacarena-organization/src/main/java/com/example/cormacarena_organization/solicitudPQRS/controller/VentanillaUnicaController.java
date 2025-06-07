@@ -1,6 +1,7 @@
 package com.example.cormacarena_organization.solicitudPQRS.controller;
 
 import com.example.cormacarena_organization.solicitudPQRS.dto.VerificarCompetenciaDTO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +17,11 @@ import java.util.Map;
 public class VentanillaUnicaController {
 
     private final RestTemplate restTemplate = new RestTemplate();
-
+    @Value("${camunda.url}")
+    private String camunda;
     @GetMapping
     public String mostrarListaTareas(Model model) {
-        String camundaTaskUrl = "http://localhost:8080/engine-rest/task?taskDefinitionKey=Activity_0wymy7c";
+        String camundaTaskUrl = camunda+"task?taskDefinitionKey=Activity_0wymy7c";
         List<Map<String, Object>> tareas = restTemplate.getForObject(camundaTaskUrl, List.class);
 
         if (tareas == null || tareas.isEmpty()) {

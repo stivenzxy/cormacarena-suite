@@ -29,7 +29,7 @@ public class DenuncianteRealizaDenunciaServiceImpl implements DenuncianteRealiza
     private final RestTemplate restTemplate;
     private final SancionamientoAmbientalService sancionamientoAmbientalService;
 
-    @Value("${camunda.url:http://localhost:8080/engine-rest/}")
+    @Value("${camunda.url}")
     private String camundaUrl;
     @Value("${spring.datasource.url}")
     private String databaseUrl;
