@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de denuncias a verificar</title>
+    <title>Lista de denuncias a formular cargos</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -44,13 +44,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         // Función modal mejorada
-        function mostrarModal(id, descripcion, numeroDocumentoDenuciante, processId, descripcionVisitaTecnica, encargadoVisitaTecnica) {
+        function mostrarModal(id, descripcion, numeroDocumentoDenuciante, processId) {
             document.getElementById("inputIdDenuciante").value = id;
             document.getElementById("inputDescripcionDenuncia").value = descripcion;
             document.getElementById("inputDocumentoDenuciante").value = numeroDocumentoDenuciante;
             document.getElementById("inputProcessId").value = processId;
-            document.getElementById("inputDescripcionVisitaTecnica").value = descripcionVisitaTecnica;
-            document.getElementById("inputEncargadoVisitaTecnica").value = encargadoVisitaTecnica;
+
 
 
             const modal = document.getElementById("modal");
@@ -102,19 +101,19 @@
         <nav class="mb-8" aria-label="Breadcrumb">
             <ol class="flex items-center space-x-3 text-sm bg-white/70 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
                 <li>
-                    <a href="/" class="flex items-center text-gray-600 hover:text-primary transition-colors group">
+                    <a href="/static" class="flex items-center text-gray-600 hover:text-primary transition-colors group">
                         <i class="fas fa-home mr-2 group-hover:scale-110 transition-transform"></i>
                         Inicio
                     </a>
                 </li>
                 <li><i class="fas fa-chevron-right text-gray-400"></i></li>
                 <li>
-                    <a href="/verificarHechos" class="text-gray-600 hover:text-primary transition-colors">Grupo GEMA</a>
+                    <a href="/verificarHechos" class="text-gray-600 hover:text-primary transition-colors">Grupo GIEMA</a>
                 </li>
                 <li><i class="fas fa-chevron-right text-gray-400"></i></li>
                 <li class="text-primary font-semibold flex items-center">
                     <i class="fas fa-list-check mr-2"></i>
-                    Informes tecnicos
+                    Formular cargos
                 </li>
             </ol>
         </nav>
@@ -125,10 +124,10 @@
                 <i class="fas fa-search text-white text-2xl"></i>
             </div>
             <h1 class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-3">
-                Lista de Denuncias por Verificar
+                Lista de Denuncias por Formular Cargos
             </h1>
             <p class="text-gray-600 text-xl max-w-2xl mx-auto leading-relaxed">
-                Gestione y verifique los hechos de las denuncias ambientales pendientes
+                Gestione y formule los cargos de las denuncias ambientales pendientes
             </p>
         </div>
 
@@ -144,7 +143,7 @@
                         </div>
                         Denuncias Pendientes
                     </h2>
-                    <p class="text-blue-100 text-lg">Seleccione una denuncia para verificar los hechos</p>
+                    <p class="text-blue-100 text-lg">Seleccione una denuncia para formular los cargos</p>
                 </div>
                 <!-- Elementos decorativos -->
                 <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
@@ -213,17 +212,13 @@
                                 <button type="button"
                                         class="group inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl hover:from-secondary hover:to-primary transition-all duration-300 transform hover:scale-105 hover:shadow-lg font-semibold"
                                         th:attr="data-id-denuncia=${denuncia.idDenuncia},
-                                                        data-encargadoVisitaTecnica-denuncia=${denuncia.encargadoVisitaTecnica},
-                                                        data-descripcionVisitaTecnica-denuncia=${denuncia.descripcionVisitaTecnica},
                                                         data-descripcion-denuncia=${denuncia.descripcionDenuncia},
                                                         data-numeroDocumentoDenuciante-denuncia=${denuncia.numeroDocumentoDenuciante},
                                                         data-processId-denuncia=${denuncia.taskInfo.processId}"
                                         onclick="mostrarModal(this.getAttribute('data-id-denuncia'),
                                                                     this.getAttribute('data-descripcion-denuncia'),
                                                                     this.getAttribute('data-numeroDocumentoDenuciante-denuncia'),
-                                                                    this.getAttribute('data-processId-denuncia'),
-                                                                    this.getAttribute('data-encargadoVisitaTecnica-denuncia'),
-                                                                    this.getAttribute('data-descripcionVisitaTecnica-denuncia'))">
+                                                                    this.getAttribute('data-processId-denuncia'))">
                                     <i class="fas fa-eye group-hover:scale-110 transition-transform"></i>
                                     Ver Detalles
                                 </button>
@@ -250,7 +245,7 @@
 <!-- Modal mejorado -->
 <div id="modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
     <div id="modalContent" class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <form th:action="@{/denuncias/informesTecnicosRealizados}" th:method="post">
+        <form th:action="@{/denuncias/enviaCargosFormulados}" th:method="post">
             <!-- Header del modal -->
             <div class="bg-gradient-to-r from-primary to-secondary p-6 text-white relative overflow-hidden">
                 <div class="absolute inset-0 bg-black/10"></div>
@@ -259,7 +254,7 @@
                         <div class="bg-white/20 p-2 rounded-full mr-3">
                             <i class="fas fa-search-plus text-xl"></i>
                         </div>
-                        Elaborar informes tecnicos de la Denuncia
+                       Formular cargos de la Denuncia
                     </h2>
                     <p class="text-blue-100">Complete la información de la visita técnica</p>
                 </div>
@@ -278,9 +273,9 @@
                         <div class="bg-primary/10 p-2 rounded-lg mr-3">
                             <i class="fas fa-calendar text-primary"></i>
                         </div>
-                        Fecha de visita del informe técnico *
+                        Fecha de visita de la formulación de los cargos: *
                     </label>
-                    <input type="date" id="fecha" name="fechaCreacionInformeTecnico" required
+                    <input type="date" id="fecha" name="fechaFormulacionCargos" required
                            class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300">
                 </div>
 
@@ -317,34 +312,20 @@
                         <textarea id="inputDescripcionDenuncia" rows="3" readonly
                                   class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-600 resize-none"></textarea>
                     </div>
-                    <div class="space-y-2">
-                        <label for="encargadoVisitaTecnica" class="flex items-center text-gray-700 font-semibold text-lg">
-                            <div class="bg-primary/10 p-2 rounded-lg mr-3">
-                                <i class="fas fa-user-tie text-primary"></i>
-                            </div>
-                            Encargado de la visita técnica *
-                        </label>
-                        <input type="text" id="inputEncargadoVisitaTecnica" readonly
-                               class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300"
-                               placeholder="Nombre completo del técnico responsable">
-                    </div>
-
-                    <div class="space-y-2">
-                        <label for="inputDescripcionVisitaTecnica" class="flex items-center text-gray-700 font-semibold text-lg">
-                            <div class="bg-primary/10 p-2 rounded-lg mr-3">
-                                <i class="fas fa-clipboard-list text-primary"></i>
-                            </div>
-                            Descripción de la visita técnica *
-                        </label>
-                        <textarea id="inputDescripcionVisitaTecnica" rows="4" readonly
-                                  class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 resize-none"
-                                  placeholder="Describa detalladamente los hallazgos de la visita técnica..."></textarea>
-                    </div>
-
 
                 </div>
 
-
+                <div class="space-y-2">
+                    <label for="nombreInfractor" class="flex items-center text-gray-700 font-semibold text-lg">
+                        <div class="bg-primary/10 p-2 rounded-lg mr-3">
+                            <i class="fas fa-user-tie text-primary"></i>
+                        </div>
+                        Nombre del infractor: *
+                    </label>
+                    <input type="text" name="nombreInfractor" id="nombreInfractor" required
+                           class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300"
+                           placeholder="Nombre completo de la persona responsable del crimen">
+                </div>
 
 
                 <div class="space-y-2">
@@ -352,11 +333,11 @@
                         <div class="bg-primary/10 p-2 rounded-lg mr-3">
                             <i class="fas fa-clipboard-list text-primary"></i>
                         </div>
-                        Razones del porque no se cometio delitos *
+                        Cargos que se le atribuyen al infractor: *
                     </label>
-                    <textarea id="inputRazonesNoCometerDelito" rows="4" name="razonesNoCometerDelito" required
+                    <textarea id="inputRazonesCometerDelito" rows="4" name="DescripcionFormulacionCargos" required
                               class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 resize-none"
-                              placeholder="Describa detalladamente los razones de porque no se cometio delitos..."></textarea>
+                              placeholder="Describa detalladamente los cargos que se le atribuye al infractor..."></textarea>
                 </div>
 
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de denuncias a verificar</title>
+    <title>Lista de denuncias a realizar conceptos técnicos de pruebas</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -44,11 +44,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         // Función modal mejorada
-        function mostrarModal(id, descripcion, numeroDocumentoDenuciante, processId) {
+        function mostrarModal(id, descripcion, numeroDocumentoDenuciante, processId, nombreInfractor) {
             document.getElementById("inputIdDenuciante").value = id;
             document.getElementById("inputDescripcionDenuncia").value = descripcion;
             document.getElementById("inputDocumentoDenuciante").value = numeroDocumentoDenuciante;
             document.getElementById("inputProcessId").value = processId;
+            document.getElementById("nombreInfractor").value =nombreInfractor
+
+
 
             const modal = document.getElementById("modal");
             const modalContent = document.getElementById("modalContent");
@@ -99,19 +102,19 @@
         <nav class="mb-8" aria-label="Breadcrumb">
             <ol class="flex items-center space-x-3 text-sm bg-white/70 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
                 <li>
-                    <a href="/" class="flex items-center text-gray-600 hover:text-primary transition-colors group">
+                    <a href="/static" class="flex items-center text-gray-600 hover:text-primary transition-colors group">
                         <i class="fas fa-home mr-2 group-hover:scale-110 transition-transform"></i>
                         Inicio
                     </a>
                 </li>
                 <li><i class="fas fa-chevron-right text-gray-400"></i></li>
                 <li>
-                    <a href="/verificarHechos" class="text-gray-600 hover:text-primary transition-colors">Grupo GEMA</a>
+                    <a href="/verificarHechos" class="text-gray-600 hover:text-primary transition-colors">Grupo GIEMA</a>
                 </li>
                 <li><i class="fas fa-chevron-right text-gray-400"></i></li>
                 <li class="text-primary font-semibold flex items-center">
                     <i class="fas fa-list-check mr-2"></i>
-                    Verificar Hechos
+                    Realizar conceptos tecnicos de pruebas
                 </li>
             </ol>
         </nav>
@@ -122,10 +125,10 @@
                 <i class="fas fa-search text-white text-2xl"></i>
             </div>
             <h1 class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-3">
-                Lista de Denuncias por Verificar
+                Lista de Denuncias para realizar concepto tecnico de pruebas
             </h1>
             <p class="text-gray-600 text-xl max-w-2xl mx-auto leading-relaxed">
-                Gestione y verifique los hechos de las denuncias ambientales pendientes
+                Gestione y realice los conceptos técnicos de prueba de las denuncias ambientales pendientes
             </p>
         </div>
 
@@ -141,7 +144,7 @@
                         </div>
                         Denuncias Pendientes
                     </h2>
-                    <p class="text-blue-100 text-lg">Seleccione una denuncia para verificar los hechos</p>
+                    <p class="text-blue-100 text-lg">Seleccione una denuncia para realizar los conceptos técnicos de pruebas</p>
                 </div>
                 <!-- Elementos decorativos -->
                 <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
@@ -212,11 +215,13 @@
                                         th:attr="data-id-denuncia=${denuncia.idDenuncia},
                                                         data-descripcion-denuncia=${denuncia.descripcionDenuncia},
                                                         data-numeroDocumentoDenuciante-denuncia=${denuncia.numeroDocumentoDenuciante},
-                                                        data-processId-denuncia=${denuncia.taskInfo.processId}"
+                                                        data-processId-denuncia=${denuncia.taskInfo.processId},
+                                                        data-nombreInfractor-denuncia=${denuncia.nombreInfractor}"
                                         onclick="mostrarModal(this.getAttribute('data-id-denuncia'),
                                                                     this.getAttribute('data-descripcion-denuncia'),
                                                                     this.getAttribute('data-numeroDocumentoDenuciante-denuncia'),
-                                                                    this.getAttribute('data-processId-denuncia'))">
+                                                                    this.getAttribute('data-processId-denuncia'),
+                                                                    this.getAttribute('data-nombreInfractor-denuncia'))">
                                     <i class="fas fa-eye group-hover:scale-110 transition-transform"></i>
                                     Ver Detalles
                                 </button>
@@ -233,7 +238,7 @@
                         <i class="fas fa-inbox text-gray-400 text-3xl"></i>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-600 mb-2">No hay denuncias disponibles</h3>
-                    <p class="text-gray-500 text-lg">No hay denuncias pendientes de verificación en este momento.</p>
+                    <p class="text-gray-500 text-lg">No hay denuncias pendientes para realizar realizar concepto técnicos de pruebas en este momento.</p>
                 </div>
             </div>
         </div>
@@ -243,7 +248,7 @@
 <!-- Modal mejorado -->
 <div id="modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
     <div id="modalContent" class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <form th:action="@{/denuncias/hechosVerificados}" th:method="post">
+        <form th:action="@{/denuncias/determinarRecursosReposicion}" th:method="post">
             <!-- Header del modal -->
             <div class="bg-gradient-to-r from-primary to-secondary p-6 text-white relative overflow-hidden">
                 <div class="absolute inset-0 bg-black/10"></div>
@@ -252,9 +257,9 @@
                         <div class="bg-white/20 p-2 rounded-full mr-3">
                             <i class="fas fa-search-plus text-xl"></i>
                         </div>
-                        Verificar Hechos de la Denuncia
+                        Determine la infracción de la Denuncia
                     </h2>
-                    <p class="text-blue-100">Complete la información de la visita técnica</p>
+                    <p class="text-blue-100">Complete la información para determinar la infracción</p>
                 </div>
                 <!-- Botón cerrar -->
                 <button type="button" onclick="cerrarModal()"
@@ -265,17 +270,6 @@
 
             <!-- Contenido del modal -->
             <div class="p-6 space-y-6">
-                <!-- Fecha de radicación -->
-                <div class="space-y-2">
-                    <label for="fecha" class="flex items-center text-gray-700 font-semibold text-lg">
-                        <div class="bg-primary/10 p-2 rounded-lg mr-3">
-                            <i class="fas fa-calendar text-primary"></i>
-                        </div>
-                        Fecha de visita técnica *
-                    </label>
-                    <input type="date" id="fecha" name="fechaVisitaTecnica" required
-                           class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300">
-                </div>
 
                 <!-- Información de la denuncia (solo lectura) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -300,71 +294,41 @@
                         <input type="number" id="inputDocumentoDenuciante" readonly
                                class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-600">
                     </div>
+                    <div class="space-y-2">
+                        <label for="inputDescripcionDenuncia" class="flex items-center text-gray-700 font-semibold">
+                            <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                                <i class="fas fa-file-alt text-blue-600"></i>
+                            </div>
+                            Descripción de la denuncia
+                        </label>
+                        <textarea id="inputDescripcionDenuncia" rows="3" readonly
+                                  class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-600 resize-none"></textarea>
+                    </div>
+
                 </div>
 
                 <div class="space-y-2">
-                    <label for="inputDescripcionDenuncia" class="flex items-center text-gray-700 font-semibold">
-                        <div class="bg-blue-100 p-2 rounded-lg mr-3">
-                            <i class="fas fa-file-alt text-blue-600"></i>
-                        </div>
-                        Descripción de la denuncia
-                    </label>
-                    <textarea id="inputDescripcionDenuncia" rows="3" readonly
-                              class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-600 resize-none"></textarea>
-                </div>
-
-                <!-- Información de la visita técnica -->
-                <div class="space-y-2">
-                    <label for="encargadoVisitaTecnica" class="flex items-center text-gray-700 font-semibold text-lg">
+                    <label for="nombreInfractor" class="flex items-center text-gray-700 font-semibold text-lg">
                         <div class="bg-primary/10 p-2 rounded-lg mr-3">
                             <i class="fas fa-user-tie text-primary"></i>
                         </div>
-                        Encargado de la visita técnica *
+                        Nombre del infractor: *
                     </label>
-                    <input type="text" name="encargadoVisitaTecnica" id="encargadoVisitaTecnica" required
+                    <input type="text" id="nombreInfractor" readonly
                            class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300"
-                           placeholder="Nombre completo del técnico responsable">
+                           placeholder="Nombre completo de la persona responsable del crimen">
                 </div>
 
-                <div class="space-y-2">
-                    <label for="inputDescripcionVisitaTecnica" class="flex items-center text-gray-700 font-semibold text-lg">
-                        <div class="bg-primary/10 p-2 rounded-lg mr-3">
-                            <i class="fas fa-clipboard-list text-primary"></i>
-                        </div>
-                        Descripción de la visita técnica *
-                    </label>
-                    <textarea id="inputDescripcionVisitaTecnica" rows="4" name="descripcionVisitaTecnica" required
-                              class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 resize-none"
-                              placeholder="Describa detalladamente los hallazgos de la visita técnica..."></textarea>
-                </div>
+                }
+                <label for="tipoRecursoReposicion">Determine el tipo de recurso de reposición: *</label>
+                <select id="tipoRecursoReposicion" name="tipoRecursoReposicion" required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option value="exoneracion">Exoneración</option>
+                    <option value="disminucion">Disminución</option>
+                    <option value="no">No</option>
+                </select>
 
-                <!-- Pregunta sobre infracción -->
-                <div class="space-y-4">
-                    <label class="flex items-center text-gray-700 font-semibold text-lg">
-                        <div class="bg-accent/10 p-2 rounded-lg mr-3">
-                            <i class="fas fa-exclamation-triangle text-accent"></i>
-                        </div>
-                        ¿Se cometió infracción? *
-                    </label>
-                    <div class="space-y-3 ml-12">
-                        <div class="flex items-center p-3 rounded-lg hover:bg-green-50 transition-colors">
-                            <input type="radio" name="infraccion" value="true" id="infraccionSi" required
-                                   class="mr-3 w-4 h-4 text-green-600 focus:ring-green-500">
-                            <label for="infraccionSi" class="text-gray-700 font-medium cursor-pointer flex items-center">
-                                <i class="fas fa-check-circle text-green-600 mr-2"></i>
-                                Sí, se encontró infracción
-                            </label>
-                        </div>
-                        <div class="flex items-center p-3 rounded-lg hover:bg-red-50 transition-colors">
-                            <input type="radio" name="infraccion" value="false" id="infraccionNo" required
-                                   class="mr-3 w-4 h-4 text-red-600 focus:ring-red-500">
-                            <label for="infraccionNo" class="text-gray-700 font-medium cursor-pointer flex items-center">
-                                <i class="fas fa-times-circle text-red-600 mr-2"></i>
-                                No, no se encontró infracción
-                            </label>
-                        </div>
-                    </div>
-                </div>
+
 
                 <input type="hidden" name="processId" id="inputProcessId">
             </div>
