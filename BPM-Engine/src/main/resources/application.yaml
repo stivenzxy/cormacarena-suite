@@ -13,6 +13,6 @@ logging:
   level:
     com.example.cormacarena: DEBUG
 
-DB_URL: jdbc:postgresql://localhost:5432/cormacarena
-DB_USER: postgres
-DB_PASSWORD: postgres
+DB_URL: jdbc:mysql://localhost:3306/cormacarena
+DB_USER: root
+DB_PASSWORD: admin
