@@ -1,0 +1,61 @@
+version: "3.8"  # Asegúrate de usar una versión reciente de Docker Compose
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-cormacarena
+    environment:
+      MYSQL_DATABASE: cormacarena
+      MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - "3307:3306"  # MySQL mapea su puerto 3306 a 3307 en la máquina local
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - cormanet
+
+  bpm-engine:
+    build:
+      context: ./BPM-Engine
+    container_name: bpm-engine
+    ports:
+      - "8080:8080"  # Exponemos el puerto 8080 para el servicio REST de Camunda
+    depends_on:
+      - mysql
+    networks:
+      - cormanet
+
+  client:
+    build:
+      context: ./cormacarena-client
+    container_name: cormacarena-client
+    ports:
+      - "9090:9090"  # Exponemos el puerto 9090 para la aplicación cliente
+    depends_on:
+      - bpm-engine  # Aseguramos que Camunda (bpm-engine) esté disponible antes de iniciar
+      - mysql
+    networks:
+      - cormanet
+    environment:
+      CAMUNDA_URL: http://bpm-engine:8080/engine-rest/  # Comunicación con el servicio bpm-engine
+
+  organization:
+    build:
+      context: ./cormacarena-organization
+    container_name: cormacarena-organization
+    ports:
+      - "9095:9095"  # Exponemos el puerto 9095 para la aplicación de organización
+    depends_on:
+      - bpm-engine  # Aseguramos que Camunda (bpm-engine) esté disponible antes de iniciar
+      - mysql
+    networks:
+      - cormanet
+    environment:
+      CAMUNDA_URL: http://bpm-engine:8080/engine-rest/  # Comunicación con el servicio bpm-engine
+
+volumes:
+  mysql-data:  # Volumen persistente para MySQL
+
+networks:
+  cormanet:  # Red personalizada para que los contenedores se puedan comunicar entre sí

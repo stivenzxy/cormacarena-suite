@@ -31,7 +31,7 @@ public class CoordinadorRevSolServiceImpl implements CoordinadorRevSolService {
     private List<TaskInfo> tasksList = new ArrayList<>();
     private final ActualizarEstadoService actualizarEstadoService;
 
-    @Value("${camunda.url:http://localhost:8080/engine-rest/}")
+    @Value("${camunda.url}")
     private String camundaUrl;
 
     @Override

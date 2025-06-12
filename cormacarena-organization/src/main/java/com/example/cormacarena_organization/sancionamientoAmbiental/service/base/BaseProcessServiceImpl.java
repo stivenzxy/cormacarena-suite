@@ -23,7 +23,7 @@ public abstract class BaseProcessServiceImpl {
     protected final RestTemplate restTemplate = new RestTemplate();
     protected List<TaskInfo> tasksList = new ArrayList<>();
 
-    @Value("${camunda.url:http://localhost:8080/engine-rest/}")
+    @Value("${camunda.url}")
     protected String camundaURL;
     @Value("${spring.datasource.url}")
     protected String databaseUrl;
