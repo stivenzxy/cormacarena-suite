@@ -44,6 +44,9 @@ public class RegistrarActoAdministrativoServiceImpl extends BaseProcessServiceIm
             Map<String, Object> descripcionDenunciaMap = (Map<String, Object>) variablesMap.get("descripcionDenuncia");
             String descripcionDenuncia = (String) descripcionDenunciaMap.get("value");
             actoAdministrativaDTO.setDescripcionDenuncia(descripcionDenuncia);
+            actoAdministrativaDTO.setIdDenuncia(sancionamientoAmbiental.getDenuncia().getIdDenuncia());
+            actoAdministrativaDTO.setDescripcionDenuncia(sancionamientoAmbiental.getDenuncia().getDescripcionDenuncia());
+            actoAdministrativaDTO.setNumeroDocumentoDenuciante(sancionamientoAmbiental.getDenuncia().getDenunciante().getNumeroIdentificacion());
             return actoAdministrativaDTO;
         }else {
             return null;
