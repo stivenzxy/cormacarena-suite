@@ -1,5 +1,6 @@
 package com.example.cormacarena_organization.solicitudPQRS.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +17,12 @@ public class GrupoArchivoController {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
+    @Value("${camunda.url}")
+    private String camundaUrl;
+
     @GetMapping
     public String mostrarTareas(Model model) {
-        String url = "http://localhost:8080/engine-rest/task?taskDefinitionKey=Activity_0yjqid2";
+        String url = camundaUrl+"task?taskDefinitionKey=Activity_0yjqid2";
         List<Map<String, Object>> tareas = restTemplate.getForObject(url, List.class);
 
         if (tareas == null || tareas.isEmpty()) {
@@ -31,7 +35,7 @@ public class GrupoArchivoController {
 
         for (Map<String, Object> tarea : tareas) {
             String taskId = (String) tarea.get("id");
-            String variablesUrl = "http://localhost:8080/engine-rest/task/" + taskId + "/variables";
+            String variablesUrl = camundaUrl+"task/" + taskId + "/variables";
             Map<String, Map<String, Object>> variables = restTemplate.getForObject(variablesUrl, Map.class);
 
             String tipoSolicitud = (String) variables.getOrDefault("tipoSolicitud", Map.of("value", "Desconocido")).get("value");
@@ -79,7 +83,7 @@ public class GrupoArchivoController {
         Map<String, Object> body = new HashMap<>();
         body.put("variables", variables);
 
-        String url = "http://localhost:8080/engine-rest/task/" + taskId + "/complete";
+        String url = camundaUrl+"task/" + taskId + "/complete";
         restTemplate.postForObject(url, body, String.class);
 
         return "redirect:/grupo-archivo";

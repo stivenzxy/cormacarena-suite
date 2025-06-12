@@ -34,7 +34,7 @@ public class VentanillaUnicaController {
 
         for (Map<String, Object> tarea : tareas) {
             String taskId = (String) tarea.get("id");
-            String variablesUrl = "http://localhost:8080/engine-rest/task/" + taskId + "/variables";
+            String variablesUrl = camunda+"task/" + taskId + "/variables";
             Map<String, Map<String, Object>> variables = restTemplate.getForObject(variablesUrl, Map.class);
 
             String tipoSolicitud = variables.containsKey("tipoSolicitud")
@@ -65,7 +65,7 @@ public class VentanillaUnicaController {
 
     @GetMapping("/resolver/{taskId}")
     public String mostrarFormulario(@PathVariable String taskId, Model model) {
-        String variablesUrl = "http://localhost:8080/engine-rest/task/" + taskId + "/variables";
+        String variablesUrl = camunda+"task/" + taskId + "/variables";
         Map<String, Map<String, Object>> variables = restTemplate.getForObject(variablesUrl, Map.class);
 
         model.addAttribute("taskId", taskId);
@@ -92,7 +92,7 @@ public class VentanillaUnicaController {
         Map<String, Object> request = new HashMap<>();
         request.put("variables", variables);
 
-        String camundaUrl = "http://localhost:8080/engine-rest/task/" + taskId + "/complete";
+        String camundaUrl = camunda+"task/" + taskId + "/complete";
         restTemplate.postForObject(camundaUrl, request, String.class);
 
         model.addAttribute("mensaje", "Formulario enviado correctamente a Camunda.");

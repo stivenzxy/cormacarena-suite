@@ -1,5 +1,6 @@
 package com.example.cormacarena_organization.solicitudPQRS.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +14,14 @@ import java.util.Map;
 @RequestMapping("/profesional-area")
 public class ProfesionalAreaController {
 
+    @Value("${camunda.url}")
+    private String camundaUrl;
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     @GetMapping
     public String listarSolicitudes(Model model) {
-        String url = "http://localhost:8080/engine-rest/task?taskDefinitionKey=Activity_1uzqpdw";
+        String url = camundaUrl+"task?taskDefinitionKey=Activity_1uzqpdw";
         List<Map<String, Object>> tareas = restTemplate.getForObject(url, List.class);
 
         if (tareas == null || tareas.isEmpty()) {
@@ -30,7 +34,7 @@ public class ProfesionalAreaController {
 
         for (Map<String, Object> tarea : tareas) {
             String taskId = (String) tarea.get("id");
-            String variablesUrl = "http://localhost:8080/engine-rest/task/" + taskId + "/variables";
+            String variablesUrl = camundaUrl+"task/" + taskId + "/variables";
             Map<String, Map<String, Object>> variables = restTemplate.getForObject(variablesUrl, Map.class);
 
             String limiteTiempoRaw = (String) variables.getOrDefault("limiteTiempo", Map.of("value", "N/A")).get("value");
@@ -52,7 +56,7 @@ public class ProfesionalAreaController {
 
     @GetMapping("/responder/{taskId}")
     public String mostrarFormulario(@PathVariable String taskId, Model model) {
-        String variablesUrl = "http://localhost:8080/engine-rest/task/" + taskId + "/variables";
+        String variablesUrl = camundaUrl+"task/" + taskId + "/variables";
         Map<String, Map<String, Object>> variables = restTemplate.getForObject(variablesUrl, Map.class);
 
         model.addAttribute("taskId", taskId);
@@ -71,7 +75,7 @@ public class ProfesionalAreaController {
         );
 
         restTemplate.postForObject(
-                "http://localhost:8080/engine-rest/task/" + taskId + "/complete",
+                camundaUrl+"task/" + taskId + "/complete",
                 Map.of("variables", variables),
                 String.class
         );
