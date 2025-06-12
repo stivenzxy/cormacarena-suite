@@ -76,3 +76,94 @@ CREATE DATABASE Cormacarena;
 CREATE USER 'root'@'%' IDENTIFIED BY 'admin';
 GRANT ALL PRIVILEGES ON Cormacarena.* TO 'root'@'%';
 FLUSH PRIVILEGES;
+
+Adicional realice estos cambios en el docker-compose:
+
+version: "3.8"
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-cormacarena
+    environment:
+      MYSQL_DATABASE: cormacarena
+      MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - cormanet
+
+  bpm-engine:
+    build:
+      context: ./BPM-Engine
+    container_name: bpm-engine
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - cormanet
+
+  client:
+    build:
+      context: ./cormacarena-client
+    container_name: cormacarena-client
+    ports:
+      - "9090:9090"
+    depends_on:
+      - bpm-engine
+      - mysql
+    networks:
+      - cormanet
+    environment:
+      CAMUNDA_URL: http://bpm-engine:8080/engine-rest/
+
+
+  organization:
+    build:
+      context: ./cormacarena-organization
+    container_name: cormacarena-organization
+    ports:
+      - "9095:9095"
+    depends_on:
+      - bpm-engine
+      - mysql
+    networks:
+      - cormanet
+    environment:
+      CAMUNDA_URL: http://bpm-engine:8080/engine-rest/
+
+  transactional-mail-sender:
+    build:
+      context: ./transaccional-mail-sender  # Directorio donde está el Dockerfile de este módulo
+    container_name: transactional-mail-sender
+    ports:
+      - "8085:8085"  # Puerto expuesto para el servicio de envío de correos
+    depends_on:
+      - mysql
+    networks:
+      - cormanet
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_SENDGRID_API_KEY: "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"
+      SENDGRID_FROM_EMAIL: "cormacarenaswproject@outlook.com"
+
+  camunda-worker:
+    build:
+      context: ./JavaScriptResources
+    container_name: camunda-worker
+    depends_on:
+      - bpm-engine  # Asegura que bpm-engine esté disponible
+    environment:
+      CAMUNDA_URL: http://bpm-engine:8080/engine-rest/
+    networks:
+      - cormanet
+
+volumes:
+  mysql-data:
+
+networks:
+  cormanet:
