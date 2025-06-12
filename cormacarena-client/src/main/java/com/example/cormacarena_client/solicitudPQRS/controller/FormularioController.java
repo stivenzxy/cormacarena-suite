@@ -2,6 +2,7 @@ package com.example.cormacarena_client.solicitudPQRS.controller;
 
 import com.example.cormacarena_client.solicitudPQRS.dto.FormularioDTO;
 import com.example.cormacarena_client.solicitudPQRS.dto.MensajeDTO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,10 @@ import java.util.Map;
 
 @Controller
 public class FormularioController {
+
+    @Value("${camunda.url}")
+    private String camundaUrlProcess;
+
 
     @GetMapping("/formulario")
     public String formulario(Model model) {
@@ -47,7 +52,7 @@ public class FormularioController {
         variables.put("adjDocumentos", Map.of("value", adjuntaDocumento));
         variables.put("nombreArchivo", Map.of("value", nombreArchivo != null ? nombreArchivo : ""));
 
-        String camundaUrl = "http://localhost:8080/engine-rest/process-definition/key/PQRS/start";
+        String camundaUrl = camundaUrlProcess+"process-definition/key/PQRS/start";
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.postForObject(camundaUrl, Map.of("variables", variables), String.class);
 

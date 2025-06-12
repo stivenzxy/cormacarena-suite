@@ -1,5 +1,6 @@
 package com.example.cormacarena_organization.solicitudPQRS.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,9 @@ import java.util.*;
 @RequestMapping("/jefe-dependencia")
 public class JefeDependenciaController {
 
+    @Value("${camunda.url}")
+    private String camundaUrl;
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     @GetMapping
@@ -21,19 +25,18 @@ public class JefeDependenciaController {
         List<Map<String, Object>> tareasTotales = new ArrayList<>();
 
         for (String defKey : definiciones) {
-            String url = "http://localhost:8080/engine-rest/task?taskDefinitionKey=" + defKey;
+            String url = camundaUrl+"task?taskDefinitionKey=" + defKey;
             List<Map<String, Object>> tareas = restTemplate.getForObject(url, List.class);
             if (tareas == null) continue;
 
             for (Map<String, Object> tarea : tareas) {
                 String taskId = (String) tarea.get("id");
-                String variablesUrl = "http://localhost:8080/engine-rest/task/" + taskId + "/variables";
+                String variablesUrl = camundaUrl+"task/" + taskId + "/variables";
                 Map<String, Map<String, Object>> variables = restTemplate.getForObject(variablesUrl, Map.class);
 
                 tarea.put("taskId", taskId);
                 tarea.put("taskDefinitionKey", defKey);
 
-                // Asignar el nombre de actividad según el tipo de tarea
                 // Asignar el nombre de actividad según el tipo de tarea
                 String nombreActividad;
                 if (defKey.equals("Activity_03m82hr")) {
@@ -78,7 +81,7 @@ public class JefeDependenciaController {
      */
     private boolean verificarTareaExiste(String taskId) {
         try {
-            String taskUrl = "http://localhost:8080/engine-rest/task/" + taskId;
+            String taskUrl = camundaUrl+"task/" + taskId;
             Map<String, Object> taskDetails = restTemplate.getForObject(taskUrl, Map.class);
             return taskDetails != null && taskDetails.get("id") != null;
         } catch (RestClientException e) {
@@ -97,7 +100,7 @@ public class JefeDependenciaController {
         }
 
         try {
-            String variablesUrl = "http://localhost:8080/engine-rest/task/" + taskId + "/variables";
+            String variablesUrl = camundaUrl+"task/" + taskId + "/variables";
             Map<String, Map<String, Object>> variables = restTemplate.getForObject(variablesUrl, Map.class);
 
             model.addAttribute("taskId", taskId);
@@ -126,7 +129,7 @@ public class JefeDependenciaController {
 
         try {
             // 1. Obtener instancia de proceso antes de completar
-            String taskUrl = "http://localhost:8080/engine-rest/task/" + taskId;
+            String taskUrl = camundaUrl+"task/" + taskId;
             Map<String, Object> taskDetails = restTemplate.getForObject(taskUrl, Map.class);
             String processInstanceId = (String) taskDetails.get("processInstanceId");
 
@@ -134,7 +137,7 @@ public class JefeDependenciaController {
             Map<String, Object> variables = new HashMap<>();
             variables.put("competenciaPersona", Map.of("value", competenciaPersona, "type", "String"));
             restTemplate.postForObject(
-                    "http://localhost:8080/engine-rest/task/" + taskId + "/complete",
+                    camundaUrl+"task/" + taskId + "/complete",
                     Map.of("variables", variables),
                     String.class
             );
@@ -142,7 +145,7 @@ public class JefeDependenciaController {
             // 3. Si rechazó la asignación, buscar la tarea de "Informar no competencia"
             if ("false".equals(competenciaPersona)) {
                 String queryUrl = String.join("",
-                        "http://localhost:8080/engine-rest/task?",
+                        camundaUrl+"task?",
                         "taskDefinitionKey=Activity_1wq7ur6",
                         "&processInstanceId=", processInstanceId
                 );
@@ -159,7 +162,7 @@ public class JefeDependenciaController {
 
             // 4. Si confirmó la asignación, buscar la tarea "Asignar profesionales"
             String asignarProfesionalesUrl = String.join("",
-                    "http://localhost:8080/engine-rest/task?",
+                    camundaUrl+"task?",
                     "taskDefinitionKey=Activity_1v96s1f",
                     "&processInstanceId=", processInstanceId
             );
@@ -193,7 +196,7 @@ public class JefeDependenciaController {
         }
 
         try {
-            String variablesUrl = "http://localhost:8080/engine-rest/task/" + taskId + "/variables";
+            String variablesUrl = camundaUrl+"task/" + taskId + "/variables";
             Map<String, Map<String, Object>> variables = restTemplate.getForObject(variablesUrl, Map.class);
 
             model.addAttribute("taskId", taskId);
@@ -228,7 +231,7 @@ public class JefeDependenciaController {
             );
 
             Map<String, Object> body = Map.of("variables", variables);
-            String url = "http://localhost:8080/engine-rest/task/" + taskId + "/complete";
+            String url = camundaUrl+"task/" + taskId + "/complete";
             restTemplate.postForObject(url, body, String.class);
 
             return "redirect:/jefe-dependencia?success=task_completed";
@@ -283,7 +286,7 @@ public class JefeDependenciaController {
             );
 
             restTemplate.postForObject(
-                    "http://localhost:8080/engine-rest/task/" + taskId + "/complete",
+                    camundaUrl+"task/" + taskId + "/complete",
                     Map.of("variables", variables),
                     String.class
             );
@@ -303,7 +306,7 @@ public class JefeDependenciaController {
         }
 
         try {
-            String variablesUrl = "http://localhost:8080/engine-rest/task/" + taskId + "/variables";
+            String variablesUrl = camundaUrl+"task/" + taskId + "/variables";
             Map<String, Map<String, Object>> variables = restTemplate.getForObject(variablesUrl, Map.class);
 
             model.addAttribute("taskId", taskId);
@@ -328,7 +331,7 @@ public class JefeDependenciaController {
         }
 
         try {
-            String taskUrl = "http://localhost:8080/engine-rest/task/" + taskId;
+            String taskUrl = camundaUrl+"task/" + taskId;
             Map<String, Object> taskDetails = restTemplate.getForObject(taskUrl, Map.class);
             String processInstanceId = (String) taskDetails.get("processInstanceId");
 
@@ -337,14 +340,14 @@ public class JefeDependenciaController {
             );
 
             restTemplate.postForObject(
-                    "http://localhost:8080/engine-rest/task/" + taskId + "/complete",
+                    camundaUrl+"task/" + taskId + "/complete",
                     Map.of("variables", variables),
                     String.class
             );
 
             if (validezRespuesta) {
                 String buscarFirmaUrl = String.format(
-                        "http://localhost:8080/engine-rest/task?taskDefinitionKey=Activity_0607mqq&processInstanceId=%s",
+                        camundaUrl+"task?taskDefinitionKey=Activity_0607mqq&processInstanceId=%s",
                         processInstanceId
                 );
                 List<Map<String, Object>> tareasFirma = restTemplate.getForObject(buscarFirmaUrl, List.class);
@@ -372,7 +375,7 @@ public class JefeDependenciaController {
         }
 
         try {
-            String variablesUrl = "http://localhost:8080/engine-rest/task/" + taskId + "/variables";
+            String variablesUrl = camundaUrl+"task/" + taskId + "/variables";
             Map<String, Map<String, Object>> variables = restTemplate.getForObject(variablesUrl, Map.class);
 
             model.addAttribute("taskId", taskId);
@@ -403,7 +406,7 @@ public class JefeDependenciaController {
             );
 
             restTemplate.postForObject(
-                    "http://localhost:8080/engine-rest/task/" + taskId + "/complete",
+                    camundaUrl+"task/" + taskId + "/complete",
                     Map.of("variables", variables),
                     String.class
             );
