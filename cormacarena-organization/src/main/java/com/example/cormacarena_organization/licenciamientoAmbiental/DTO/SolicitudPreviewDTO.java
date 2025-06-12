@@ -8,5 +8,7 @@ public class SolicitudPreviewDTO {
     private String nombreSolicitante;
     private String nombreProyecto;
     private String estado;
+    private String profesionalAsignado;
+    private String fechaVisitaTecnica;
+    private String observacionesVisitaTecnica;
 }
-

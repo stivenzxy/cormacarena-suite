@@ -8,13 +8,13 @@ import com.example.cormacarena_client.utils.SolicitudMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.modelo.SolicitudLicencia;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -63,7 +63,10 @@ public class SolicitudRestController {
                 solicitudLicencia = new SolicitudLicencia();
             }
 
+            LocalDate fechaActual = LocalDate.now();
+
             solicitudLicencia.setNombreSolicitante(solicitudDTO.getNombreSolicitante());
+            solicitudLicencia.setFechaSolicitud(fechaActual);
             solicitudLicencia.setTipoIdentificacion(solicitudDTO.getTipoIdentificacion());
             solicitudLicencia.setIdSolicitante(solicitudDTO.getIdSolicitante());
             solicitudLicencia.setTelefono(solicitudDTO.getTelefono());
@@ -80,6 +83,7 @@ public class SolicitudRestController {
             solicitudLicencia.setNombreSoporteEIA(nombreArchivo);
             solicitudDTO.setNombreSoporteEIA(nombreArchivo);
             solicitudDTO.setEstado(EstadoProceso.BORRADOR.toString());
+            solicitudDTO.setFechaSolicitud(fechaActual);
 
             String idProceso;
             if (esActualizacion && solicitudLicencia.getCodigoSolicitud() != null) {
@@ -121,6 +125,8 @@ public class SolicitudRestController {
         }
 
         solicitudLicencia.setNombreSolicitante(solicitudDTO.getNombreSolicitante());
+
+        LocalDate fechaDeEnvio = LocalDate.now();
         solicitudLicencia.setTipoIdentificacion(solicitudDTO.getTipoIdentificacion());
         solicitudLicencia.setIdSolicitante(solicitudDTO.getIdSolicitante());
         solicitudLicencia.setTelefono(solicitudDTO.getTelefono());
@@ -131,7 +137,9 @@ public class SolicitudRestController {
         solicitudLicencia.setValorProyecto(solicitudDTO.getValorProyecto());
         solicitudLicencia.setDepartamentoProyecto(solicitudDTO.getDepartamentoProyecto());
         solicitudLicencia.setMunicipioProyecto(solicitudDTO.getMunicipioProyecto());
-        solicitudLicencia.setEstado(EstadoProceso.REVISAR.toString());
+        solicitudLicencia.setEstado(EstadoProceso.ENVIADO.toString());
+        solicitudLicencia.setFechaSolicitud(fechaDeEnvio);
+        solicitudDTO.setFechaSolicitud(fechaDeEnvio);
 
         String nombreArchivo = String.format("%s-soporteEIA.pdf", solicitudDTO.getIdSolicitante());
         solicitudLicencia.setNombreSoporteEIA(nombreArchivo);
@@ -141,7 +149,7 @@ public class SolicitudRestController {
         licenciaAmbientalService.actualizarVariablesProceso(solicitudLicencia.getCodigoSolicitud(), solicitudLicencia);
 
 
-        licenciaAmbientalService.completeTask(solicitudLicencia.getCodigoSolicitud());
+        licenciaAmbientalService.completeTask(solicitudLicencia.getCodigoSolicitud(),"CoordinadorDeGrupo");
 
         redirectAttributes.addFlashAttribute("success", "Solicitud enviada exitosamente!, su información será evaluada.");
         return new RedirectView("/listado-solicitudes?idSolicitante=" + solicitudDTO.getIdSolicitante());

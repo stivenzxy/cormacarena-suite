@@ -10,6 +10,17 @@
       "id": "Field_1m0u7aj"
     },
     {
+      "label": "¿La visita fue realizada?",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_11p7hwo",
+        "columns": null
+      },
+      "id": "Field_1s459qw",
+      "key": "visita",
+      "description": "Si la visita no fue realizada por algún motivo, no seleccione esta casilla."
+    },
+    {
       "subtype": "date",
       "dateLabel": "Fecha en que se realizó la visita",
       "type": "datetime",

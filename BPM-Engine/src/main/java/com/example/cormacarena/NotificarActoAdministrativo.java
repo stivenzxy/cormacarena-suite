@@ -6,7 +6,6 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 public class NotificarActoAdministrativo implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) throws Exception {
-        // Obtener variables del proceso si quieres
         String usuario = (String) execution.getVariable("nombreInfractor");
         String descripcionActoAdministrativo = (String) execution.getVariable("descripcionActoAdministrativo");
         String profesionalActoAdministrativo = (String) execution.getVariable("profesionalActoAdministrativo");

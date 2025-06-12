@@ -11,5 +11,7 @@
             -->
             <property name="additionalResourceSuffixes">form, dmn, bpmn</property>
         </properties>
+
+
     </process-archive>
 </process-application>

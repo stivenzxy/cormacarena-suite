@@ -28,4 +28,10 @@ public class SolicitudDTO {
     private MultipartFile soporteEIAPdf;
 
     private String estado;
+    private String profesionalAsignado;
+    private String fechaVisitaTecnica;
+    private String observacionesVisitaTecnica;
+    private String fechaConceptoTecnico;
+    private String fechaResolucionJuridica;
+    private String descripcionResolucionJuridica;
 }

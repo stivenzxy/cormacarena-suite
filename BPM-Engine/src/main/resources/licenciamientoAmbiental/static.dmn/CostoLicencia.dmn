@@ -11,7 +11,7 @@
       <rule id="DecisionRule_1bejzf8">
         <description>(Poda, Vertimientos) - Res. 0375/2022 </description>
         <inputEntry id="UnaryTests_10l21vk">
-          <text>"intervencionForestal"</text>
+          <text>"INTERVENCION_FORESTAL"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1j82cod">
           <text>600000</text>
@@ -20,7 +20,7 @@
       <rule id="DecisionRule_17j3mdz">
         <description>(Agroindustria, Obras Civiles) - Decreto 1076/2015</description>
         <inputEntry id="UnaryTests_0j7sxyd">
-          <text>"infraestructura","agroindustria"</text>
+          <text>"INFRAESTRUCTURA","AGROINDUSTRIA"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1b2etur">
           <text>5500000</text>
@@ -29,7 +29,7 @@
       <rule id="DecisionRule_0lsc7al">
         <description>(Minería, Hidrocarburos) - Ley 99/1993</description>
         <inputEntry id="UnaryTests_1mr2oea">
-          <text>"hidrocarburos","mineria"</text>
+          <text>"HIDROCARBUROS","MINERIA"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1cnt6jk">
           <text>19000000</text>
@@ -38,7 +38,7 @@
       <rule id="DecisionRule_00ihlvx">
         <description>(Ej: Río Guamal) - Res. PS-GJ.1.2.6.23.2433</description>
         <inputEntry id="UnaryTests_0juxz6z">
-          <text>"cauceDeRio"</text>
+          <text>"CAUCE_DE_RIO"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_10g8uhv">
           <text>8000000</text>

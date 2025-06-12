@@ -52,7 +52,7 @@
       "disabled": true
     },
     {
-      "label": "Descripción del la visita técnica:",
+      "label": "Descripción de la visita técnica:",
       "type": "textarea",
       "layout": {
         "row": "Row_1eof6iz",

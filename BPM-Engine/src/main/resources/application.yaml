@@ -2,3 +2,17 @@
 camunda.bpm.admin-user:
   id: cormacarena
   password: 12345
+
+camunda:
+  bpm:
+    plugin:
+      connect:
+        enabled: true
+
+logging:
+  level:
+    com.example.cormacarena: DEBUG
+
+DB_URL: jdbc:postgresql://localhost:5432/cormacarena
+DB_USER: postgres
+DB_PASSWORD: postgres

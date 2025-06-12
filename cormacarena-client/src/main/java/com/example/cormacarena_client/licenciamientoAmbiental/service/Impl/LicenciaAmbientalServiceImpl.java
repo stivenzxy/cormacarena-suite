@@ -8,7 +8,6 @@ import com.example.cormacarena_client.licenciamientoAmbiental.service.LicenciaAm
 import com.example.cormacarena_client.licenciamientoAmbiental.service.SolicitudLicenciaService;
 import lombok.RequiredArgsConstructor;
 import org.example.modelo.SolicitudLicencia;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -31,7 +29,7 @@ public class LicenciaAmbientalServiceImpl implements LicenciaAmbientalService {
     @Value("${camunda.url:http://localhost:8080/engine-rest/}")
     private String camundaUrl;
 
-    private List<TaskInfo> tasksList = new ArrayList<>();
+    private final List<TaskInfo> tasksList = new ArrayList<>();
 
     @Override
     public String iniciarInstanciaProceso(SolicitudDTO solicitudDTO) {
@@ -53,6 +51,9 @@ public class LicenciaAmbientalServiceImpl implements LicenciaAmbientalService {
         variables.put("nombreSoporteEIA", Map.of("value", solicitudDTO.getNombreSoporteEIA(), "type", "String"));
         variables.put("estado", Map.of("value", solicitudDTO.getEstado(), "type", "String"));
 
+        String fechaFormateada = solicitudDTO.getFechaSolicitud().toString();
+        variables.put("fechaSolicitud", Map.of("value", fechaFormateada, "type", "String"));
+
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("variables", variables);
 
@@ -71,11 +72,12 @@ public class LicenciaAmbientalServiceImpl implements LicenciaAmbientalService {
     }
 
     @Override
-    public String actualizarVariablesProceso(String idProceso , SolicitudLicencia solicitudLicencia) {
+    public void actualizarVariablesProceso(String idProceso , SolicitudLicencia solicitudLicencia) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, Object> modificaciones = new HashMap<>();
+        modificaciones.put("codigoSolicitud", Map.of("value", solicitudLicencia.getCodigoSolicitud(), "type", "String"));
         modificaciones.put("nombreSolicitante", Map.of("value", solicitudLicencia.getNombreSolicitante(), "type", "String"));
         modificaciones.put("tipoIdentificacion", Map.of("value", solicitudLicencia.getTipoIdentificacion(), "type", "String"));
         modificaciones.put("idSolicitante", Map.of("value", solicitudLicencia.getIdSolicitante(), "type", "String"));
@@ -90,6 +92,9 @@ public class LicenciaAmbientalServiceImpl implements LicenciaAmbientalService {
         modificaciones.put("nombreSoporteEIA", Map.of("value", solicitudLicencia.getNombreSoporteEIA(), "type", "String"));
         modificaciones.put("estado", Map.of("value", solicitudLicencia.getEstado(), "type", "String"));
 
+        String fechaFormateada = solicitudLicencia.getFechaSolicitud().toString();
+        modificaciones.put("fechaSolicitud", Map.of("value", fechaFormateada, "type", "String"));
+
         System.out.println(modificaciones);
         System.out.println(idProceso);
 
@@ -103,11 +108,9 @@ public class LicenciaAmbientalServiceImpl implements LicenciaAmbientalService {
                     HttpMethod.POST, entity, String.class);
 
             System.out.println("Variables actualizadas correctamente: " + response.getBody());
-            return String.valueOf(solicitudLicencia.getIdSolicitante());
         } catch (Exception e) {
             System.err.println("Error al actualizar las variables del proceso: " + e.getMessage());
         }
-        return "";
     }
 
     public void setAssignee(String taskId, String userId) {
@@ -136,6 +139,11 @@ public class LicenciaAmbientalServiceImpl implements LicenciaAmbientalService {
 
             List<Map> tasks = response.getBody();
 
+            if (tasks == null || tasks.isEmpty()) {
+                response = restTemplate.exchange(camundaUrl+"task?superProcessInstance="+idProceso, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+                tasks = response.getBody();
+            }
+
             if (tasks != null && !tasks.isEmpty()) {
                 Map<String, String> taskInfoMap = new HashMap<>();
 
@@ -149,7 +157,7 @@ public class LicenciaAmbientalServiceImpl implements LicenciaAmbientalService {
                 taskInfo.setTaskName(taskInfoMap.get("taskName"));
                 taskInfo.setTaskAssignee(taskInfoMap.get("assignee"));
 
-                tasksList.add(taskInfo);
+                this.tasksList.add(taskInfo);
                 return taskInfo;
             } else {
                 System.err.println("No existe un proceso con el ID: " + idProceso);
@@ -163,36 +171,106 @@ public class LicenciaAmbientalServiceImpl implements LicenciaAmbientalService {
     }
 
     @Override
-    public String completeTask(String idProceso) {
-      TaskInfo taskInfo = getTaskInfoByProcessId(idProceso);
+    public void completeTask(String idProceso, String assignee) {
+        TaskInfo taskInfo = getTaskInfoByProcessId(idProceso);
 
-      if (taskInfo != null) {
-          String taskId = taskInfo.getTaskId();
+        if (taskInfo != null) {
+            String taskId = taskInfo.getTaskId();
 
-          HttpHeaders headers = new HttpHeaders();
-          headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-          Map<String, Object> requestBody = new HashMap<>();
-          HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+            Map<String, Object> requestBody = new HashMap<>();
 
-          try {
-              ResponseEntity<Map> response = restTemplate.postForEntity(camundaUrl+"task/"+taskId+"/complete", entity, Map.class);
-              TaskInfo taskInfoDetails = getTaskInfoByProcessId(idProceso);
-              setAssignee(taskInfoDetails.getTaskId(), "CoordinadorDeGrupo");
-              actualizacionEstado.updateReviewAndStatus(idProceso,"Verificar datos de la solicitud");
-              SolicitudLicencia solicitudLicencia = solicitudRepository.findByCodigoSolicitud(idProceso);
-              System.out.println(taskInfoDetails.getTaskName());
-              solicitudLicencia.setEstado(taskInfoDetails.getTaskName());
-              solicitudLicenciaService.actualizarSolicitudExistente(solicitudLicencia.getCodigoSolicitud(), solicitudLicencia);
-              return String.valueOf(solicitudLicencia.getIdSolicitante());
-          } catch (HttpClientErrorException e) {
-              String errorMessage = e.getResponseBodyAsString();
-              System.err.println("Error with Camunda request: " + errorMessage);
-              return null;
-          }
-      } else {
-          System.err.println("Could not get task information for process ID: " + idProceso);
-          return null;
-      }
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+            try {
+                restTemplate.postForEntity(camundaUrl + "task/" + taskId + "/complete", entity, Map.class);
+
+                TaskInfo taskInfoDetails = getTaskInfoByProcessId(idProceso);
+
+                SolicitudLicencia solicitudLicencia = solicitudRepository.findByCodigoSolicitud(idProceso);
+
+                if (taskInfoDetails != null) {
+                    String usuarioAsignar = (assignee != null) ? assignee : "Usuario";
+                    setAssignee(taskInfoDetails.getTaskId(), usuarioAsignar);
+                    solicitudLicencia.setEstado(taskInfoDetails.getTaskName());
+                } else {
+                    System.out.println("No hay tarea activa en este momento para el proceso: " + idProceso);
+                }
+
+                actualizacionEstado.updateReviewAndStatus(idProceso, solicitudLicencia.getEstado());
+                solicitudLicenciaService.actualizarSolicitudExistente(solicitudLicencia.getCodigoSolicitud(), solicitudLicencia);
+
+            } catch (HttpClientErrorException e) {
+                String errorMessage = e.getResponseBodyAsString();
+                System.err.println("Error with Camunda request: " + errorMessage);
+            } catch (Exception e) {
+                System.err.println("Error inesperado al completar tarea: " + e.getMessage());
+            }
+        } else {
+            System.err.println("Could not get task information for process ID: " + idProceso);
+        }
+    }
+
+    public Object getVariableProceso(String idProceso, String variableName) {
+        String url = camundaUrl + "process-instance/" + idProceso + "/variables/" + variableName;
+
+        try {
+            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                Map<String, Object> variableMap = response.getBody();
+                return variableMap.get("value");
+            }
+        } catch (Exception e) {
+            System.err.println("Error al obtener variable del proceso: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public void setProcessVariable(String processInstanceId, String variableName, Object value) {
+        String url = camundaUrl + "process-instance/" + processInstanceId + "/variables/" + variableName;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String camundaType = detectCamundaType(value);
+
+        if (camundaType == null) {
+            System.err.println("Tipo de dato no soportado para la variable: " + variableName);
+            return;
+        }
+
+        Map<String, Object> valueInfo = new HashMap<>();
+        valueInfo.put("value", value);
+        valueInfo.put("type", camundaType);
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(valueInfo, headers);
+
+        try {
+            restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Void.class);
+            System.out.println("Variable '" + variableName + "' seteada como '" + value + "' (tipo: " + camundaType + ") para proceso " + processInstanceId);
+        } catch (HttpClientErrorException e) {
+            System.err.println("Error al setear variable: " + e.getResponseBodyAsString());
+        } catch (Exception e) {
+            System.err.println("Error inesperado: " + e.getMessage());
+        }
+    }
+
+    private String detectCamundaType(Object value) {
+        if (value instanceof String) {
+            return "String";
+        } else if (value instanceof Boolean) {
+            return "Boolean";
+        } else if (value instanceof Integer) {
+            return "Integer";
+        } else if (value instanceof Double || value instanceof Float) {
+            return "Double";
+        } else if (value instanceof java.util.Date) {
+            return "Date";
+        } else {
+            return null;
+        }
     }
 }

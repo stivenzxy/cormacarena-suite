@@ -1,0 +1,17 @@
+{
+  "name": "workers",
+  "type": "module",
+  "version": "1.0.0",
+  "author": "Camunda Services GmbH",
+  "license": "Apache-2.0",
+  "description": "",
+  "main": "verificacionPago.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "private": true,
+  "dependencies": {
+    "camunda-external-task-client-js": "^3.1.0",
+    "chalk": "^5.4.1"
+  }
+}

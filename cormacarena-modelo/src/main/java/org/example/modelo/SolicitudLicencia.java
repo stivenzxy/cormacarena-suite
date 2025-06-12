@@ -3,6 +3,8 @@ package org.example.modelo;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 @Entity
 @Table(name = "solicitud_licencia")
@@ -29,6 +31,7 @@ public class SolicitudLicencia {
     private String departamentoProyecto;
     private String municipioProyecto;
     private String nombreSoporteEIA;
+    private LocalDate fechaSolicitud;
 
     private String estado;
 }
