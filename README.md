@@ -57,3 +57,22 @@ Este proyecto está completamente dockerizado, lo que facilita su despliegue y e
 ### 🛠️ Servicios Docker
 
 El archivo `docker-compose.yml` contiene la configuración para todos los servicios necesarios para ejecutar la aplicación, incluyendo bases de datos y aplicaciones de backend.
+
+### 🗃️ Configuración de la Base de Datos
+Para el correcto funcionamiento de la aplicación, es necesario contar con una base de datos MySQL local con las siguientes características:
+
+Nombre de la base de datos: Cormacarena
+
+Usuario: root
+
+Contraseña: admin
+
+Puedes crear esta base de datos ejecutando el siguiente script en tu cliente de MySQL:
+
+sql
+Copiar
+Editar
+CREATE DATABASE Cormacarena;
+CREATE USER 'root'@'%' IDENTIFIED BY 'admin';
+GRANT ALL PRIVILEGES ON Cormacarena.* TO 'root'@'%';
+FLUSH PRIVILEGES;
