@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagos Pendientes</title>
+  <link th:href="@{/css/main.css}" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/vendor/fontawesome/css/all.css}"/>
+  <script th:src="@{/vendor/sweetalert2/sweetalert2.all.min.js}"></script>
+</head>
+<body class="bg-tertiary h-screen overflow-hidden">
+
+<!-- Header -->
+<header class="bg-primary h-20 w-full fixed top-0 left-0 z-50 flex items-center px-6 shadow-lg">
+  <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Logo" />
+</header>
+
+<div class="flex pt-20 h-full">
+  <!-- Sidebar fijo con altura completa -->
+  <aside class="w-64 bg-primary text-white flex flex-col p-6 h-full shadow-xl">
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold text-white">Licencias</h2>
+      <p class="text-blue-200 text-sm mt-1">Sistema de Gestión</p>
+    </div>
+
+    <nav class="flex flex-col gap-2">
+      <!-- Inicio -->
+      <a th:href="@{/}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span class="font-medium">Inicio</span>
+      </a>
+
+      <!-- Solicitar Licencia Ambiental -->
+      <a th:href="@{/solicitud-licencia-form}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+        </svg>
+        <span class="font-medium">Solicitar licencia ambiental</span>
+      </a>
+
+      <!-- Listado de solicitudes -->
+      <a th:href="@{/listado-solicitudes}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+        </svg>
+        <span class="font-medium">Listado de solicitudes</span>
+      </a>
+
+      <!-- Gestión de pagos (activo) -->
+      <a th:href="@{/pagos-licenciamiento}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-primary-hover text-white shadow-md">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <span class="font-medium">Gestión de pagos</span>
+      </a>
+    </nav>
+
+    <div class="mt-auto pt-6 border-t border-blue-600">
+      <div class="text-xs text-blue-200">
+        <p>Corporación para el Desarrollo</p>
+        <p>Sostenible del Área de Manejo</p>
+        <p>Especial La Macarena</p>
+      </div>
+    </div>
+  </aside>
+  <!-- Contenido principal -->
+  <main class="flex-1 p-8 overflow-y-auto">
+    <h1 class="text-3xl font-bold text-primary mb-6">
+      <i class="fa-solid fa-credit-card mr-3"></i>Solicitudes pendientes de pago
+    </h1>
+
+    <!-- Buscador -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+      <form method="get" th:action="@{/pagos-licenciamiento}" class="flex gap-4">
+        <div class="flex-1">
+          <label for="idSolicitante" class="block font-semibold mb-2">Buscar por ID del solicitante:</label>
+          <input type="text" id="idSolicitante" name="idSolicitante" th:value="${idSolicitante}"
+                 class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary">
+        </div>
+        <button type="submit" class="px-6 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg mt-7">
+          <i class="fa-solid fa-search mr-2"></i>Buscar
+        </button>
+      </form>
+    </div>
+
+    <!-- Mensaje cuando no se ha buscado -->
+    <div th:if="${idSolicitante == null or idSolicitante.isBlank()}" class="bg-white rounded-lg shadow p-12 text-center">
+      <i class="fa-solid fa-search text-6xl text-gray-300 mb-4"></i>
+      <h3 class="text-xl font-semibold text-gray-700 mb-2">Buscar Solicitudes</h3>
+      <p class="text-gray-500">Ingrese el ID del solicitante para ver las solicitudes pendientes de pago.</p>
+    </div>
+
+    <!-- Mensaje cuando no hay resultados -->
+    <div th:if="${idSolicitante != null and !idSolicitante.isBlank() and (solicitudes == null or solicitudes.isEmpty())}"
+         class="bg-white rounded-lg shadow p-12 text-center">
+      <i class="fa-solid fa-inbox text-6xl text-gray-300 mb-4"></i>
+      <h3 class="text-xl font-semibold text-gray-700 mb-2">No se encontraron solicitudes</h3>
+      <p class="text-gray-500">No hay solicitudes pendientes de pago para el ID: <strong th:text="${idSolicitante}"></strong></p>
+    </div>
+
+    <!-- Tabla de resultados -->
+    <div th:if="${solicitudes != null and !solicitudes.isEmpty()}" class="bg-white rounded-lg shadow p-6 mb-6">
+      <table class="w-full border-collapse">
+        <thead>
+        <tr class="bg-gray-50">
+          <th class="border px-4 py-3 text-left">Código Solicitud</th>
+          <th class="border px-4 py-3 text-left">Nombre Proyecto</th>
+          <th class="border px-4 py-3 text-left">Estado</th>
+          <th class="border px-4 py-3 text-left">Tipo de Pago</th>
+          <th class="border px-4 py-3 text-left">Valor a Pagar</th>
+          <th class="border px-4 py-3 text-center">Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="solicitud : ${solicitudes}" class="hover:bg-gray-50">
+          <td class="border px-4 py-3" th:text="${solicitud.codigoSolicitud}"></td>
+          <td class="border px-4 py-3" th:text="${solicitud.nombreProyecto}"></td>
+          <td class="border px-4 py-3">
+            <!-- Usando th:classappend para evitar el error de sintaxis -->
+            <span class="px-2 py-1 rounded-full text-xs font-semibold"
+                  th:classappend="${solicitud.estado == 'Pagar Licencia'} ? 'bg-green-100 text-green-800' :
+                                  (${solicitud.estado == 'PAGAR_EVALUACION'} ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800')"
+                  th:text="${solicitud.estado}">
+            </span>
+          </td>
+          <td class="border px-4 py-3">
+            <!-- Mostrar el tipo de pago basado en el estado -->
+            <span th:if="${solicitud.estado == 'Pagar Licencia'}"
+                  class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">
+              Pago de Licencia
+            </span>
+            <span th:if="${solicitud.estado == 'PAGAR_EVALUACION'}"
+                  class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">
+              Pago de Evaluación
+            </span>
+          </td>
+          <td class="border px-4 py-3">
+            <!-- Mostrar el valor según el estado -->
+            <span th:if="${solicitud.estado == 'Pagar Licencia'}"
+                  th:text="${costoLicencia[solicitud.codigoSolicitud]} + ' COP'"></span>
+            <span th:if="${solicitud.estado == 'PAGAR_EVALUACION'}"
+                  th:text="${costoEvaluacion[solicitud.codigoSolicitud]} + ' COP'"></span>
+          </td>
+          <td class="border px-4 py-3 text-center">
+            <button onclick="mostrarPago(this)"
+                    th:data-codigo="${solicitud.codigoSolicitud}"
+                    th:data-estado="${solicitud.estado}"
+                    th:data-tipo="${solicitud.estado == 'Pagar Licencia' ? 'licencia' : 'evaluacion'}"
+                    th:data-valor="${solicitud.estado == 'Pagar Licencia' ?
+                                   costoLicencia[solicitud.codigoSolicitud] :
+                                   costoEvaluacion[solicitud.codigoSolicitud]}"
+                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded">
+              Pagar
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Formulario de pago -->
+    <div id="formPago" class="bg-white rounded-lg shadow p-6 hidden">
+      <h2 class="text-xl font-bold text-primary mb-4">Realizar Pago</h2>
+      <div id="tipoPagoInfo" class="mb-4 p-3 bg-gray-50 rounded-lg">
+        <p class="font-medium">Estado: <span id="estadoTexto" class="font-bold"></span></p>
+        <p class="font-medium">Tipo de pago: <span id="tipoPagoTexto" class="font-bold"></span></p>
+      </div>
+      <form id="formPagoForm" method="post">
+        <input type="hidden" id="codigo" name="idProceso">
+        <input type="hidden" id="tipoPago" name="tipoPago">
+        <input type="hidden" name="idSolicitante" th:value="${idSolicitante}">
+        <div class="mb-4">
+          <label for="valorIngresado" class="block font-semibold mb-2">Valor del Pago (COP)</label>
+          <input type="number" id="valorIngresado" name="valorIngresado" required class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary">
+        </div>
+        <button type="submit" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded">
+          Procesar Pago
+        </button>
+      </form>
+    </div>
+  </main>
+</div>
+
+<script>
+  function mostrarPago(btn) {
+    const codigo = btn.dataset.codigo;
+    const valor = btn.dataset.valor;
+    const tipo = btn.dataset.tipo;
+    const estado = btn.dataset.estado;
+
+    document.getElementById('formPago').classList.remove('hidden');
+    document.getElementById('codigo').value = codigo;
+    document.getElementById('valorIngresado').value = valor;
+    document.getElementById('tipoPago').value = tipo;
+
+    // Mostrar el estado y tipo de pago en el formulario
+    document.getElementById('estadoTexto').textContent = estado;
+    const tipoPagoTexto = tipo === 'licencia' ? 'Pago de Licencia' : 'Pago de Evaluación';
+    document.getElementById('tipoPagoTexto').textContent = tipoPagoTexto;
+
+    // Actualizar la acción del formulario según el tipo de pago
+    const formAction = tipo === 'licencia' ?
+            `/realizar-pago-licencia/${codigo}` :
+            `/realizar-pago/${codigo}`;
+
+    document.getElementById('formPagoForm').action = formAction;
+  }
+
+  document.getElementById('formPagoForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const codigo = document.getElementById('codigo').value;
+    const valor = document.getElementById('valorIngresado').value;
+    const tipo = document.getElementById('tipoPago').value;
+    const estado = document.getElementById('estadoTexto').textContent;
+    const tipoPagoTexto = tipo === 'licencia' ? 'Pago de Licencia' : 'Pago de Evaluación';
+
+    Swal.fire({
+      title: '¿Confirmar pago?',
+      html: `<p><strong>Código:</strong> ${codigo}</p>
+             <p><strong>Estado:</strong> ${estado}</p>
+             <p><strong>Tipo:</strong> ${tipoPagoTexto}</p>
+             <p><strong>Valor:</strong> ${valor} COP</p>`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, procesar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.submit();
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

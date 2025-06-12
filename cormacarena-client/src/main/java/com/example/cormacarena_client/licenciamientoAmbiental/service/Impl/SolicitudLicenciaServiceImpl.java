@@ -45,4 +45,10 @@ public class SolicitudLicenciaServiceImpl implements SolicitudLicenciaService {
         return solicitudRepository.findByEstadoAndIdSolicitante(estado, idSolicitante)
                 .orElse(null);
     }
+
+    @Override
+    public void actualizarEstadoSolicitud(String codigoSolicitud, String estado) {
+        solicitudRepository.actualizarEstadoPorCodigoSolicitud(codigoSolicitud, estado);
+
+    }
 }

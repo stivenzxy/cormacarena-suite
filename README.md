@@ -36,12 +36,14 @@ cormacarena-suite/
 
 ├── cormacarena-organization/# Gestión de estructura organizativa
 
+├── transactional-mail-sender/# Software transaccional para envío de notificaciones
+
 └── frontend/ # Interfaz web de usuario
 
 ## 🚀 Tecnologías Utilizadas
 
 - **Backend**: Java
-- **Frontend**: HTML, CSS, JavaScript
+- **Frontend**: HTML, CSS, JavaScript, Tailwind
 - **Gestión de dependencias**: Maven (`pom.xml`)
 
 
