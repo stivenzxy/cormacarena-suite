@@ -4,6 +4,7 @@ import lombok.Data;
 import org.example.modelo.SectorProyecto;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -25,6 +26,7 @@ public class SolicitudDTO {
     private Long valorProyecto;
     private String departamentoProyecto;
     private String municipioProyecto;
+    private LocalDate fechaSolicitud;
 
     private String nombreSoporteEIA;
     private MultipartFile soporteEIAPdf;

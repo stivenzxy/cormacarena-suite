@@ -16,6 +16,7 @@
         <module>cormacarena-client</module>
         <module>cormacarena-organization</module>
         <module>cormacarena-modelo</module>
+        <module>transaccional-mail-sender</module>
     </modules>
 
     <parent>

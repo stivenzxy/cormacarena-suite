@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oficina de Asesoría Jurídica</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/vendor/fontawesome/css/all.css}">
+    <script th:src="@{/vendor/sweetalert2/sweetalert2.all.min.js}"></script>
+    <style>
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-hover-effect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-pendiente {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-aprobada {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-rechazada {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-en-proceso {
+            background-color: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .status-enviado {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-solicitud-pagada {
+            background-color: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .status-licencia-pagada {
+            background-color: #d1fae5;
+            color: #059669;
+        }
+
+        .status-concepto-tecnico-aprobado {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+
+        .table-row:hover {
+            background-color: #f8fafc;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Modal styles */
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Solución para evitar que el sidebar se encoja con SweetAlert2 */
+        body {
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Asegurar que el contenedor principal mantenga su altura */
+        .flex.pt-20.h-full {
+            min-height: calc(100vh - 5rem);
+            height: calc(100vh - 5rem);
+        }
+
+        /* Fijar el sidebar para que no se vea afectado por modales */
+        aside {
+            position: fixed !important;
+            top: 5rem !important;
+            left: 0 !important;
+            height: calc(100vh - 5rem) !important;
+            z-index: 40;
+        }
+
+        /* Ajustar el main para compensar el sidebar fijo */
+        main {
+            margin-left: 16rem !important; /* 256px = w-64 */
+            width: calc(100% - 16rem) !important;
+        }
+
+        /* Prevenir que SweetAlert2 afecte el layout */
+        body.swal2-shown {
+            overflow: hidden !important;
+        }
+
+        body.swal2-shown aside {
+            height: calc(100vh - 5rem) !important;
+        }
+
+        /* Responsive: en pantallas pequeñas mantener el comportamiento original */
+        @media (max-width: 768px) {
+            aside {
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                height: auto !important;
+            }
+
+            main {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-tertiary h-screen overflow-hidden">
+
+<!-- Header fijo -->
+<header class="bg-primary h-20 w-full fixed top-0 left-0 z-50 flex items-center justify-between px-6 shadow-lg">
+    <a th:href="@{/}">
+        <img class="h-28" th:src="@{/img/logo-cormacarena.png}" alt="Cormacarena-Logo" />
+    </a>
+</header>
+
+<!-- Contenedor principal: flex para sidebar + main -->
+<div class="flex pt-20 h-full">
+
+    <!-- Sidebar fijo con altura completa -->
+    <aside class="w-64 bg-primary text-white flex flex-col p-6 h-full shadow-xl">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-white">Licenciamiento</h2>
+            <p class="text-blue-200 text-sm mt-1">Panel Administrativo</p>
+        </div>
+
+        <nav class="flex flex-col gap-2">
+            <!-- Inicio -->
+            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span class="font-medium">Inicio</span>
+            </a>
+
+            <!-- Separador -->
+            <div class="my-2">
+                <div class="border-t border-blue-600"></div>
+                <p class="text-xs text-blue-200 mt-2 px-2 font-medium">ROLES DEL SISTEMA</p>
+            </div>
+
+            <!-- Coordinador de Grupo -->
+            <a th:href="@{/coordinador-grupo}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span class="font-medium">Coordinador de Grupo</span>
+            </a>
+
+            <!-- Profesional Técnico -->
+            <a th:href="@{/profesional-tecnico}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span class="font-medium">Profesional Técnico</span>
+            </a>
+
+            <!-- Oficina de Asesoría Jurídica (activo) -->
+            <a th:href="@{/asesoria-juridica}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-primary-hover text-white shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16l3-1m-3 1l-3-1" />
+                </svg>
+                <span class="font-medium">Oficina de Asesoría Jurídica</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-auto text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+
+            <!-- Dirección General -->
+            <a th:href="@{/direccion-general}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <span class="font-medium">Dirección General</span>
+            </a>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-blue-600">
+            <div class="text-xs text-blue-200">
+                <p>Corporación para el Desarrollo</p>
+                <p>Sostenible del Área de Manejo</p>
+                <p>Especial La Macarena</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Área principal de contenido -->
+    <main class="flex-1 bg-tertiary min-h-screen p-8 pb-16 transition-all duration-300 overflow-y-auto">
+        <div class="w-full max-w-6xl mx-auto mb-8">
+
+            <!-- Encabezado de la página -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-primary mb-2 flex items-center">
+                    <i class="fa-solid fa-balance-scale mr-3"></i>
+                    Oficina de Asesoría Jurídica
+                </h1>
+                <p class="text-gray-600">Emisión de resoluciones administrativas para licencias ambientales</p>
+            </div>
+
+            <!-- Tabla de solicitudes -->
+            <div class="bg-white rounded-lg shadow-xl border-0 overflow-hidden">
+                <div class="border-b-4 border-primary pb-4 px-8 pt-6">
+                    <h2 class="text-primary text-xl font-bold flex items-center">
+                        <i class="fa-solid fa-table mr-3"></i>
+                        Solicitudes para Resolución Administrativa
+                    </h2>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs uppercase bg-gray-50 text-gray-700 border-b">
+                        <tr>
+                            <th class="px-6 py-4 font-semibold">#</th>
+                            <th class="px-6 py-4 font-semibold">Solicitante</th>
+                            <th class="px-6 py-4 font-semibold">Proyecto</th>
+                            <th class="px-6 py-4 font-semibold">Estado</th>
+                            <th class="px-6 py-4 text-center font-semibold">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                        <tr th:each="solicitud, iterStat : ${solicitudes}" class="table-row transition-all duration-200">
+                            <td class="px-6 py-4 font-medium text-gray-900" th:text="${iterStat.count}"></td>
+                            <td class="px-6 py-4 text-gray-700" th:text="${solicitud.nombreSolicitante}"></td>
+                            <td class="px-6 py-4 text-gray-700" th:text="${solicitud.nombreProyecto}"></td>
+                            <td class="px-6 py-4">
+                                <span th:class="'status-badge status-' + ${(solicitud.estado != null ? solicitud.estado : 'pendiente')?.toLowerCase()?.replace(' ', '-')}"
+                                      th:text="${solicitud.estado != null ? solicitud.estado : 'Pendiente'}">
+                                    Pendiente
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <button type="button"
+                                        th:data-codigo="${solicitud.codigoSolicitud}"
+                                        onclick="cargarDetalle(this)"
+                                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors btn-hover-effect">
+                                    <i class="fa-solid fa-eye mr-2"></i>
+                                    Ver Detalle
+                                </button>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(solicitudes)}">
+                            <td colspan="5" class="text-center px-6 py-12">
+                                <div class="flex flex-col items-center">
+                                    <i class="fa-solid fa-inbox text-4xl text-gray-300 mb-4"></i>
+                                    <h3 class="text-lg font-semibold text-gray-700 mb-2">No hay solicitudes</h3>
+                                    <p class="text-gray-500">No hay solicitudes pendientes de resolución administrativa en este momento</p>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- Modal de detalle -->
+<div id="detalleModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="modal-backdrop fixed inset-0 transition-opacity" aria-hidden="true"></div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 text-center">
+            <div class="modal-content relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all w-full max-w-4xl">
+
+                <!-- Header del modal -->
+                <div class="bg-gradient-to-r from-primary to-primary-hover px-6 py-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold text-white flex items-center">
+                            <i class="fa-solid fa-balance-scale mr-3"></i>
+                            Resolución Administrativa
+                        </h3>
+                        <button onclick="cerrarModal()" class="text-white hover:text-gray-200 focus:outline-none transition-colors">
+                            <i class="fa-solid fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contenido del modal -->
+                <div class="bg-white px-6 py-6">
+                    <div id="modalContent" class="text-gray-700">
+                        <div class="flex items-center justify-center py-8">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                            <span class="ml-3 text-gray-600">Cargando información...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección de resolución jurídica -->
+                <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                    <h4 class="text-base font-semibold text-primary mb-4 border-b border-primary pb-2 flex items-center">
+                        <i class="fa-solid fa-gavel mr-2"></i>
+                        Resolución Administrativa
+                    </h4>
+
+                    <div class="space-y-4">
+                        <!-- Fecha de resolución -->
+                        <div>
+                            <label for="fechaResolucion" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fa-solid fa-calendar mr-2 text-blue-600"></i>
+                                Fecha de Resolución *
+                            </label>
+                            <input type="date" id="fechaResolucion" name="fechaResolucion" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+                        </div>
+
+                        <!-- Descripción jurídica -->
+                        <div>
+                            <label for="descripcionJuridica" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fa-solid fa-file-contract mr-2 text-blue-600"></i>
+                                Descripción Jurídica de la Solicitud *
+                            </label>
+                            <textarea id="descripcionJuridica" name="descripcionJuridica" rows="3" required
+                                      placeholder="Ingrese los detalles que desee adjuntar a la dirección general de licenciamiento ambiental"
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none transition-all duration-200 text-gray-700 placeholder-gray-400"></textarea>
+                            <p class="text-xs text-gray-500 mt-2 flex items-center">
+                                <i class="fa-solid fa-info-circle mr-1 text-blue-400"></i>
+                                Este campo es obligatorio y será enviado a la dirección general.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer del modal -->
+                <div class="bg-gray-50 px-6 py-4 flex flex-col sm:flex-row sm:justify-end gap-3">
+                    <button type="button" onclick="cerrarModal()"
+                            class="justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none transition-colors">
+                        <i class="fa-solid fa-times mr-2"></i>
+                        Cerrar
+                    </button>
+                    <button type="button" onclick="emitirResolucion()"
+                            class="justify-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none transition-colors btn-hover-effect">
+                        <i class="fa-solid fa-gavel mr-2"></i>
+                        Emitir Resolución
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/listadoSolRevOficinaJuridica.js}"></script>
+</body>
+</html>

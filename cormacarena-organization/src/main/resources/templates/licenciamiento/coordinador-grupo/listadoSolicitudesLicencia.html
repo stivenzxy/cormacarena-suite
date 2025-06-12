@@ -7,7 +7,6 @@
     <link th:href="@{/css/main.css}" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/vendor/fontawesome/css/all.css}">
     <script th:src="@{/vendor/sweetalert2/sweetalert2.all.min.js}"></script>
-    <script th:src="@{/js/detalleSolicitud.js}"></script>
     <style>
         .transition-all {
             transition: all 0.3s ease;
@@ -60,6 +59,21 @@
         .status-en-proceso {
             background-color: #e0e7ff;
             color: #3730a3;
+        }
+
+        .status-enviado {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-solicitud-pagada {
+            background-color: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .status-licencia-pagada {
+            background-color: #d1fae5;
+            color: #059669;
         }
 
         .table-row:hover {
@@ -125,11 +139,6 @@
             height: calc(100vh - 5rem) !important;
         }
 
-        /* Asegurar que el header se mantenga por encima del sidebar */
-        header {
-            z-index: 60 !important;
-        }
-
         /* Responsive: en pantallas pequeñas mantener el comportamiento original */
         @media (max-width: 768px) {
             aside {
@@ -143,6 +152,32 @@
                 margin-left: 0 !important;
                 width: 100% !important;
             }
+        }
+
+        /* Estilos para botones de acción */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-asignar {
+            background-color: #8b5cf6;
+            color: white;
+        }
+
+        .btn-asignar:hover {
+            background-color: #7c3aed;
+        }
+
+        .btn-confirmar {
+            background-color: #059669;
+            color: white;
+        }
+
+        .btn-confirmar:hover {
+            background-color: #047857;
         }
     </style>
 </head>
@@ -264,19 +299,42 @@
                             <td class="px-6 py-4 text-gray-700" th:text="${solicitud.nombreSolicitante}"></td>
                             <td class="px-6 py-4 text-gray-700" th:text="${solicitud.nombreProyecto}"></td>
                             <td class="px-6 py-4">
-                                    <span th:class="'status-badge status-' + ${(solicitud.estado != null ? solicitud.estado : 'pendiente')?.toLowerCase()?.replace(' ', '-')}"
-                                          th:text="${solicitud.estado != null ? solicitud.estado : 'Pendiente'}">
-                                        Pendiente
-                                    </span>
+                                <span th:class="'status-badge status-' + ${(solicitud.estado != null ? solicitud.estado : 'pendiente')?.toLowerCase()?.replace(' ', '-')}"
+                                      th:text="${solicitud.estado != null ? solicitud.estado : 'Pendiente'}">
+                                    Pendiente
+                                </span>
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <button type="button"
-                                        th:data-codigo="${solicitud.codigoSolicitud}"
-                                        onclick="cargarDetalle(this.dataset.codigo)"
-                                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors btn-hover-effect">
-                                    <i class="fa-solid fa-eye mr-2"></i>
-                                    Ver Detalle
-                                </button>
+                                <div class="action-buttons">
+                                    <button type="button"
+                                            th:data-codigo="${solicitud.codigoSolicitud}"
+                                            th:data-estado="${solicitud.estado}"
+                                            onclick="cargarDetalle(this)"
+                                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors btn-hover-effect">
+                                        <i class="fa-solid fa-eye mr-2"></i>
+                                        Ver Detalle
+                                    </button>
+
+                                    <!-- Botón Asignar Profesional - Solo si estado es "Solicitud Pagada" -->
+                                    <button type="button"
+                                            th:if="${solicitud.estado == 'Solicitud Pagada'}"
+                                            th:data-codigo="${solicitud.codigoSolicitud}"
+                                            onclick="asignarProfesional(this.dataset.codigo)"
+                                            class="inline-flex items-center px-3 py-2 text-sm font-medium btn-asignar rounded-lg transition-colors btn-hover-effect">
+                                        <i class="fa-solid fa-user-plus mr-2"></i>
+                                        Asignar Profesional
+                                    </button>
+
+                                    <!-- Botón Confirmar Acto Administrativo - Solo si estado es "Licencia Pagada" -->
+                                    <button type="button"
+                                            th:if="${solicitud.estado == 'Licencia Pagada'}"
+                                            th:data-codigo="${solicitud.codigoSolicitud}"
+                                            onclick="confirmarActoAdministrativo(this.dataset.codigo)"
+                                            class="inline-flex items-center px-3 py-2 text-sm font-medium btn-confirmar rounded-lg transition-colors btn-hover-effect">
+                                        <i class="fa-solid fa-check-double mr-2"></i>
+                                        Aprobar Concepto Técnico
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(solicitudes)}">
@@ -297,7 +355,7 @@
     </main>
 </div>
 
-<!-- Modal mejorado -->
+<!-- Modal de detalle -->
 <div id="detalleModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="modal-backdrop fixed inset-0 transition-opacity" aria-hidden="true"></div>
     <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -327,6 +385,66 @@
                     </div>
                 </div>
 
+                <!-- Sección de información adicional para "Licencia Pagada" -->
+                <div id="seccionLicenciaPagada" class="bg-gray-50 px-6 py-4 border-t border-gray-200 hidden">
+                    <h4 class="text-base font-semibold text-primary mb-3 border-b border-primary pb-2 flex items-center">
+                        <i class="fa-solid fa-clipboard-check mr-2"></i>
+                        Información del Concepto Técnico
+                    </h4>
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fa-solid fa-user mr-2 text-green-600"></i>
+                                Profesional Asignado
+                            </label>
+                            <input type="text" id="profesionalAsignadoDisplay" readonly
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fa-solid fa-calendar mr-2 text-green-600"></i>
+                                Fecha del Concepto Técnico
+                            </label>
+                            <input type="date" id="fechaConceptoTecnicoDisplay" readonly
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="observacionesVisitaTecnicaDisplay" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fa-solid fa-comment-dots mr-2 text-green-600"></i>
+                            Observaciones de la Visita Técnica
+                        </label>
+                        <textarea id="observacionesVisitaTecnicaDisplay" readonly rows="2"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 resize-none"></textarea>
+                    </div>
+                </div>
+
+                <!-- Sección de observaciones (solo para estados que no sean "Solicitud Pagada" o "Licencia Pagada") -->
+                <div id="seccionObservaciones" class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                    <div class="space-y-3">
+                        <label for="observacionInput" class="block text-sm font-semibold text-gray-700 items-center">
+                            <i class="fa-solid fa-comment-dots mr-2 text-blue-600"></i>
+                            Observación
+                        </label>
+                        <div class="relative">
+                            <textarea
+                                    id="observacionInput"
+                                    name="observacion"
+                                    rows="4"
+                                    placeholder="Ingrese sus observaciones o comentarios aquí..."
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none transition-all duration-200 text-gray-700 placeholder-gray-400 shadow-sm hover:border-gray-400"
+                                    style="min-height: 100px;"></textarea>
+                            <div class="absolute bottom-3 right-3 text-xs text-gray-400">
+                                <i class="fa-solid fa-pencil-alt"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 flex items-center">
+                            <i class="fa-solid fa-info-circle mr-1 text-blue-400"></i>
+                            Agregue cualquier comentario u observación relevante para esta solicitud.
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Footer del modal -->
                 <div class="bg-gray-50 px-6 py-4 flex flex-col sm:flex-row sm:justify-end gap-3">
                     <button type="button" onclick="cerrarModal()"
@@ -334,13 +452,14 @@
                         <i class="fa-solid fa-times mr-2"></i>
                         Cerrar
                     </button>
+                    <!-- Botones que se muestran solo si el estado es "ENVIADO" -->
                     <button type="button" id="btnRechazar"
-                            class="justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none transition-colors btn-hover-effect">
+                            class="justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none transition-colors btn-hover-effect hidden">
                         <i class="fa-solid fa-times-circle mr-2"></i>
                         Rechazar
                     </button>
                     <button type="button" id="btnAceptar"
-                            class="justify-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none transition-colors btn-hover-effect">
+                            class="justify-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none transition-colors btn-hover-effect hidden">
                         <i class="fa-solid fa-check-circle mr-2"></i>
                         Aceptar
                     </button>
@@ -351,321 +470,6 @@
     </div>
 </div>
 
-<!-- Validación de mensajes flash -->
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    let mensajeError = /*[[${error}]]*/ null;
-    let mensajeExito = /*[[${success}]]*/ null;
-    /*]]>*/
-</script>
-<script th:src="@{/js/mostrarMensajes.js}"></script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Función para activar un enlace específico
-        function activarEnlace(enlaceActivo) {
-            const todosLosEnlaces = document.querySelectorAll('aside nav a');
-
-            todosLosEnlaces.forEach(enlace => {
-                enlace.className = 'flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group';
-
-                const icono = enlace.querySelector('svg');
-                if (icono) {
-                    icono.className = 'h-5 w-5 text-blue-200 group-hover:text-white';
-                }
-
-                const flecha = enlace.querySelector('svg:last-child');
-                if (flecha && flecha.classList.contains('ml-auto')) {
-                    flecha.remove();
-                }
-            });
-
-            enlaceActivo.className = 'flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-primary-hover text-white shadow-md';
-
-            const iconoActivo = enlaceActivo.querySelector('svg');
-            if (iconoActivo) {
-                iconoActivo.className = 'h-5 w-5 text-white';
-            }
-
-            const flecha = document.createElement('svg');
-            flecha.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-            flecha.className = 'h-4 w-4 ml-auto text-white';
-            flecha.setAttribute('fill', 'none');
-            flecha.setAttribute('viewBox', '0 0 24 24');
-            flecha.setAttribute('stroke', 'currentColor');
-            flecha.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />';
-            enlaceActivo.appendChild(flecha);
-        }
-
-        const enlacesSidebar = document.querySelectorAll('aside nav a');
-        enlacesSidebar.forEach(enlace => {
-            enlace.addEventListener('click', function() {
-                activarEnlace(this);
-            });
-        });
-
-        const rutaActual = window.location.pathname;
-        enlacesSidebar.forEach(enlace => {
-            if (enlace.getAttribute('href') === rutaActual) {
-                activarEnlace(enlace);
-            }
-        });
-
-        // Animaciones para las filas de la tabla
-        const tableRows = document.querySelectorAll('.table-row');
-        tableRows.forEach((row, index) => {
-            row.style.animationDelay = `${index * 0.05}s`;
-            row.classList.add('fade-in-up');
-        });
-    });
-
-    // Función para cargar el detalle de la solicitud
-    async function cargarDetalle(codigoSolicitud) {
-        const modal = document.getElementById('detalleModal');
-        const modalContent = document.getElementById('modalContent');
-
-        // Mostrar el modal
-        modal.classList.remove('hidden');
-
-        // Mostrar loading
-        modalContent.innerHTML = `
-            <div class="flex items-center justify-center py-8">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                <span class="ml-3 text-gray-600">Cargando información...</span>
-            </div>
-        `;
-
-        try {
-            const response = await fetch(`coordinador-grupo/evaluacion-solicitud/${codigoSolicitud}`);
-
-            if (!response.ok) {
-                throw new Error('Error al cargar los datos');
-            }
-
-            const data = await response.json();
-
-            // Almacenar el código de solicitud actual
-            codigoSolicitudActual = codigoSolicitud;
-
-            // Renderizar el contenido del modal
-            modalContent.innerHTML = `
-                <div class="grid md:grid-cols-2 gap-6 text-sm text-gray-700">
-                    <div class="space-y-3">
-                        <h4 class="text-base font-semibold text-primary mb-3 border-b border-primary pb-2 flex items-center">
-                            <i class="fa-solid fa-user mr-2"></i>
-                            Información del Solicitante
-                        </h4>
-                        <div class="space-y-2">
-                            <p><span class="font-medium text-gray-900">Nombre:</span> <span class="text-gray-700">${data.nombreSolicitante || 'N/A'}</span></p>
-                            <p><span class="font-medium text-gray-900">Tipo de Identificación:</span> <span class="text-gray-700">${data.tipoIdentificacion || 'N/A'}</span></p>
-                            <p><span class="font-medium text-gray-900">ID del Solicitante:</span> <span class="text-gray-700">${data.idSolicitante || 'N/A'}</span></p>
-                            <p><span class="font-medium text-gray-900">Teléfono:</span> <span class="text-gray-700">${data.telefono || 'N/A'}</span></p>
-                            <p><span class="font-medium text-gray-900">Email:</span> <span class="text-gray-700">${data.email || 'N/A'}</span></p>
-                            <p><span class="font-medium text-gray-900">Dirección:</span> <span class="text-gray-700">${data.direccionResidencia || 'N/A'}</span></p>
-                        </div>
-                    </div>
-                    <div class="space-y-3">
-                        <h4 class="text-base font-semibold text-primary mb-3 border-b border-primary pb-2 flex items-center">
-                            <i class="fa-solid fa-building mr-2"></i>
-                            Información del Proyecto
-                        </h4>
-                        <div class="space-y-2">
-                            <p><span class="font-medium text-gray-900">Código:</span> <span class="text-gray-700 font-mono bg-gray-100 px-2 py-1 rounded">${data.codigoSolicitud || 'N/A'}</span></p>
-                            <p><span class="font-medium text-gray-900">Nombre del Proyecto:</span> <span class="text-gray-700">${data.nombreProyecto || 'N/A'}</span></p>
-                            <p><span class="font-medium text-gray-900">Sector:</span> <span class="text-gray-700">${data.sectorProyecto || 'N/A'}</span></p>
-                            <p><span class="font-medium text-gray-900">Valor:</span> <span class="text-gray-700">$${data.valorProyecto ? data.valorProyecto.toLocaleString('es-CO') : 'N/A'}</span></p>
-                            <p><span class="font-medium text-gray-900">Departamento:</span> <span class="text-gray-700">${data.departamentoProyecto || 'N/A'}</span></p>
-                            <p><span class="font-medium text-gray-900">Municipio:</span> <span class="text-gray-700">${data.municipioProyecto || 'N/A'}</span></p>
-                            <p><span class="font-medium text-gray-900">Estado:</span>
-                                <span class="status-badge status-${(data.estado || 'pendiente').toLowerCase().replace(' ', '-')}">
-                                    ${data.estado || 'Pendiente'}
-                                </span>
-                            </p>
-                            <p><span class="font-medium text-gray-900">Soporte adjunto:</span>
-                                <span class="text-gray-700">
-                                    ${data.nombreSoporteEIA ?
-                `<i class="fa-solid fa-file-pdf text-red-500 mr-1"></i>${data.nombreSoporteEIA}` :
-                'No adjunto'
-            }
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-        } catch (error) {
-            console.error('Error:', error);
-            modalContent.innerHTML = `
-                <div class="text-center py-8">
-                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fa-solid fa-exclamation-triangle text-2xl text-red-500"></i>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Error al cargar los datos</h3>
-                    <p class="text-gray-500">No se pudo obtener la información de la solicitud. Por favor, intente nuevamente.</p>
-                </div>
-            `;
-        }
-    }
-
-    // Función para cerrar el modal
-    function cerrarModal() {
-        document.getElementById('detalleModal').classList.add('hidden');
-        codigoSolicitudActual = null; // Limpiar la variable global
-    }
-
-    // Event listeners para los botones del modal
-    document.getElementById('btnAceptar').addEventListener('click', aprobarSolicitud);
-    document.getElementById('btnRechazar').addEventListener('click', rechazarSolicitud);
-
-    // Variable global para almacenar el código de solicitud actual
-    let codigoSolicitudActual = null;
-
-    // Función para aprobar solicitud
-    async function aprobarSolicitud() {
-        if (!codigoSolicitudActual) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se ha seleccionado ninguna solicitud'
-            });
-            return;
-        }
-
-        // Mostrar confirmación
-        const result = await Swal.fire({
-            title: '¿Aprobar solicitud?',
-            text: `¿Está seguro de que desea aprobar la solicitud ${codigoSolicitudActual}?`,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#16a34a',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Sí, aprobar',
-            cancelButtonText: 'Cancelar'
-        });
-
-        if (!result.isConfirmed) return;
-
-        try {
-            // Mostrar loading
-            Swal.fire({
-                title: 'Procesando...',
-                text: 'Aprobando solicitud',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            const formData = new FormData();
-            formData.append('processId', codigoSolicitudActual);
-
-            const response = await fetch('/coordinador-grupo/aprobacion-formulario', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (response.ok) {
-                const mensaje = await response.text();
-
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Éxito!',
-                    text: mensaje,
-                    confirmButtonColor: '#16a34a'
-                }).then(() => {
-                    cerrarModal();
-                    // Recargar la página para actualizar la lista
-                    window.location.reload();
-                });
-            } else {
-                const error = await response.text();
-                throw new Error(error);
-            }
-
-        } catch (error) {
-            console.error('Error al aprobar:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error.message || 'Error al aprobar la solicitud',
-                confirmButtonColor: '#dc2626'
-            });
-        }
-    }
-
-    // Función para rechazar solicitud
-    async function rechazarSolicitud() {
-        if (!codigoSolicitudActual) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se ha seleccionado ninguna solicitud'
-            });
-            return;
-        }
-
-        // Mostrar confirmación
-        const result = await Swal.fire({
-            title: '¿Rechazar solicitud?',
-            text: `¿Está seguro de que desea rechazar la solicitud ${codigoSolicitudActual}?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#dc2626',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Sí, rechazar',
-            cancelButtonText: 'Cancelar'
-        });
-
-        if (!result.isConfirmed) return;
-
-        try {
-            // Mostrar loading
-            Swal.fire({
-                title: 'Procesando...',
-                text: 'Rechazando solicitud',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            const formData = new FormData();
-            formData.append('processId', codigoSolicitudActual);
-
-            const response = await fetch('/coordinador-grupo/rechazo-formulario', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (response.ok) {
-                const mensaje = await response.text();
-
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Éxito!',
-                    text: mensaje,
-                    confirmButtonColor: '#16a34a'
-                }).then(() => {
-                    cerrarModal();
-                    // Recargar la página para actualizar la lista
-                    window.location.reload();
-                });
-            } else {
-                const error = await response.text();
-                throw new Error(error);
-            }
-
-        } catch (error) {
-            console.error('Error al rechazar:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error.message || 'Error al rechazar la solicitud',
-                confirmButtonColor: '#dc2626'
-            });
-        }
-    }
-</script>
+<script th:src="@{/js/listadoSolRevCoordinador.js}"></script>
 </body>
 </html>

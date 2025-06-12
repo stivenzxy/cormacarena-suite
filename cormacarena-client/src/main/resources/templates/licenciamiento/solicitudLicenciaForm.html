@@ -47,10 +47,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <span class="font-medium">Solicitar Licencia Ambiental</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-auto text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
+                <span class="font-medium">Solicitar licencia ambiental</span>
             </a>
 
             <!-- Listado de solicitudes -->
@@ -66,15 +63,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
-                <span class="font-medium">Gestión de pagos</span>
-            </a>
-
-            <!-- Bandeja de Entrada -->
-            <a th:href="@{/bandeja-licenciamiento}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-blue-100 hover:bg-primary-hover hover:text-white group">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                </svg>
-                <span class="font-medium">Bandeja de Entrada</span>
+                <span class="font-medium">Gestión de pagos </span>
             </a>
         </nav>
 
@@ -364,26 +353,6 @@
                     </div>
                 </div>
             </form>
-
-            <!-- Consulta de factura -->
-            <div class="w-full bg-white rounded-lg shadow-xl border-0 mb-8">
-                <div class="border-b-4 border-green-500 pb-4 px-8 pt-6">
-                    <h3 class="text-green-600 text-xl font-bold flex items-center">
-                        <i class="fa-solid fa-receipt mr-3"></i>
-                        Consultar factura de pago
-                    </h3>
-                </div>
-                <div class="p-8 flex justify-between items-center">
-                    <span class="text-gray-700 text-lg">Consulte el estado de su factura de pago</span>
-                    <button
-                            type="button"
-                            class="px-6 py-2 bg-primary hover:bg-primary-hover text-white rounded-md transition-colors flex items-center"
-                    >
-                        <i class="fa-solid fa-search mr-2"></i>
-                        Consultar
-                    </button>
-                </div>
-            </div>
         </div>
     </main>
 </div>
@@ -415,7 +384,6 @@
             form.submit();
         });
 
-        // Función para activar un enlace específico
         function activarEnlace(enlaceActivo) {
             const todosLosEnlaces = document.querySelectorAll('aside nav a');
 

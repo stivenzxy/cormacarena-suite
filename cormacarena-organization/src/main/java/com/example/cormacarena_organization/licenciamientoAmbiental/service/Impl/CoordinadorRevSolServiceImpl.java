@@ -4,11 +4,10 @@ package com.example.cormacarena_organization.licenciamientoAmbiental.service.Imp
 import com.example.cormacarena_organization.licenciamientoAmbiental.DTO.SolicitudDTO;
 import com.example.cormacarena_organization.licenciamientoAmbiental.DTO.SolicitudPreviewDTO;
 import com.example.cormacarena_organization.licenciamientoAmbiental.DTO.TaskInfo;
-import com.example.cormacarena_organization.licenciamientoAmbiental.enums.EstadoProceso;
 import com.example.cormacarena_organization.licenciamientoAmbiental.enums.SectorProyecto;
+import com.example.cormacarena_organization.licenciamientoAmbiental.service.ActualizarEstadoService;
 import com.example.cormacarena_organization.licenciamientoAmbiental.service.CoordinadorRevSolService;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,10 +17,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,56 +29,21 @@ public class CoordinadorRevSolServiceImpl implements CoordinadorRevSolService {
 
     private final RestTemplate restTemplate;
     private List<TaskInfo> tasksList = new ArrayList<>();
-
-    @Value("${spring.datasource.url}")
-    private String databaseUrl;
-    @Value("${spring.datasource.username}")
-    private String databaseUser;
-    @Value("${spring.datasource.password}")
-    private String databasePassword;
+    private final ActualizarEstadoService actualizarEstadoService;
 
     @Value("${camunda.url}")
     private String camundaUrl;
 
-
-    @Override
-    public List<String> obtenerProcesosPorIdActividad(String idActividad) {
-        String apiRequestUrl = camundaUrl+"history/activity-instance?sortBy=startTime&sortOrder=desc&activityId="+idActividad+"&finished=false&unfinished=true&withoutTenantId=false";
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(apiRequestUrl, String.class);
-
-        List<String> procesosIds = new ArrayList<>();
-
-        if (responseEntity.getStatusCode().is2xxSuccessful()) {
-            String responseBody = responseEntity.getBody();
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            try {
-                JsonNode jsonNode = objectMapper.readTree(responseBody);
-                for (JsonNode node : jsonNode) {
-                    String processInstanceId = node.get("processInstanceId").asText();
-                    procesosIds.add(processInstanceId);
-                }
-            } catch (IOException e) {
-                System.err.println("Error al analizar la respuesta JSON: " + e.getMessage());
-            }
-        } else {
-            System.err.println("Error al obtener las instancias de proceso: " + responseEntity.getStatusCode());
-        }
-
-        return procesosIds;
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public SolicitudDTO getProcessVariablesById(String idProceso) {
-        String apiRequestUrl = camundaUrl+"process-instance/"+idProceso+"/variables?deserializeValues=true";
+        String apiRequestUrl = camundaUrl + "process-instance/" + idProceso + "/variables?deserializeValues=true";
 
         ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(
                 apiRequestUrl,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<>() {
-                }
+                new ParameterizedTypeReference<>() {}
         );
 
         Map<String, Object> variablesMap = responseEntity.getBody();
@@ -91,25 +51,56 @@ public class CoordinadorRevSolServiceImpl implements CoordinadorRevSolService {
         if (variablesMap != null) {
             SolicitudDTO solicitud = new SolicitudDTO();
 
-            solicitud.setNombreSolicitante((String) ((Map<String, Object>) variablesMap.get("nombreSolicitante")).get("value"));
-            solicitud.setTipoIdentificacion((String) ((Map<String, Object>) variablesMap.get("tipoIdentificacion")).get("value"));
-            solicitud.setIdSolicitante((String) ((Map<String, Object>) variablesMap.get("idSolicitante")).get("value"));
-            solicitud.setTelefono((String) ((Map<String, Object>) variablesMap.get("telefono")).get("value"));
-            solicitud.setEmail((String) ((Map<String, Object>) variablesMap.get("email")).get("value"));
-            solicitud.setDireccionResidencia((String) ((Map<String, Object>) variablesMap.get("direccionResidencia")).get("value"));
-            solicitud.setNombreProyecto((String) ((Map<String, Object>) variablesMap.get("nombreProyecto")).get("value"));
-            solicitud.setSectorProyecto(SectorProyecto.valueOf((String) ((Map<String, Object>) variablesMap.get("sectorProyecto")).get("value")));
-            solicitud.setValorProyecto(((Number) ((Map<String, Object>) variablesMap.get("valorProyecto")).get("value")).longValue());
-            solicitud.setDepartamentoProyecto((String) ((Map<String, Object>) variablesMap.get("departamentoProyecto")).get("value"));
-            solicitud.setMunicipioProyecto((String) ((Map<String, Object>) variablesMap.get("municipioProyecto")).get("value"));
-            solicitud.setNombreSoporteEIA((String) ((Map<String, Object>) variablesMap.get("nombreSoporteEIA")).get("value"));
-            solicitud.setEstado((String) ((Map<String, Object>) variablesMap.get("estado")).get("value"));
+            solicitud.setNombreSolicitante(getVariableValue(variablesMap, "nombreSolicitante", String.class));
+            solicitud.setTipoIdentificacion(getVariableValue(variablesMap, "tipoIdentificacion", String.class));
+            solicitud.setIdSolicitante(getVariableValue(variablesMap, "idSolicitante", String.class));
+            solicitud.setTelefono(getVariableValue(variablesMap, "telefono", String.class));
+            solicitud.setEmail(getVariableValue(variablesMap, "email", String.class));
+            solicitud.setDireccionResidencia(getVariableValue(variablesMap, "direccionResidencia", String.class));
+            solicitud.setNombreProyecto(getVariableValue(variablesMap, "nombreProyecto", String.class));
+
+            String sectorStr = getVariableValue(variablesMap, "sectorProyecto", String.class);
+            if (sectorStr != null) {
+                solicitud.setSectorProyecto(SectorProyecto.valueOf(sectorStr));
+            }
+
+            Long valorProyecto = getVariableValue(variablesMap, "valorProyecto", Long.class);
+            if (valorProyecto != null) {
+                solicitud.setValorProyecto(valorProyecto);
+            }
+
+            solicitud.setDepartamentoProyecto(getVariableValue(variablesMap, "departamentoProyecto", String.class));
+            solicitud.setMunicipioProyecto(getVariableValue(variablesMap, "municipioProyecto", String.class));
+            solicitud.setNombreSoporteEIA(getVariableValue(variablesMap, "nombreSoporteEIA", String.class));
+            solicitud.setEstado(getVariableValue(variablesMap, "estado", String.class));
+            solicitud.setFechaConceptoTecnico(getVariableValue(variablesMap, "fechaConceptoTecnico", String.class));
+            solicitud.setObservacionesVisitaTecnica(getVariableValue(variablesMap, "observacionesVisitaTecnica", String.class));
+            solicitud.setProfesionalAsignado(getVariableValue(variablesMap, "profesionalAsignado", String.class));
+            solicitud.setFechaResolucionJuridica(getVariableValue(variablesMap, "fechaResolucionJuridica", String.class));
+            solicitud.setDescripcionResolucionJuridica(getVariableValue(variablesMap, "descripcionResolucionJuridica", String.class));
 
             solicitud.setCodigoSolicitud(idProceso);
             return solicitud;
         } else {
             return null;
         }
+    }
+
+    private <T> T getVariableValue(Map<String, Object> map, String variableName, Class<T> type) {
+        if (map.containsKey(variableName)) {
+            Object variable = map.get(variableName);
+            if (variable instanceof Map<?, ?> valueMap && valueMap.get("value") != null) {
+                Object value = valueMap.get("value");
+                if (type.isInstance(value)) {
+                    return type.cast(value);
+                } else if (type == Long.class && value instanceof Number) {
+                    return type.cast(((Number) value).longValue());
+                } else if (type == String.class) {
+                    return type.cast(value.toString());
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -138,6 +129,11 @@ public class CoordinadorRevSolServiceImpl implements CoordinadorRevSolService {
 
             List<Map> tasks = response.getBody();
 
+            if (tasks == null || tasks.isEmpty()) {
+                response = restTemplate.exchange(camundaUrl+"task?superProcessInstance="+idProceso, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+                tasks = response.getBody();
+            }
+
             if (tasks != null && !tasks.isEmpty()) {
                 Map<String, String> taskInfoMap = new HashMap<>();
 
@@ -151,7 +147,7 @@ public class CoordinadorRevSolServiceImpl implements CoordinadorRevSolService {
                 taskInfo.setTaskName(taskInfoMap.get("taskName"));
                 taskInfo.setTaskAssignee(taskInfoMap.get("assignee"));
 
-                tasksList.add(taskInfo);
+                this.tasksList.add(taskInfo);
                 return taskInfo;
             } else {
                 System.err.println("No existe un proceso con el ID: " + idProceso);
@@ -167,16 +163,39 @@ public class CoordinadorRevSolServiceImpl implements CoordinadorRevSolService {
     @Override
     public String getTaskIdByProcessIdWithApi(String idProceso) {
         try {
-            ResponseEntity<List<Map>> response = restTemplate.exchange(camundaUrl+"task?processInstanceId="+idProceso, HttpMethod.GET, null, new ParameterizedTypeReference<List<Map>>() {
-            });
+            String mainTaskUrl = camundaUrl + "task?processInstanceId=" + idProceso;
+            ResponseEntity<List<Map>> response = restTemplate.exchange(
+                    mainTaskUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Map>>() {}
+            );
             List<Map> tasks = response.getBody();
 
             if (tasks != null && !tasks.isEmpty()) {
                 return String.valueOf(tasks.getFirst().get("id"));
-            } else {
-                System.err.println("Proceso no encontrado: " + idProceso);
-                return null;
             }
+
+            String subProcessUrl = camundaUrl + "process-instance?superProcessInstance=" + idProceso;
+            ResponseEntity<List<Map>> subProcessResponse = restTemplate.exchange(
+                    subProcessUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Map>>() {}
+            );
+            List<Map> subProcesses = subProcessResponse.getBody();
+
+            if (subProcesses != null && !subProcesses.isEmpty()) {
+                String subProcessId = String.valueOf(subProcesses.getFirst().get("id"));
+
+                String subTaskUrl = camundaUrl + "task?processInstanceId=" + subProcessId;
+                ResponseEntity<List<Map>> subTaskResponse = restTemplate.exchange(
+                        subTaskUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Map>>() {}
+                );
+                List<Map> subTasks = subTaskResponse.getBody();
+
+                if (subTasks != null && !subTasks.isEmpty()) {
+                    return String.valueOf(subTasks.getFirst().get("id"));
+                }
+            }
+
+            System.err.println("No se encontraron tareas para el proceso (ni para subprocesos): " + idProceso);
+            return null;
+
         } catch (HttpClientErrorException e) {
             String errorMessage = e.getResponseBodyAsString();
             System.err.println("Error al realizar la petición a Camunda: " + errorMessage);
@@ -209,6 +228,7 @@ public class CoordinadorRevSolServiceImpl implements CoordinadorRevSolService {
                         preview.setNombreSolicitante(solicitud.getNombreSolicitante());
                         preview.setNombreProyecto(solicitud.getNombreProyecto());
                         preview.setEstado(solicitud.getEstado());
+                        preview.setProfesionalAsignado(solicitud.getProfesionalAsignado());
                         lista.add(preview);
                     }
                 } catch (HttpClientErrorException | HttpServerErrorException ex) {
@@ -223,6 +243,7 @@ public class CoordinadorRevSolServiceImpl implements CoordinadorRevSolService {
         return lista;
     }
 
+    @Override
     public void updateTaskByProcessId(String processId, String taskId) {
         for (TaskInfo taskInfo : tasksList) {
             if (taskInfo.getProcessId().equals(processId)) {
@@ -232,7 +253,7 @@ public class CoordinadorRevSolServiceImpl implements CoordinadorRevSolService {
     }
 
     @Override
-    public String aprobarSolicitud(String processId) {
+    public void procesarSolicitud(String processId, String observacion, boolean esValida, String siguienteEstado, String nuevoResponsable) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {
@@ -242,132 +263,119 @@ public class CoordinadorRevSolServiceImpl implements CoordinadorRevSolService {
 
             Map<String, Object> requestBody = new HashMap<>();
             Map<String, Object> variables = new HashMap<>();
-            Map<String, Object> solicitudValida = new HashMap<>();
-            solicitudValida.put("value", true);
-            solicitudValida.put("type", "Boolean");
-            variables.put("solicitudValida", solicitudValida);
+
+            variables.put("solicitudValida", Map.of(
+                    "value", esValida,
+                    "type", "Boolean"
+            ));
+            variables.put("observacionDatosIniciales", Map.of(
+                    "value", observacion,
+                    "type", "String"
+            ));
+
             requestBody.put("variables", variables);
-            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
             try {
-                String apiRequestUrl = camundaUrl+"task/"+taskId+"/complete";
+                String apiRequestUrl = camundaUrl + "task/" + taskId + "/complete";
+                restTemplate.postForEntity(apiRequestUrl, new HttpEntity<>(requestBody, headers), Map.class);
 
-                restTemplate.postForEntity(apiRequestUrl, requestEntity, Map.class);
                 String newTaskId = getTaskIdByProcessIdWithApi(processId);
-                System.out.println(newTaskId);
                 if (newTaskId != null) {
                     updateTaskByProcessId(processId, newTaskId);
-                    setAssignee(newTaskId, "CoordinadorDeGrupo");
-                    actualizarEstadoDatabase(processId, EstadoProceso.APROBADO.toString());
-                    actualizarEstadoProceso(processId, EstadoProceso.APROBADO.toString());
+                    setAssignee(newTaskId, nuevoResponsable);
+                    actualizarEstadoService.actualizarEstadoDatabase(processId, siguienteEstado);
+                    actualizarEstadoService.actualizarEstadoProceso(processId, siguienteEstado);
                 }
-                return "";
             } catch (HttpClientErrorException e) {
                 System.err.println("Error during task completion: " + e.getMessage());
-                return null;
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         } else {
             System.err.println("No task information found for Process ID " + processId);
-            return null;
         }
     }
 
     @Override
-    public String rechazarSolicitud(String processId) {
+    public void asignarProfesional(String processId, String nombreProfesional, String siguienteEstado) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {
             String taskId = taskInfo.getTaskId();
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            System.out.println(taskId);
-
             Map<String, Object> requestBody = new HashMap<>();
             Map<String, Object> variables = new HashMap<>();
-            Map<String, Object> solicitudValida = new HashMap<>();
-            solicitudValida.put("value", false);
-            solicitudValida.put("type", "Boolean");
-            variables.put("solicitudValida", solicitudValida);
+            Map<String, Object> nombreProfesionalVar = new HashMap<>();
+
+            nombreProfesionalVar.put("value", nombreProfesional);
+            nombreProfesionalVar.put("type", "String");
+
+            variables.put("profesionalAsignado", nombreProfesionalVar);
             requestBody.put("variables", variables);
+
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
             try {
-                String apiRequestUrl = camundaUrl + "task/" + taskId + "/complete";
+                String url = camundaUrl + "task/" + taskId + "/complete";
+                restTemplate.postForEntity(url, requestEntity, Map.class);
 
-                restTemplate.postForEntity(apiRequestUrl, requestEntity, Map.class);
                 String newTaskId = getTaskIdByProcessIdWithApi(processId);
-                System.out.println("New Task ID: " + newTaskId);
-
                 if (newTaskId != null) {
                     updateTaskByProcessId(processId, newTaskId);
-                    setAssignee(newTaskId, "CoordinadorDeGrupo");
-                    actualizarEstadoDatabase(processId, EstadoProceso.BORRADOR.toString());
-                    actualizarEstadoProceso(processId, EstadoProceso.BORRADOR.toString());
+                    setAssignee(newTaskId, "ProfesionalTecnico");
+
+                    actualizarEstadoService.actualizarEstadoDatabase(processId, siguienteEstado);
+                    actualizarEstadoService.actualizarEstadoProceso(processId, siguienteEstado);
                 }
-                return "";
-            } catch (HttpClientErrorException e) {
-                System.err.println("Error during task completion: " + e.getMessage());
-                return null;
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Error al actualizar el estado en la base de datos: " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new RuntimeException("Error al asignar el profesional: " + e.getMessage(), e);
             }
+
         } else {
-            System.err.println("No task information found for Process ID " + processId);
-            return null;
+            throw new RuntimeException("No se encontró la tarea activa para el proceso: " + processId);
         }
     }
 
-    public void actualizarEstadoProceso(String processId, String estado) {
-        String apiRequestUrl = camundaUrl + "process-instance/" + processId + "/variables/estado";
+    @Override
+    public void aprobarConceptoTecnico(String processId, String siguienteEstado) {
+        TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        if (taskInfo != null) {
+            String taskId = taskInfo.getTaskId();
 
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("value", estado);
-        requestBody.put("type", "String");
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+            Map<String, Object> requestBody = new HashMap<>();
 
-        try {
-            ResponseEntity<Void> response = restTemplate.exchange(
-                    apiRequestUrl,
-                    HttpMethod.PUT,
-                    requestEntity,
-                    Void.class
-            );
+            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            if (response.getStatusCode().is2xxSuccessful()) {
-                System.out.println("Estado actualizado exitosamente para processId: " + processId);
-            } else {
-                System.err.println("Error actualizando estado para processId " + processId + ". Código: " + response.getStatusCode());
+            try {
+                String url = camundaUrl + "task/" + taskId + "/complete";
+                restTemplate.postForEntity(url, requestEntity, Map.class);
+
+                String newTaskId = getTaskIdByProcessIdWithApi(processId);
+                if (newTaskId != null) {
+                    updateTaskByProcessId(processId, newTaskId);
+                    setAssignee(newTaskId, "OficinaJuridica");
+
+                    actualizarEstadoService.actualizarEstadoDatabase(processId, siguienteEstado);
+                    actualizarEstadoService.actualizarEstadoProceso(processId, siguienteEstado);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException("Error al actualizar el estado en la base de datos: " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new RuntimeException("Error al asignar el profesional: " + e.getMessage(), e);
             }
-        } catch (HttpClientErrorException e) {
-            String errorMessage = e.getResponseBodyAsString();
-            System.err.println("Error al actualizar estado: " + errorMessage);
+
+        } else {
+            throw new RuntimeException("No se encontró la tarea activa para el proceso: " + processId);
         }
     }
 
-
-    public void actualizarEstadoDatabase(String processId, String status) throws SQLException {
-        Connection connection = DriverManager.getConnection(databaseUrl, databaseUser, databasePassword);
-
-        String updateQuery = "UPDATE solicitud_licencia SET estado = ? WHERE codigo_solicitud = ?";
-
-        try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
-            updateStatement.setString(1, status);
-            updateStatement.setString(2, processId);
-
-            int rowsAffected = updateStatement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println("Estado actualizado por coordinador de grupo" + status);
-            } else {
-                System.out.println("No records found for the given processId: " + processId);
-            }
-        }
-    }
 }
