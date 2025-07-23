@@ -68,7 +68,7 @@ Usuario: root
 Contraseña: admin
 
 Puedes crear esta base de datos ejecutando el siguiente script en tu cliente de MySQL:
-
+bash´´´
 sql
 Copiar
 Editar
@@ -167,3 +167,4 @@ volumes:
 
 networks:
   cormanet:
+  ´´´
