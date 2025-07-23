@@ -68,7 +68,7 @@ Usuario: root
 Contraseña: admin
 
 Puedes crear esta base de datos ejecutando el siguiente script en tu cliente de MySQL:
-
+```
 # Crear base de datos y usuario en MySQL
 # Este script debe ejecutarse dentro del contenedor de MySQL o usando un cliente externo conectado
 
@@ -167,3 +167,4 @@ volumes:
 
 networks:
   cormanet:
+```
