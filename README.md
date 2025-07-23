@@ -68,17 +68,18 @@ Usuario: root
 Contraseña: admin
 
 Puedes crear esta base de datos ejecutando el siguiente script en tu cliente de MySQL:
-bash´´´
-sql
-Copiar
-Editar
+
+# Crear base de datos y usuario en MySQL
+# Este script debe ejecutarse dentro del contenedor de MySQL o usando un cliente externo conectado
+
 CREATE DATABASE Cormacarena;
 CREATE USER 'root'@'%' IDENTIFIED BY 'admin';
 GRANT ALL PRIVILEGES ON Cormacarena.* TO 'root'@'%';
 FLUSH PRIVILEGES;
 
-Adicional realice estos cambios en el docker-compose:
 
+Adicional realice estos cambios en el docker-compose:
+# docker-compose.yml
 version: "3.8"
 
 services:
@@ -121,7 +122,6 @@ services:
     environment:
       CAMUNDA_URL: http://bpm-engine:8080/engine-rest/
 
-
   organization:
     build:
       context: ./cormacarena-organization
@@ -138,10 +138,10 @@ services:
 
   transactional-mail-sender:
     build:
-      context: ./transaccional-mail-sender  # Directorio donde está el Dockerfile de este módulo
+      context: ./transaccional-mail-sender
     container_name: transactional-mail-sender
     ports:
-      - "8085:8085"  # Puerto expuesto para el servicio de envío de correos
+      - "8085:8085"
     depends_on:
       - mysql
     networks:
@@ -156,7 +156,7 @@ services:
       context: ./JavaScriptResources
     container_name: camunda-worker
     depends_on:
-      - bpm-engine  # Asegura que bpm-engine esté disponible
+      - bpm-engine
     environment:
       CAMUNDA_URL: http://bpm-engine:8080/engine-rest/
     networks:
@@ -167,4 +167,3 @@ volumes:
 
 networks:
   cormanet:
-  ´´´
